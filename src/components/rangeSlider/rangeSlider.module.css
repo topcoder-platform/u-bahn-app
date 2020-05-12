@@ -1,0 +1,37 @@
+/* importing colors */
+@value colors: "../../styles/colors.module.css";
+@value lightBlue, blue, gray1_0125 from colors;
+
+/* Range Slider */
+.rangeSlider {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+
+  height: 10px;
+  background: gray1_0125;
+  border-radius: 5px;
+}
+
+.rangeSliderThumb {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  position: relative;
+  top: -10px;
+  background: lightBlue;
+  cursor: pointer;
+  margin:0px;
+}
+
+.rangeSliderHeader {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.rangeSliderProgress {
+  border-radius: 3px;
+  position: absolute;
+  height: 100%;
+  background: blue;
+}

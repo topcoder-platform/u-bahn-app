@@ -1,0 +1,52 @@
+/* importing colors */
+@value colors: "../../styles/colors.module.css";
+@value gray1, gray2, lightGray, white, blue from colors;
+
+/* Pager */
+.pager {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    height: 24px;
+}
+
+.pager > div {
+    margin-left: 10px;
+}
+
+.pager > div:first-child {
+    margin-left: 0px;
+}
+
+.pagerItem {
+    cursor: pointer;
+    height: 30px;
+    width: 32px;
+
+    border: 1px solid lightGray;
+    border-radius: 3px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    font-family: Helvetica;
+    font-size: 13px;
+    color: gray1;
+}
+
+.pagerItemSelected {
+    composes: pagerItem;
+    background-color: blue;
+    border: 1px solid blue;
+    color: white;
+}
+
+.pagerItemDisabled {
+    composes: pagerItem;
+    background-color: lightGray;
+    cursor: default;
+}

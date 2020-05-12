@@ -1,0 +1,7 @@
+/* Search Page Styles start here */
+.searchPage {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  min-width: 1280px;
+}

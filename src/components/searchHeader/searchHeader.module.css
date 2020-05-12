@@ -1,0 +1,6 @@
+/* START of Header Styles */
+.header {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}

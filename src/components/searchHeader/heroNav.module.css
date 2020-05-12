@@ -1,0 +1,73 @@
+/* importing colors */
+@value colors: "../../styles/colors.module.css";
+@value lightGray, gray2 from colors;
+
+/* START of Hero Nav */
+.heroNavContainer {
+  background-color: lightGray;
+  position: relative;
+}
+
+.heroNavElipseGreen {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+  display: block;
+  background: url("/elipse_green.png");
+  width: 524px;
+  height: 140px;
+}
+
+.heroNavElipseBlue {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  z-index: 2;
+  display: block;
+  background: url("/elipse_blue.png");
+  width: 524px;
+  height: 140px;
+}
+
+.heroNav {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 100;
+
+  height: 240px;
+  width: 50%;
+  margin-left: 60px;
+  margin-top: 52px;
+  text-align: left;
+}
+
+.heroNavTitle {
+  z-index: 1;
+  font-family: Helvetica;
+  font-size: 35px;
+  color: gray2;
+}
+
+.heroNavTitleLine1 {
+  margin-top: 0px;
+  height: 42px;
+}
+
+.heroNavTitleLine2 {
+  margin-top: 4px;
+  height: 42px;
+}
+
+.heroNavTabsCotnainer {
+  align-self: flex-end;
+  margin-top: auto;
+}
+
+.heroNavTabs {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+/* END of Hero Nav */

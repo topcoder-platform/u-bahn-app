@@ -1,0 +1,31 @@
+/* importing colors */
+@value colors: "../../styles/colors.module.css";
+@value gray1, green2, gray1_05 white from colors;
+
+/* Button */
+.button {
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid gray1_05;
+  background-color: white;
+  width: 97px;
+  height: 40px;
+  font-family: Helvetica;
+  font-size: 16px;
+  color: gray1;
+  outline: none;
+}
+
+.buttonFill {
+  composes: button;
+  color: white;
+  border: none;
+  background: gray1;;
+}
+
+.buttonCreate {
+  composes: button;
+  color: white;
+  border: none;
+  background-color: green2;
+}

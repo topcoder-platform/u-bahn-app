@@ -1,0 +1,104 @@
+/* importing colors */
+@value colors: "../../styles/colors.module.css";
+@value gray1, lightGray, white from colors;
+
+/* START of Top Bar styles - the top bar is part of the header */
+.headerTopBar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  min-width: 1280px;
+  height: 100px;
+  background-color: white;
+}
+
+/* Logo styles - it is the leftmost item of the Top Bar */
+.headerTopBarLogo {
+  cursor: pointer;
+  padding-top: 39px;
+  padding-left: 60px;
+  max-width: 75px;
+  max-height: 40px;
+}
+
+/* START of Top Bar Search styles - middle item in the top bar */
+.topBarSearch {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  top: 25px;
+  overflow: hidden;
+
+  background-color: lightGray;
+  border: 0;
+  border-radius: 5px;
+
+  height: 26px;
+  width: 300px;
+  padding-left: 28px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-right: 28px;
+}
+
+.topBarSearchItems {
+  flex:1;
+  display: flex;
+  flex-direction: row;
+  font-family: Helvetica;
+  font-size: 18px;
+  height: 23px;
+}
+
+.topBarSearchIcon {
+  order: 1;
+	background: url('/sprites.png') no-repeat -1px -1px;
+	width: 20px;
+  height: 20px;
+  margin-top: 4px;
+}
+
+.topBarSearchBox {
+  order: 2;
+  flex: 1;
+  border: 0;
+  font-family: Helvetica;
+  font-size: 18px;
+  background-color: lightGray;
+  margin-left: 12px;
+  margin-top: 1px;
+}
+
+.topBarSearchBox:focus, .topBarSearchBox:focus, .topBarSearchBox:focus {
+  outline: none;
+}
+/* END of Top Bar Search styles */
+
+/* START ofLogged-in-user styles - rightmost item in the top bar */
+.loggedInUser {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  margin-right: 60px;
+  margin-top: 41px;
+}
+
+.loggedInUserName {
+  font-family: Helvetica;
+  font-size: 16px;
+  color: gray1;
+  order: 1;
+}
+
+.chevronIcon {
+  order: 2;
+  background: url('/sprites.png') no-repeat -23px -7px;
+	width: 14px;
+  height: 8px;
+  margin-top: 5px;
+  margin-left: 24px;
+}
+/* END of Logged-in-user styles */
+
+/* END of Top Bar styles */

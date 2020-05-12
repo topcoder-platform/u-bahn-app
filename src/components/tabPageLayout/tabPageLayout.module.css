@@ -1,0 +1,17 @@
+/* Tab Page Layout styles */
+
+.tabPage {
+    display: flex;
+    flex-direction: row;
+
+    margin-top: 30px;
+    margin-left: 60px;
+    margin-bottom: 0px;
+    margin-right: 55px;
+    overflow: auto;
+}
+
+.tabPageRightCol {
+    display: block;
+    width: 100%;
+}
