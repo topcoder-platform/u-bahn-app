@@ -1,0 +1,20 @@
+/* Links necessary fonts. */
+
+@mixin inter-font-family($type, $weight) {
+  @include font-family(
+    Inter,
+    $weight,
+    normal,
+    "../../assets/fonts/Inter/static/Inter-#{$type}-slnt=0"
+  );
+}
+
+@include inter-font-family("Black", 900);
+@include inter-font-family("ExtraBold", 800);
+@include inter-font-family("Bold", 700);
+@include inter-font-family("SemiBold", 600);
+@include inter-font-family("Medium", 500);
+@include inter-font-family("Regular", 400);
+@include inter-font-family("Light", 300);
+@include inter-font-family("ExtraLight", 200);
+@include inter-font-family("Thin", 100);

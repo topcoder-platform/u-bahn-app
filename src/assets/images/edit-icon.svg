@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="5.5286212mm"
+   height="5.5292525mm"
+   viewBox="0 0 5.5286212 5.5292525"
+   version="1.1"
+   stroke="black"
+   id="svg8685">
+  <g
+     id="layer1"
+     transform="translate(-46.877781,-50.313839)">
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-width:0.79374999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect9242-3-9"
+       width="5.5286212"
+       height="5.5292525"
+       x="46.877781"
+       y="50.313839" />
+    <g
+       transform="matrix(0.26458333,0,0,0.26458333,-161.50922,-72.849701)"
+       id="Group 36">
+      <g
+         style="opacity:0.5"
+         id="edit">
+        <path
+           style="fill:#ffffff;stroke-linecap:round;stroke-linejoin:round"
+           id="Vector_27"
+           d="m 798.051,467.898 h -6.262 c -0.474,0 -0.929,0.188 -1.265,0.524 -0.336,0.335 -0.524,0.79 -0.524,1.265 v 12.524 c 0,0.474 0.188,0.929 0.524,1.265 0.336,0.336 0.791,0.524 1.265,0.524 h 12.524 c 0.475,0 0.93,-0.188 1.265,-0.524 0.336,-0.336 0.524,-0.791 0.524,-1.265 v -6.262" />
+        <path
+           style="fill:#ffffff;stroke-linecap:round;stroke-linejoin:round"
+           id="Vector_28"
+           d="m 804.76,466.556 c 0.356,-0.356 0.839,-0.556 1.342,-0.556 0.504,0 0.986,0.2 1.342,0.556 0.356,0.356 0.556,0.838 0.556,1.342 0,0.503 -0.2,0.986 -0.556,1.342 l -8.498,8.498 -3.579,0.895 0.895,-3.579 z" />
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,28 @@
+@import "../../styles/mixins";
+
+.addFilterButton {
+  margin: 20px 0;
+  width: 100%;
+}
+
+.container {
+  margin: 0 40px 0 60px;
+}
+
+.filtersIcon {
+  margin-right: 10px;
+}
+
+.header {
+  align-items: center;
+  color: $black;
+  display: flex;
+  font: 500 13.5pt/1.25 Inter;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.more {
+  border: 1px solid $linkColor;
+  color: $linkColor;
+}

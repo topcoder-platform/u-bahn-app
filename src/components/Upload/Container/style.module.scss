@@ -1,0 +1,40 @@
+@import "../../../styles/mixins.scss";
+
+.container {
+  background: #eee;
+  border-radius: 10px;
+  margin: auto;
+  min-height: 640px;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+  width: 80%;
+}
+
+.decorations {
+  height: 640px;
+  left: 50%;
+  position: absolute;
+  pointer-events: none;
+  transform: translateX(-50%);
+  width: $screen-lg;
+}
+
+.decorativeCard {
+  position: absolute;
+
+  &:nth-child(1) {
+    top: 12%;
+    left: -10%;
+  }
+
+  &:nth-child(2) {
+    top: -23%;
+    right: 7%;
+  }
+
+  &:nth-child(3) {
+    bottom: -30%;
+    right: 20%;
+  }
+}

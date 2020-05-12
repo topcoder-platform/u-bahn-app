@@ -1,0 +1,48 @@
+@import "../../styles/mixins";
+
+.container {
+  align-items: center;
+  display: inline-flex;
+}
+
+.checkbox {
+  appearance: none;
+  background: $lightGray5;
+  border-radius: 25px;
+  cursor: pointer;
+  height: 26px;
+  outline: none;
+  position: relative;
+  width: 48px;
+
+  &::after {
+    background: $white;
+    border-radius: 25px;
+    content: "";
+    display: block;
+    height: 22px;
+    margin: 2px;
+    position: absolute;
+    left: 0;
+    width: 22px;
+  }
+
+  &:checked {
+    background: $green;
+
+    &::after {
+      left: unset;
+      right: 0;
+    }
+  }
+}
+
+.label {
+  color: $textColor3;
+  font: 500 10.5pt/1.25 Inter;
+  margin-right: 7px;
+}
+
+.checked .label {
+  color: $textColor;
+}

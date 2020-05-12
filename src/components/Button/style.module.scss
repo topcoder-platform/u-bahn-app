@@ -1,0 +1,17 @@
+@import "../../styles/mixins";
+
+.button {
+  background: $white;
+  border: 1px solid transparentize($color: $textColor, $amount: 0.5);
+  border-radius: 4px;
+  color: $textColor;
+  cursor: pointer;
+  font:  600 12pt/1.25 Inter;
+  min-height: 40px;
+  outline: none;
+  padding: 10px 25px;
+
+  &:hover {
+    background: $lightGray1;
+  }
+}

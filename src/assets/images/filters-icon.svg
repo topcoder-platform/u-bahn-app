@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   width="5.0308514mm"
+   height="3.9725182mm"
+   viewBox="0 0 5.0308514 3.9725182"
+   version="1.1"
+   id="svg11961">
+  <g
+     id="layer1"
+     transform="translate(-89.710765,-96.954217)">
+    <g
+       transform="matrix(0.26458333,0,0,0.26458333,73.969941,-4.5116058)"
+       style="opacity:0.5"
+       id="sliders">
+      <path
+         style="stroke:#55596c;stroke-linecap:round;stroke-linejoin:round"
+         id="Vector_8"
+         d="m 60,387 h 9" />
+      <path
+         style="stroke:#55596c;stroke-linecap:round;stroke-linejoin:round"
+         id="Vector_9"
+         d="m 73,387 h 5" />
+      <path
+         style="stroke:#55596c;stroke-linecap:round;stroke-linejoin:round"
+         id="Vector_10"
+         d="m 60,395 h 5" />
+      <path
+         style="stroke:#55596c;stroke-linecap:round;stroke-linejoin:round"
+         id="Vector_11"
+         d="m 69,395 h 9" />
+      <path
+         style="stroke:#55596c;stroke-linecap:round;stroke-linejoin:round"
+         id="Vector_12"
+         d="m 73,384 v 6" />
+      <path
+         style="stroke:#55596c;stroke-linecap:round;stroke-linejoin:round"
+         id="Vector_13"
+         d="m 65,392 v 6" />
+    </g>
+  </g>
+</svg>

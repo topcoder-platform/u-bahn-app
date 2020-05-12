@@ -1,0 +1,39 @@
+@import "../../styles/mixins";
+
+.container {
+  margin: 10px 40px 0 60px;
+}
+
+.createButton {
+  background: $green2;
+  border: none;
+  color: $white;
+  margin-left: 15px;
+  white-space: nowrap;
+
+  &:hover {
+    background: $green;
+  }
+}
+
+.search * {
+  font-size: 12pt;
+}
+
+.searchRow {
+  align-items: center;
+  display: flex;
+  margin: 40px 0;
+}
+
+.subTitle {
+  color: $textColor;
+  font: 500 10.5pt/1.25 Inter;
+  margin: 40px 0 20px;
+  text-transform: uppercase;
+}
+
+.title {
+  color: $black;
+  font: 500 13.5pt/1.25 Inter;
+}

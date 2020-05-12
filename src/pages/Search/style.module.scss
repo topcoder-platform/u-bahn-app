@@ -1,0 +1,96 @@
+@import "../../styles/mixins";
+
+
+.availability {
+  border: 1px solid $lightGray2;
+  border-radius: 4px;
+  color: $textColor;
+  display: flex;
+  font: 500 12pt/1.25 Inter;
+}
+
+.available {
+  border-right: 1px solid $lightGray2;
+  cursor: pointer;
+  flex: 1;
+  padding: 12px;
+  text-align: center;
+
+  &::before {
+    background: $green;
+    border-radius: 6px;
+    content: "";
+    display: inline-block;
+    height: 12px;
+    margin-right: 8px;
+    width: 12px;
+  }
+}
+
+.unavailable {
+  cursor: pointer;
+  flex: 1;
+  padding: 12px;
+  text-align: center;
+
+  &::before {
+    background: $textColor3;
+    border-radius: 6px;
+    content: "";
+    display: inline-block;
+    height: 12px;
+    margin-right: 8px;
+    width: 12px;
+  }
+}
+
+.cardsHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px 30px;
+}
+
+.mainArea {
+  display: flex;
+  padding-top: 30px;
+}
+
+.pills {
+  margin: 15px -5px 0;
+}
+
+.pill {
+  color: $textColor;
+  cursor: pointer;
+
+  &.selected {
+    background: $linkColor;
+    border: 1px solid $linkColor;
+    color: $white;
+  }
+}
+
+.rightSide {
+  margin-top: 10px;
+}
+
+.sideMenu {
+  min-width: 460px;
+}
+
+.sort {
+  color: $textColor;
+  font: 400 12pt/1.25 Inter;
+}
+
+.sortMode {
+  color: $black;
+  cursor: pointer;
+  margin: 0 10px;
+}
+
+.visibleCardsInfo {
+  color: $black;
+  font: 500 13.5pt/1.25 Inter;
+}

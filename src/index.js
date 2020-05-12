@@ -1,12 +1,18 @@
+/* These polyfills are required for IE11 support. */
+import 'core-js';
+import 'regenerator-runtime';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import './styles/global.scss';
+
+import Router from './Router';
+
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router />
   </React.StrictMode>,
   document.getElementById('root')
 );

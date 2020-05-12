@@ -1,0 +1,8 @@
+@import "../../styles/mixins";
+
+.page {
+  @include typography;
+
+  margin: auto;
+  max-width: $screen-md;
+}
