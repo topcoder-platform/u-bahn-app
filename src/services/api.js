@@ -155,11 +155,9 @@ export default class Api {
    * @return {Promise<object[]>} Resolves to user object array.
    */
   async getUsers({ groupId, handle, roleId } = {}) {
-    /*
     let { data } = await this.api(`${config.V5_API_BASE}/users`, {
       params: { groupId, handle, roleId},
-    });*/
-    let data = [];
+    });
 
     /* TODO: As of now the mock API returns empty strings instead of user
      * objects, thus the following piece of code replaces them by mock objects
