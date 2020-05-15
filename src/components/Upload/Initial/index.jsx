@@ -65,7 +65,7 @@ export default function Initial({
       />
       <img src={spreadsheetIcon} alt="icon" />
       <div className={style.label1}>
-        Drag profile data, o
+        Drag profile data, or
         &zwnj;
         <span
           className={style.browse}
