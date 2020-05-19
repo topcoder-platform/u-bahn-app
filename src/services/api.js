@@ -7,53 +7,6 @@ import config from '../config';
 
 import defaultOrgLogoUrl from '../assets/images/u-bahn-logo.svg';
 
-const MOCK_NAMES = [
-  'Angel Mccoy',
-  'John Doe',
-  'Saint Patric',
-  'Mad Max',
-  'Alexander Great',
-  'Julius Ceasar',
-  'Bill Gates',
-  'Dunkan McLaud',
-  'Max Zukerberg',
-  'Tom Jones',
-  'Rolling Stone',
-  'Freddy Mercury',
-  'Santa Claus',
-];
-
-/**
- * Creates a mock user object.
- *
- * TODO: This is a temporary function to rely upon until some data are loaded
- * into the API mock.
- *
- * @return {object}
- */
-function newMockUser() {
-  return {
-    id: (++newMockUser.id).toString(),
-    handle: 'mcangel',
-    name: MOCK_NAMES[newMockUser.id % MOCK_NAMES.length],
-    role: 'Front-end Developer',
-    company: 'U-Bahn Internet Services',
-    location: 'New York, US',
-    skills: ['.Net', 'API', 'C++'],
-    achievements: [
-      'Rocks',
-      'Rolls',
-    ],
-    attributes: {
-      key1: 'Value 1',
-      key2: 'Value 2',
-    },
-    groups: ['Group 1', 'Group 2'],
-    available: false,
-  };
-}
-newMockUser.id = 0;
-
 export default class Api {
   /**
    * Creates a new Api instance.
@@ -139,12 +92,7 @@ export default class Api {
   async getUser(userId) {
     const { data } = await this.api(`${config.V5_API_BASE}/users/${userId}`);
 
-    /* TODO: As of now the mock API returns empty results for any user, thus
-     * we mock the mock API response, returning some default user object here. 
-     * Also the docs do not seem contain the full schema of user objects, thus
-     * the mock response here is based on what is drawn in the UI design.
-     */
-    return data || newMockUser();
+    return data;
   }
 
   /**
