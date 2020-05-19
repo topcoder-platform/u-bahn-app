@@ -149,24 +149,19 @@ export default class Api {
 
   /**
    * Looks up users.
+   * @param {string} [search] Optional. Search query
    * @param {string} [groupId] Optional. Group filter.
-   * @param {string} [handle] Optional. User handle filter.
    * @param {string} [roleId] Optional. Role filter.
    * @return {Promise<object[]>} Resolves to user object array.
    */
-  async getUsers({ groupId, handle, roleId } = {}) {
-    let { data } = await this.api(`${config.V5_API_BASE}/users`, {
-      params: { groupId, handle, roleId},
+  async getUsers({ search, groupId, roleId, page, limit } = {}) {
+    let { headers, data } = await this.api(`${config.SEARCH_API_BASE}/users`, {
+      params: { search, groupId, roleId, page, limit},
     });
 
-    /* TODO: As of now the mock API returns empty strings instead of user
-     * objects, thus the following piece of code replaces them by mock objects
-     * at the frontend side to allow moving forward with the frontend
-     * development. */
-    data = data.map((user) => user || newMockUser());
-    while (data.length < 20) data.push(newMockUser());
+    const total = headers['x-total-count'] || 0;
 
-    return data;
+    return { total, data };
   }
 
   /**

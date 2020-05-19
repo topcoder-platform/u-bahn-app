@@ -22,8 +22,10 @@ import style from './style.module.scss';
 
 export default function SearchPage() {
   const [api] = React.useState(() => new Api({ token: 'dummy-auth-token' }));
-  const [page, setPage] = React.useState(0);
-  const [search, setSearch] = React.useState('');
+  const [page, setPage] = React.useState(1);
+  const byPage = 10;
+  const [totalResults, setTotalResults] = React.useState(0);
+  const [search, setSearch] = React.useState(null);
   const [tab, setTab] = React.useState(TABS.SEARCH);
   const [users, setUsers] = React.useState([]);
 
@@ -212,20 +214,22 @@ export default function SearchPage() {
 
   React.useEffect(() => {
     (async () => {
-      setUsers(await api.getUsers({ handle: search }));
+      const { total, data } = await api.getUsers({ search: search, page: page, limit: byPage })
+      setUsers(data);
+      setTotalResults(Number(total));
     })();
-  }, [api, search]);
+  }, [api, search, page, byPage]);
 
   let filteredUsers = users;
   if (tab === TABS.GROUPS) {
     const currentGroup = (groups.find(g => g.current) || {}).name;
     if (currentGroup) {
       filteredUsers = filteredUsers.filter(
-        user => user.groups.includes(currentGroup)
+        user => user.groups && user.groups.includes(currentGroup)
       );
     }
   }
-  const visibleUsers = filteredUsers.slice(10 * page, 10 * (1 + page));
+  const visibleUsers = filteredUsers;
 
   let mainContent;
   switch (tab) {
@@ -251,7 +255,7 @@ export default function SearchPage() {
           <div className={style.rightSide}>
             <div className={style.cardsHeader}>
               <div className={style.visibleCardsInfo}>
-                Showing {10 * page + 1}-{10 * page + visibleUsers.length} of {users.length} profiles
+                Showing {byPage * page - (byPage - 1)}-{byPage * page > totalResults? totalResults : byPage * page} of {totalResults} profiles
               </div>
               <div className={style.sort}>
                 Sort by
@@ -276,7 +280,8 @@ export default function SearchPage() {
             <div>
               <Pagination
                 currentPage={page}
-                numPages={Math.floor(filteredUsers.length / 10)}
+                byPage={byPage}
+                numPages={totalResults}
                 onPage={setPage}
               />
             </div>
