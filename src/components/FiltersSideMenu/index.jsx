@@ -3,9 +3,6 @@ import PT from 'prop-types';
 
 import AddFiltersModal from '../AddFiltersModal';
 import Button from '../Button';
-import FilterGroup from '../FilterGroup';
-import Pill from '../Pill';
-import Search from '../Search';
 
 import { ReactComponent as FiltersIcon }
   from '../../assets/images/filters-icon.svg';
