@@ -22,6 +22,13 @@ export default function ProfileCard({
   const [showAddToGroup, setShowAddToGroup] = React.useState(false);
   const [showEditModal, setShowEditModal] = React.useState(false);
 
+  if (user.attributes) {
+    user.available = user.attributes.find(attr => attr.attributeName === 'isAvailable').value
+    user.role = user.attributes.find(attr => attr.attributeName === 'role').value;
+    user.company = user.attributes.find(attr => attr.attributeName === 'company').value
+    user.location = user.attributes.find(attr => attr.attributeName === 'location').value
+  }
+
   let switchLabel = null;
   if (user) switchLabel = user.available ? 'Available' : 'Unavailable';
 
@@ -56,7 +63,15 @@ export default function ProfileCard({
           <Switch
             checked={user.available}
             label={switchLabel}
-            onChange={() => updateUser({ ...user, available: !user.available})}
+            onChange={() =>
+              updateUser({
+                ...user,
+                attributes: user.attributes.map(el =>
+                  (el.attributeName === 'isAvailable' ? {...el, value: !user.available} : el)
+                ),
+                available: !user.available
+              })
+            }
           />
           <EditIcon
             className={style.editIcon}
@@ -80,7 +95,7 @@ export default function ProfileCard({
         </div>
         <div className={style.groups}>
           {
-            user.groups.map((group, index) => (
+            user.groups && user.groups.map((group, index) => (
               <Pill
                 name={group}
                 key={group}

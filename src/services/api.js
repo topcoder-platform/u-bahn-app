@@ -90,7 +90,7 @@ export default class Api {
    * @return {Promise<object>} Resolves to user object.
    */
   async getUser(userId) {
-    const { data } = await this.api(`${config.V5_API_BASE}/users/${userId}`);
+    const { data } = await this.api(`${config.SEARCH_API_BASE}/users/${userId}`);
 
     return data;
   }

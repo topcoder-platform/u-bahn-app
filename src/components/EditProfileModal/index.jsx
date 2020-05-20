@@ -9,6 +9,13 @@ import ProfileCard from '../ProfileCard';
 
 import style from './style.module.scss';
 
+const COMMON_ATTRIBUTES = [
+  'role',
+  'company',
+  'location',
+  'isAvailable'
+]
+
 export default function EditProfileModal({
   api,
   onCancel,
@@ -18,6 +25,7 @@ export default function EditProfileModal({
   const [localUser, setLocalUser] = React.useState({ ...user });
   const [skillInputValue, setSkillInputValue] = React.useState('');
   const [achieInputValue, setAchieInputValue] = React.useState('');
+
   return (
     <Modal className={style.container} onCancel={onCancel}>
       <ProfileCard
@@ -58,8 +66,11 @@ export default function EditProfileModal({
             onChange={({ target }) => {
               setLocalUser({
                 ...localUser,
-                role: target.value,
-              });
+                attributes: localUser.attributes.map(el =>
+                  (el.attributeName === 'role' ? {...el, value: target.value} : el)
+                ),
+                role: target.value
+              })
               setImmediate(() => target.focus());
             }}
             value={localUser.role}
@@ -69,6 +80,9 @@ export default function EditProfileModal({
             onChange={({ target }) => {
               setLocalUser({
                 ...localUser,
+                attributes: localUser.attributes.map(el =>
+                  (el.attributeName === 'company' ? {...el, value: target.value} : el)
+                ),
                 company: target.value,
               });
               setImmediate(() => target.focus());
@@ -80,6 +94,9 @@ export default function EditProfileModal({
             onChange={({ target }) => {
               setLocalUser({
                 ...localUser,
+                attributes: localUser.attributes.map(el =>
+                  (el.attributeName === 'location' ? {...el, value: target.value} : el)
+                ),
                 location: target.value,
               });
               setImmediate(() => target.focus());
@@ -97,7 +114,12 @@ export default function EditProfileModal({
                 if (skill) {
                   setLocalUser({
                     ...localUser,
-                    skills: [...localUser.skills, skill],
+                    skills: [
+                      ...localUser.skills,
+                      {
+                        name: skill,
+                      }
+                    ],
                   });
                 }
                 setSkillInputValue('');
@@ -110,7 +132,12 @@ export default function EditProfileModal({
                 if (skill) {
                   setLocalUser({
                     ...localUser,
-                    skills: [...localUser.skills, skill],
+                    skills: [
+                      ...localUser.skills,
+                      {
+                        name: skill,
+                      }
+                    ],
                   });
                 }
                 value = '';
@@ -122,10 +149,10 @@ export default function EditProfileModal({
             value={skillInputValue}
           />
           {
-            localUser.skills.map(it => (
+            localUser.skills.map((it, key) => (
               <Pill
-                key={it}
-                name={it}
+                key={key}
+                name={it.name}
                 onRemove={() => {
                   setLocalUser({
                     ...localUser,
@@ -147,7 +174,12 @@ export default function EditProfileModal({
                 if (achie) {
                   setLocalUser({
                     ...localUser,
-                    achievements: [...localUser.achievements, achie],
+                    achievements: [
+                      ...localUser.achievements,
+                      {
+                        name: achie,
+                      }
+                    ],
                   });
                 }
                 setAchieInputValue('');
@@ -160,7 +192,12 @@ export default function EditProfileModal({
                 if (achie) {
                   setLocalUser({
                     ...localUser,
-                    achievements: [...localUser.achievements, achie],
+                    achievements: [
+                      ...localUser.achievements,
+                      {
+                        name: achie,
+                      }
+                    ],
                   });
                 }
                 value = '';
@@ -171,10 +208,10 @@ export default function EditProfileModal({
             value={achieInputValue}
           />
           {
-            localUser.achievements.map(it => (
+            localUser.achievements.map((it, key) => (
               <Pill
-                key={it}
-                name={it}
+                key={key}
+                name={it.name}
                 onRemove={() => {
                   setLocalUser({
                     ...localUser,
@@ -188,21 +225,22 @@ export default function EditProfileModal({
         <h3>Custom attributes</h3>
         <div className={style.inputs}>
           {
-            Object.keys(localUser.attributes).map((key) => (
+            localUser.attributes.filter(
+              attr => !COMMON_ATTRIBUTES.includes(attr.attributeName)
+            ).map((attr, key) => (
               <Input
                 key={key}
-                label={key}
+                label={attr.attributeName}
                 onChange={({ target }) => {
                   setLocalUser({
                     ...localUser,
-                    attributes: {
-                      ...localUser.attributes,
-                      [key]: target.value,
-                    },
+                    attributes: localUser.attributes.map(el =>
+                      (el.attributeName === attr.attributeName ? {...el, value: target.value} : el)
+                    ),
                   })
                   setImmediate(() => target.focus())
                 }}
-                value={localUser.attributes[key]}
+                value={localUser.attributes[key].value}
               />
             ))
           }
