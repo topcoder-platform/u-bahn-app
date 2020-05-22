@@ -1,4 +1,6 @@
 /* These polyfills are required for IE11 support. */
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
 import 'core-js';
 import 'regenerator-runtime';
 
