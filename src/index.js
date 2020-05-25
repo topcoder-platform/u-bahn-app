@@ -1,4 +1,6 @@
 /* These polyfills are required for IE11 support. */
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
 import 'core-js';
 import 'regenerator-runtime';
 
@@ -10,9 +12,16 @@ import Router from './Router';
 
 import * as serviceWorker from './serviceWorker';
 
+import { SearchContextProvider } from './lib/search';
+import { ModalContextProvider } from './lib/modal';
+
 ReactDOM.render(
   <React.StrictMode>
-    <Router />
+    <ModalContextProvider>
+      <SearchContextProvider>
+        <Router />
+      </SearchContextProvider>
+    </ModalContextProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

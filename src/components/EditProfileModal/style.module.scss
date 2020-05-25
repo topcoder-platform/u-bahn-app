@@ -2,6 +2,9 @@
 
 .container {
   display: flex;
+  height: 791px;
+  max-height: 791px;
+  overflow-y: auto;
 }
 
 .editor {
@@ -45,6 +48,7 @@
   outline: none;
   padding: 0 10px;
   width: 100%;
+  box-sizing: border-box;
 
   &::placeholder {
     opacity: 0.5;

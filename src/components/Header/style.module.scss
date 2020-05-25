@@ -1,5 +1,10 @@
 @import "../../styles/mixins";
 
+.logo {
+  display: flex;
+  align-items: center;
+}
+
 .accountMenu {
   align-items: center;
   color: $textColor;

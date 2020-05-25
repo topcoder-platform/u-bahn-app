@@ -1,0 +1,58 @@
+/* importing colors */
+@value colors: "../../styles/colors.module.css";
+@value gray1, gray2, gray1_025, lightGray, white from colors;
+
+/* Collapsible */
+.collapsibleContainer {
+  display: flex;
+  flex-direction: column;
+
+  background: white;
+  min-height: 108px;
+  border-radius: 10px;
+  border: 1px solid gray1_025;
+}
+
+.collapsibleContainerCollapsed {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid gray1_025;
+}
+
+.collapsibleHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+
+  padding-left: 20px;
+  padding-top: 13px;
+  padding-bottom: 15px;
+}
+
+.collapsibleTitle {
+  font-family: Helvetica;
+  font-size: 18px;
+  color: gray2;
+}
+
+.collapsibleChevronContainer {
+  cursor: pointer;
+  order: 2;
+  align-self: stretch;
+  margin-left: auto;
+  margin-right: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.collapsibleDivider {
+    border-bottom: 1px solid gray1_025;
+}
+
+.collapsibleHeaderBody {
+  padding: 20px;
+}
