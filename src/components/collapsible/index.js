@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import PT from 'prop-types';
 import styles from './collapsible.module.css';
 import iconStyles from '../../styles/icons.module.css';
 
@@ -35,6 +35,6 @@ export default function Collapsible({ title, children, collapsed = false }) {
 }
 
 Collapsible.propTypes = {
-    title: PropTypes.string.isRequired,
-    children: PropTypes.node.isRequired
+    title: PT.string.isRequired,
+    children: PT.node.isRequired
 };

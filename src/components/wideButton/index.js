@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PT from 'prop-types';
 import styles from './wideButton.module.css';
 
 export default function WideButton({ text, action }) {
@@ -12,6 +12,6 @@ export default function WideButton({ text, action }) {
 
 
 WideButton.propTypes = {
-    text: PropTypes.string.isRequired,
-    action: PropTypes.func
+    text: PT.string.isRequired,
+    action: PT.func
 };

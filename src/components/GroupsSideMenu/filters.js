@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import PT from 'prop-types';
 
 import SearchBox from '../searchBox';
 import Button from '../Button';
@@ -83,9 +83,9 @@ export default function GroupTabFilters({ myGroups, groups, onGroupSelected }) {
 }
 
 GroupTabFilters.propTypes = {
-    myGroups: PropTypes.array,
-    groups: PropTypes.any,
-    onGroupSelected: PropTypes.func
+    myGroups: PT.array,
+    groups: PT.any,
+    onGroupSelected: PT.func
 }
 
 function GroupsSection({ title, items, onItemClicked, selectedIndex }) {
@@ -114,10 +114,10 @@ function GroupsSection({ title, items, onItemClicked, selectedIndex }) {
 }
 
 GroupsSection.propTypes = {
-    title: PropTypes.string.isRequired,
-    items: PropTypes.array.isRequired,
-    onItemClicked: PropTypes.func,
-    selectedIndex: PropTypes.number
+    title: PT.string.isRequired,
+    items: PT.array.isRequired,
+    onItemClicked: PT.func,
+    selectedIndex: PT.number
 }
 
 function SectionRow({ title, badge, selected = false, action }) {
@@ -135,8 +135,8 @@ function SectionRow({ title, badge, selected = false, action }) {
 }
 
 SectionRow.propTypes = {
-    title: PropTypes.string.isRequired,
-    badge: PropTypes.string.isRequired,
-    selected: PropTypes.bool,
-    action: PropTypes.func
+    title: PT.string.isRequired,
+    badge: PT.string.isRequired,
+    selected: PT.bool,
+    action: PT.func
 }

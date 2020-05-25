@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
+import PT from 'prop-types';
 import Button from '../Button';
 import WideButton from '../wideButton';
 import Collapsible from '../collapsible';
@@ -213,9 +213,9 @@ export default function SearchTabFilters({ locations, skills, achievements }) {
 }
 
 SearchTabFilters.propTypes = {
-    locations: PropTypes.array,
-    skills: PropTypes.array,
-    achievements: PropTypes.array
+    locations: PT.array,
+    skills: PT.array,
+    achievements: PT.array
 }
 
 

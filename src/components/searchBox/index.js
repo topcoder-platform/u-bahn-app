@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import PT from 'prop-types';
 import styles from './searchBox.module.css';
 
 /**
@@ -33,8 +33,8 @@ export default function SearchBox({ name, value, placeholder, onChange }) {
 }
 
 SearchBox.propTypes = {
-    name: PropTypes.string.isRequired,
-    value: PropTypes.string,
-    placeholder: PropTypes.string,
-    onChange: PropTypes.func
+    name: PT.string.isRequired,
+    value: PT.string,
+    placeholder: PT.string,
+    onChange: PT.func
 };

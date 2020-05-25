@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import PT from 'prop-types';
 import Tag from '../tag';
 
 import { useSearch } from '../../lib/search';
@@ -71,6 +71,6 @@ export default function TagList({ tags, selected, selector }) {
 }
 
 TagList.propTypes = {
-    tags: PropTypes.array.isRequired,
-    selector: PropTypes.string.isRequired
+    tags: PT.array.isRequired,
+    selector: PT.string.isRequired
 }

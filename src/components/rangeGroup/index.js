@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types'
+import PT from 'prop-types'
 import RangeSlider from '../rangeSlider';
 import RangeDisplay from '../rangeDisplay';
 
@@ -44,6 +44,6 @@ export default function RangeGroup({ range, selector }) {
 }
 
 RangeGroup.propTypes = {
-    range: PropTypes.object.isRequired,
-    selector: PropTypes.string.isRequired
+    range: PT.object.isRequired,
+    selector: PT.string.isRequired
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import PT from 'prop-types';
 import Button from '../Button';
 
 import utilityStyles from '../../styles/utility.module.css';
@@ -128,8 +128,8 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
 }
 
 EditFiltersPopup.propTypes = {
-    onCancel: PropTypes.func,
-    onDone: PropTypes.func
+    onCancel: PT.func,
+    onDone: PT.func
 }
 
 function PopupSectionTitle({ text }) {
@@ -141,7 +141,7 @@ function PopupSectionTitle({ text }) {
 }
 
 PopupSectionTitle.propTypes = {
-    text: PropTypes.string.isRequired
+    text: PT.string.isRequired
 }
 
 function PopupSectionRow({ id, text, filterActivated = false, onChange }) {
@@ -171,10 +171,10 @@ function PopupSectionRow({ id, text, filterActivated = false, onChange }) {
 }
 
 PopupSectionRow.propTypes = {
-    id: PropTypes.number.isRequired,
-    text: PropTypes.string.isRequired,
-    filterActivated: PropTypes.bool,
-    onChange: PropTypes.func
+    id: PT.number.isRequired,
+    text: PT.string.isRequired,
+    filterActivated: PT.bool,
+    onChange: PT.func
 }
 
 function PopupSection({ title, filters, onFilterValueChange }) {
@@ -207,7 +207,7 @@ function PopupSection({ title, filters, onFilterValueChange }) {
 }
 
 PopupSection.propTypes = {
-    title: PropTypes.string.isRequired,
-    filters: PropTypes.array.isRequired,
-    onFilterValueChange: PropTypes.func
+    title: PT.string.isRequired,
+    filters: PT.array.isRequired,
+    onFilterValueChange: PT.func
 }

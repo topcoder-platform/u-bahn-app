@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import PT from 'prop-types';
 
 import { useSearch } from '../../lib/search';
 
@@ -55,7 +55,7 @@ export default function Availability({ availableSelected = false, unavailableSel
 }
 
 Availability.propTypes = {
-    availableSelected: PropTypes.bool,
-    unavailableSelected: PropTypes.bool,
-    selector: PropTypes.string.isRequired
+    availableSelected: PT.bool,
+    unavailableSelected: PT.bool,
+    selector: PT.string.isRequired
 }

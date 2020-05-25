@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import PT from 'prop-types';
 import styles from './tag.module.css';
 import iconStyles from '../../styles/icons.module.css';
 
@@ -25,8 +25,8 @@ function TagButton({ icon, onlyIcon = false }) {
 }
 
 TagButton.propTypes = {
-    icon: PropTypes.number.isRequired,
-    onlyIcon: PropTypes.bool
+    icon: PT.number.isRequired,
+    onlyIcon: PT.bool
 }
 
 export default function Tag({
@@ -79,9 +79,9 @@ export default function Tag({
 
 
 Tag.propTypes = {
-    text: PropTypes.string.isRequired,
-    initialState: PropTypes.number,
-    onChange: PropTypes.func,
-    icon: PropTypes.number,
-    action: PropTypes.func
+    text: PT.string.isRequired,
+    initialState: PT.number,
+    onChange: PT.func,
+    icon: PT.number,
+    action: PT.func
 };

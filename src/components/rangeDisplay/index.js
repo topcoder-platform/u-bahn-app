@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import PT from 'prop-types'
 import styles from './rangeDisplay.module.css'
 
 export default function RangeDisplay({ shit, lowLimit, highLimit }) {
@@ -22,6 +22,6 @@ export default function RangeDisplay({ shit, lowLimit, highLimit }) {
 }
 
 RangeDisplay.propTypes = {
-    lowLimit: PropTypes.number.isRequired,
-    highLimit: PropTypes.number.isRequired,
+    lowLimit: PT.number.isRequired,
+    highLimit: PT.number.isRequired,
 }

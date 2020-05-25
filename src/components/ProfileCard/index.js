@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import PT from 'prop-types';
 
 import Switch from '../Switch';
 import Tag, { TAG_ICONS } from '../tag';
@@ -135,7 +135,7 @@ export default function ProfileCard({ api, stripped, profile, avatarColor, updat
 }
 
 ProfileCard.propTypes = {
-    profile: PropTypes.object
+    profile: PT.object
 }
 
 function EditButton({ onClick }) {

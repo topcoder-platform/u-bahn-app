@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import PT from 'prop-types'
 import { useSearch } from '../../lib/search';
 
 import styles from './tabs.module.css'
@@ -49,7 +49,7 @@ export default function Tabs({ selectedIndex = -1, items, selector }) {
 }
 
 Tabs.propTypes = {
-    items: PropTypes.array.isRequired,
-    selectedIndex: PropTypes.number,
-    selector: PropTypes.string.isRequired
+    items: PT.array.isRequired,
+    selectedIndex: PT.number,
+    selector: PT.string.isRequired
 }

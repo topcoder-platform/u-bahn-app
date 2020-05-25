@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import PT from 'prop-types'
 import styles from './rangeSlider.module.css'
 
 const DIRECTIONS = {
@@ -250,9 +250,9 @@ export default function RangeSlider({
 }
 
 RangeSlider.propTypes = {
-    initialLow: PropTypes.number.isRequired,
-    initialHigh: PropTypes.number.isRequired,
-    min: PropTypes.number,
-    max: PropTypes.number.isRequired,
-    onChange: PropTypes.func
+    initialLow: PT.number.isRequired,
+    initialHigh: PT.number.isRequired,
+    min: PT.number,
+    max: PT.number.isRequired,
+    onChange: PT.func
 }
