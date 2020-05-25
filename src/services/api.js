@@ -14,7 +14,11 @@ export default class Api {
    *  requests.
    */
   constructor({ token }) {
-    this.api = axios.create();
+    this.api = axios.create({
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
     if (token) this.api.defaults.headers.common.Authorization = token;
 
     this.mocks = {
@@ -102,9 +106,9 @@ export default class Api {
    * @param {string} [roleId] Optional. Role filter.
    * @return {Promise<object[]>} Resolves to user object array.
    */
-  async getUsers({ search, groupId, roleId, page, limit } = {}) {
+  async getUsers({ search, groupId, roleId, page, limit, criteria, sortBy } = {}) {
     let { headers, data } = await this.api(`${config.SEARCH_API_BASE}/users`, {
-      params: { search, groupId, roleId, page, limit},
+      params: { search, groupId, roleId, page, limit, criteria, sortBy },
     });
 
     const total = headers['x-total-count'] || 0;
@@ -118,9 +122,20 @@ export default class Api {
    * @return {Promise<object>} Resolves to the resulting user object.
    */
   async updateUser(user) {
-    /* TODO: The actual API call should be here to update this user, but as
-     * the mock API is not very useful, no call for now. */
-    return {...user};
+    const entity = { ...user };
+    delete entity.id;
+
+    let data
+
+    try {
+      const response = await this.api.post(`${config.SEARCH_API_BASE}/users/${user.id}`, entity)
+      data = response.data
+    } catch (error) {
+      const mockData = {...user}
+      data = mockData
+    }
+
+    return data
   }
 
   /**
@@ -142,5 +157,76 @@ export default class Api {
       onUploadProgress: options.onUploadProgress,
     });
     return res.data;
+  }
+
+  async getLocations() {
+    const mockLocationTags = [
+      { name: 'New York' },
+      { name: 'Tokyo' },
+      { name: 'Katarinaborough' },
+      { name: 'Paris' },
+      { name: 'London' },
+      { name: 'Sofia' },
+      { name: 'Prague' },
+      { name: 'San Francisco' },
+      { name: 'Miami' },
+      { name: 'Bangalore' },
+      { name: 'Amsterdam' },
+      { name: 'Colombo' },
+      { name: 'Melbourne' }
+    ];
+    return mockLocationTags;
+  }
+
+  async getSkills() {
+    const mockSkillsTags = [
+      { name: '.Net' },
+      { name: 'API' },
+      { name: 'C++' },
+      { name: 'React' },
+      { name: 'Jekyll' },
+      { name: 'Python' },
+      { name: 'PHP' },
+      { name: 'Rust' },
+      { name: 'Angular' },
+      { name: 'Java' },
+      { name: 'Vue' },
+      { name: 'Gatsby' },
+      { name: 'Swift' },
+      { name: 'C#' },
+      { name: 'Javascript' },
+      { name: 'Node' },
+      { name: 'AWS' },
+      { name: 'Unity' }
+    ];
+
+    return mockSkillsTags;
+  }
+
+  async getAchievements() {
+    const mockAchievementsTags = [
+      { name: 'Informatika' },
+      { name: 'Upwork' },
+      { name: 'TopCoder' }
+    ];
+
+    return mockAchievementsTags;
+  }
+
+  async getMyGroups() {
+    return [
+      { name: 'Group 1', count: 42 },
+      { name: 'Group 2', count: 42 },
+      { name: 'Group 3', count: 42 }
+    ];
+  }
+
+  async getOtherGroups() {
+    return [
+      { name: 'C++ Developers', count: 42 },
+      { name: 'Java Developers', count: 42 },
+      { name: 'AWS Experts', count: 42 },
+      { name: 'South East Region', count: 42 }
+    ];
   }
 }

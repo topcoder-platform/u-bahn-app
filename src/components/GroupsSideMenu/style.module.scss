@@ -8,8 +8,9 @@
   background: $green2;
   border: none;
   color: $white;
-  margin-left: 15px;
   white-space: nowrap;
+  padding-left: 15px;
+  padding-right: 15px;
 
   &:hover {
     background: $green;

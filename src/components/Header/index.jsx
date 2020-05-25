@@ -29,6 +29,7 @@ export default function Header({
   organizationId,
 }) {
   const [org, setOrg] = React.useState({});
+  const [searchText, setSearchText] = React.useState();
 
   React.useEffect(() => {
     (async () => {
@@ -36,16 +37,27 @@ export default function Header({
     })();
   }, [api, organizationId])
 
+  const handleSearch = (value) => {
+    value = value || searchText
+    onSearch && onSearch(value);
+  }
+
   return (
     <div className={style.container}>
       <div className={style.top}>
-        <img alt="Organization Logo" src={org.logoUrl} />
+        <div className={style.logo}>
+          <img alt="Organization Logo" src={org.logoUrl} />
+        </div>
         <div className={style.search}>
-          <ZoomIcon className={style.zoomIcon} />
+          <ZoomIcon className={style.zoomIcon} onClick={() => handleSearch()} />
           <input
             className={style.searchInput}
-            onChange={(e) => {
-              onSearch && onSearch(e.target.value);
+            onKeyDown={(e) => {
+              const value = e.target.value;
+              setSearchText(value);
+              if (e.key === 'Enter') {
+                handleSearch(value);
+              }
             }}
             placeholder="Search talent or keyword"
           />

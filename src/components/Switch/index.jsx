@@ -16,12 +16,10 @@ export default function Switch({
   return (
     <div className={containerStyle}>
       {label === undefined ? null : <div className={style.label}>{label}</div>}
-      <input
-        checked={checked}
-        onChange={onChange}
-        className={style.checkbox}
-        type="checkbox"
-      />
+      <label className={style.switch}>
+        <input type='checkbox' checked={checked} onChange={onChange} />
+        <i></i>
+      </label>
     </div>
   );
 }

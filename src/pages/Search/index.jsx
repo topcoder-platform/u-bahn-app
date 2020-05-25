@@ -5,13 +5,10 @@
 import React from 'react';
 
 import FiltersSideMenu from '../../components/FiltersSideMenu';
-import FilterGroup from '../../components/FilterGroup';
 import GroupsSideMenu from '../../components/GroupsSideMenu';
 import Header, { TABS } from '../../components/Header';
 import Pagination from '../../components/Pagination';
-import Pill from '../../components/Pill';
 import ProfileCard from '../../components/ProfileCard';
-import Search from '../../components/Search';
 import Upload from '../../components/Upload';
 
 import { ReactComponent as DownArrowIcon }
@@ -19,6 +16,10 @@ import { ReactComponent as DownArrowIcon }
 import Api from '../../services/api';
 
 import style from './style.module.scss';
+import { useSearch, FILTERS } from '../../lib/search';
+import { makeColorIterator, avatarColors } from '../../lib/colors';
+const colorIterator = makeColorIterator(avatarColors);
+
 
 export default function SearchPage() {
   const [api] = React.useState(() => new Api({ token: 'dummy-auth-token' }));
@@ -29,207 +30,108 @@ export default function SearchPage() {
   const [tab, setTab] = React.useState(TABS.SEARCH);
   const [users, setUsers] = React.useState([]);
 
-  const [filters, setFilters] = React.useState(() => [{
-    name: 'Location',
-    type: 'General attributes',
-    visible: true,
-    Render: () => (
-      <FilterGroup
-        title="Location"
-      >
-        <Search placeholder="Search by location" />
-        <div className={style.pills}>
-          <Pill
-            className={`${style.pill} ${style.selected}`}
-            name="New York"
-            removable={false}
-          />
-          <Pill
-            className={style.pill}
-            name="Lisbon"
-            removable={false}
-          />
-          <Pill
-            className={`${style.pill} ${style.more}`}
-            name="More..."
-            removable={false}
-          />
-        </div>
-      </FilterGroup>
-    )
-  }, {
-    name: 'Availability',
-    type: 'General attributes',
-    visible: true,
-    Render: () => (
-      <FilterGroup
-        title="Availability"
-      >
-        <div className={style.availability}>
-          <div className={style.available}>Available</div>
-          <div className={style.unavailable}>Unavailable</div>
-        </div>
-      </FilterGroup>
-    ),
-  }, {
-    name: 'Skills',
-    type: 'General attributes',
-    visible: true,
-    Render: () => (
-      <FilterGroup
-        title="Skills"
-      >
-        <Search placeholder="Search by skill" />
-        <div className={style.pills}>
-          <Pill
-            className={`${style.pill} ${style.selected}`}
-            name=".NET"
-            removable={false}
-          />
-          <Pill
-            className={style.pill}
-            name="API"
-            removable={false}
-          />
-          <Pill
-            className={`${style.pill} ${style.more}`}
-            name="More..."
-            removable={false}
-          />
-        </div>
-      </FilterGroup>
-    ),
-  }, {
-    name: 'Achievements',
-    type: 'General attributes',
-    visible: true,
-    Render: () => (
-      <FilterGroup
-        title="Achievements"
-      >
-        <Search placeholder="Search by achievement" />
-        <div className={style.pills}>
-          <Pill
-            className={`${style.pill} ${style.selected}`}
-            name="MVP Member"
-            removable={false}
-          />
-          <Pill
-            className={style.pill}
-            name="Coffee addict"
-            removable={false}
-          />
-          <Pill
-            className={`${style.pill} ${style.more}`}
-            name="More..."
-            removable={false}
-          />
-        </div>
-      </FilterGroup>
-    ),
-  }, {
-    name: 'Home office',
-    type: 'Company attributes',
-    visible: false,
-    Render: () => (
-      <FilterGroup
-        title="Home office"
-      >
-        <Search placeholder="Search by home office" />
-        <div className={style.pills}>
-          <Pill
-            className={`${style.pill} ${style.selected}`}
-            name="Home"
-            removable={false}
-          />
-          <Pill
-            className={style.pill}
-            name="Office"
-            removable={false}
-          />
-          <Pill
-            className={style.pill}
-            name="Playa"
-            removable={false}
-          />
-        </div>
-      </FilterGroup>
-    ),
-  }, {
-    name: 'Custom attrbiute',
-    type: 'General attributes',
-    visible: false,
-    Render: () => (
-      <FilterGroup
-        title="Custom attribute"
-      >
-        <Search placeholder="Search by custom attribute" />
-        <div className={style.pills}>
-          <Pill
-            className={`${style.pill} ${style.selected}`}
-            name="Attr1"
-            removable={false}
-          />
-          <Pill
-            className={style.pill}
-            name="Attr2"
-            removable={false}
-          />
-          <Pill
-            className={style.pill}
-            name="Attr3"
-            removable={false}
-          />
-        </div>
-      </FilterGroup>
-    ),
-  }]);
+  const [locations, setLocations] = React.useState([]);
+  const [skills, setSkills] = React.useState([]);
+  const [achievements, setAchievements] = React.useState([]);
+  const [myGroups, setMyGroups] = React.useState([]);
+  const [allGroups, setAllGroups] = React.useState([]);
 
-  const [groups, setGroups] = React.useState(() => [{
-    name: 'Group 1',
-    count: 15,
-    current: true,
-    type: 'My groups',
-  }, {
-    name: 'Group 2',
-    count: 45,
-    type: 'My groups',
-  }, {
-    name: 'Group 3',
-    count: 5,
-    type: 'My groups',
-  }, {
-    name: 'C++ Developers',
-    count: 89,
-    type: 'Other groups',
-  }, {
-    name: 'Java Developers',
-    count: 45,
-    type: 'Other groups',
-  }, {
-    name: 'AWS Experts',
-    count: 123,
-    type: 'Other groups'
-  }]);
+  const [sortBy, setSortBy] = React.useState('Rating')
+  const [sortByDropdownShown, setSortByDropdownShown] = React.useState(false)
+
+  const [windowWidth, setWindowWidth] = React.useState(window.innerWidth)
+  const updateWindowDimensions = () => {
+    setWindowWidth(window.innerWidth)
+  }
+
+  React.useEffect(() => {
+    window.addEventListener('resize', updateWindowDimensions);
+    return () => {
+      window.removeEventListener('resize', updateWindowDimensions);
+    }
+  });
+
+  const searchContext = useSearch();
 
   React.useEffect(() => {
     (async () => {
-      const { total, data } = await api.getUsers({ search: search, page: page, limit: byPage })
+      const criteria = {};
+
+      if (searchContext.filters[FILTERS.LOCATIONS].active
+        && searchContext.selectedLocations.length > 0) {
+          criteria.locations = searchContext.selectedLocations;
+      }
+      if (searchContext.filters[FILTERS.SKILLS].active
+        && searchContext.selectedSkills.length > 0) {
+          criteria.skills = searchContext.selectedSkills;
+      }
+      if (searchContext.filters[FILTERS.ACHIEVEMENTS].active
+        && searchContext.selectedAchievements.length > 0) {
+          criteria.achievements = searchContext.selectedAchievements
+      }
+      if (searchContext.filters[FILTERS.AVAILABILITY].active) {
+        if (searchContext.selectedAvailability
+          && 'isAvailableSelected' in searchContext.selectedAvailability
+          && 'isUnavailableSelected' in searchContext.selectedAvailability) {
+          const availabilityFilter = searchContext.selectedAvailability;
+          if (availabilityFilter.isAvailableSelected && !availabilityFilter.isUnavailableSelected) {
+            criteria.isAvailable = true;
+          } else if (!availabilityFilter.isAvailableSelected && availabilityFilter.isUnavailableSelected) {
+            criteria.isUnavailable = true;
+          }
+        }
+      }
+
+      let { total, data } = await api.getUsers({ search: search, criteria, page: page, limit: byPage, sortBy })
+
+      data = data.map(p => {
+        if (!p.groups) p.groups = []
+        if (!p.skills) p.skills = []
+        if (!p.achievements) p.achievements = []
+
+        if (p.attributes && p.attributes.length !== 0 ) {
+          p.isAvailable = (p.attributes.find(attr => attr.attributeName === 'isAvailable') || {}).value
+          p.title = (p.attributes.find(attr => attr.attributeName === 'role') || {}).value;
+          p.company = (p.attributes.find(attr => attr.attributeName === 'company') || {}).value
+          p.location = (p.attributes.find(attr => attr.attributeName === 'location') || {}).value
+        }
+
+        return p;
+      })
+
+      const locations = await api.getLocations();
+      const skills = await api.getSkills();
+      const achievements = await api.getAchievements();
+      const myGroups = await api.getMyGroups();
+      const allGroups = await api.getOtherGroups();
+
       setUsers(data);
       setTotalResults(Number(total));
+
+      setLocations(locations);
+      setSkills(skills);
+      setAchievements(achievements);
+      setMyGroups(myGroups);
+      setAllGroups(allGroups);
+
     })();
-  }, [api, search, page, byPage]);
+  }, [api, search, page, byPage, sortBy, searchContext]);
 
   let filteredUsers = users;
-  if (tab === TABS.GROUPS) {
-    const currentGroup = (groups.find(g => g.current) || {}).name;
-    if (currentGroup) {
-      filteredUsers = filteredUsers.filter(
-        user => user.groups && user.groups.includes(currentGroup)
-      );
-    }
-  }
+  // if (tab === TABS.GROUPS) {
+  //   const currentGroup = (groups.find(g => g.current) || {}).name;
+  //   if (currentGroup) {
+  //     filteredUsers = filteredUsers.filter(
+  //       user => user.groups && user.groups.includes(currentGroup)
+  //     );
+  //   }
+  // }
+
   const visibleUsers = filteredUsers;
+
+  const handleSort = (attr) => {
+    setSortBy(attr);
+  }
 
   let mainContent;
   switch (tab) {
@@ -241,13 +143,11 @@ export default function SearchPage() {
             {
               tab === TABS.SEARCH ? (
                 <FiltersSideMenu
-                  filters={filters}
-                  updateFilters={setFilters}
+                  locations={locations} skills={skills} achievements={achievements}
                 />
               ) : (
                 <GroupsSideMenu
-                  groups={groups}
-                  updateGroups={setGroups}
+                  userGroups={myGroups} allGroups={allGroups} profiles={users}
                 />
               )
             }
@@ -257,26 +157,38 @@ export default function SearchPage() {
               <div className={style.visibleCardsInfo}>
                 Showing {byPage * page - (byPage - 1)}-{byPage * page > totalResults? totalResults : byPage * page} of {totalResults} profiles
               </div>
-              <div className={style.sort}>
+              <div className={style.sort} onClick={() => setSortByDropdownShown(!sortByDropdownShown)} style={{marginRight: windowWidth > 1280 ? (windowWidth - 460) - Math.floor((windowWidth - 460) / 392) * 392 : 0}}>
                 Sort by
-                <span className={style.sortMode}>Rating</span>
+                {!!sortBy && <span className={style.sortMode}>{sortBy}</span>}
                 <DownArrowIcon />
+                {sortByDropdownShown &&
+                  <ul className={style.dropdown}>
+                    <li className={style.dropdownItem} onClick={() => { handleSort('Rating') }}>Rating</li>
+                    <li className={style.dropdownItem} onClick={() => { handleSort('Name') }}>Name</li>
+                    <li className={style.dropdownItem} onClick={() => { handleSort('Location') }}>Location</li>
+                    <li className={style.dropdownItem} onClick={() => { handleSort('Avaibility') }}>Avaibility</li>
+                  </ul>
+                }
               </div>
             </div>
+            <div>
             {
-              visibleUsers.map((user, index) => (
-                <ProfileCard
-                  api={api}
-                  key={user.id}
-                  updateUser={async (updatedUser) => {
-                    const u = [...users];
-                    u[index] = await api.updateUser(updatedUser);
-                    setUsers(u);
-                  }}
-                  user={user}
-                />
-              ))
+              visibleUsers.map((user, index) => {
+                const nextColor = colorIterator.next();
+                return (<ProfileCard
+                          api={api}
+                          key={'profile-' + user.id}
+                          profile={user}
+                          avatarColor={nextColor.value}
+                          updateUser={async (updatedUser) => {
+                            const u = [...users];
+                            u[index] = await api.updateUser(updatedUser);
+                            setUsers(u);
+                          }}
+                        />);
+              })
             }
+            </div>
             <div>
               <Pagination
                 currentPage={page}

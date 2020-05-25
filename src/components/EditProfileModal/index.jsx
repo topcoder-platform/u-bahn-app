@@ -9,6 +9,10 @@ import ProfileCard from '../ProfileCard';
 
 import style from './style.module.scss';
 
+import { makeColorIterator, avatarColors } from '../../lib/colors';
+const colorIterator = makeColorIterator(avatarColors);
+const nextColor = colorIterator.next();
+
 const COMMON_ATTRIBUTES = [
   'role',
   'company',
@@ -32,7 +36,8 @@ export default function EditProfileModal({
         api={api}
         stripped
         updateUser={setLocalUser}
-        user={localUser}
+        profile={localUser}
+        avatarColor={nextColor.value}
       />
       <div className={style.editor}>
         <div className={style.header}>
@@ -69,11 +74,11 @@ export default function EditProfileModal({
                 attributes: localUser.attributes.map(el =>
                   (el.attributeName === 'role' ? {...el, value: target.value} : el)
                 ),
-                role: target.value
+                title: target.value
               })
               setImmediate(() => target.focus());
             }}
-            value={localUser.role}
+            value={localUser.title}
           />
           <Input
             label="Company"
@@ -108,7 +113,7 @@ export default function EditProfileModal({
         <div className={style.pillGroup}>
           <input
             className={style.input}
-            onKeyPress={({ key }) => {
+            onKeyUp={({ key }) => {
               if (key === 'Enter') {
                 const skill = skillInputValue.trim();
                 if (skill) {
@@ -168,7 +173,7 @@ export default function EditProfileModal({
           <input
             className={style.input}
             placeholder="Enter achievements to add"
-            onKeyPress={({ key }) => {
+            onKeyUp={({ key }) => {
               if (key === 'Enter') {
                 const achie = achieInputValue.trim();
                 if (achie) {

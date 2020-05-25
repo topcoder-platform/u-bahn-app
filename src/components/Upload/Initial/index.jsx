@@ -10,6 +10,7 @@ import Api from '../../../services/api';
 import spreadsheetIcon from '../../../assets/images/spreadsheet-icon.svg';
 
 import style from './style.module.scss';
+import Message from '../Message';
 
 /**
  * 
@@ -26,6 +27,8 @@ export default function Initial({
   const [dragover, setDragover] = React.useState(false);
   const fileInputRef = React.useRef();
 
+  const [invalidFileExtension, setInvalidFileExtension] = React.useState(false);
+
   const downloadTemplate = async () => {
     try {
       const data = await api.getTemplate(templateId);
@@ -36,7 +39,9 @@ export default function Initial({
   };
 
   const upload = (files) => {
-    if (files && files[0]) onUpload(files[0]);
+    const allowedMineTypes = ['application/vnd.ms-excel', 'text/csv'];
+    if (files && files[0] && allowedMineTypes.indexOf(files[0].type) !== -1) onUpload(files[0]);
+    else setInvalidFileExtension(true);
   }
 
   let contentStyle = style.content;
@@ -55,34 +60,48 @@ export default function Initial({
       onDrop={(e) => {
         setDragover(false);
         upload(e.dataTransfer.files);
+        e.preventDefault();
       }}
     >
-      <input
-        className={style.fileInput}
-        onChange={(e) => upload(e.target.files)}
-        ref={fileInputRef}
-        type="file"
-      />
-      <img src={spreadsheetIcon} alt="icon" />
-      <div className={style.label1}>
-        Drag profile data, or
-        &zwnj;
-        <span
-          className={style.browse}
-          onClick={() => {
-            fileInputRef.current.click();
-          }}
-        >
-          browse
-        </span>
-      </div>
-      <div className={style.label2}>Supports XLS or CSV file</div>
-      <div
-        className={style.label3}
-        onClick={downloadTemplate}
-      >
-        Download Import Template (.XLS)
-      </div>
+      {invalidFileExtension &&
+        <div className={style.message}>
+          <Message
+            message={'Only XLS and CSV files are allowed'}
+            onClose={() => setInvalidFileExtension(false)}
+            title={'Upload Error'}
+          />
+        </div>
+      }
+      {!invalidFileExtension &&
+        <>
+          <input
+            className={style.fileInput}
+            onChange={(e) => upload(e.target.files)}
+            ref={fileInputRef}
+            type="file"
+          />
+          <img src={spreadsheetIcon} alt="icon" />
+          <div className={style.label1}>
+            Drag profile data, or
+            &zwnj;
+            <span
+              className={style.browse}
+              onClick={() => {
+                fileInputRef.current.click();
+              }}
+            >
+              browse
+            </span>
+          </div>
+          <div className={style.label2}>Supports XLS or CSV file</div>
+          <div
+            className={style.label3}
+            onClick={downloadTemplate}
+          >
+            Download Import Template (.XLS)
+          </div>
+        </>
+      }
     </div>
   );
 }
