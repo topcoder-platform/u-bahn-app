@@ -1,14 +1,9 @@
-import React from 'react';
-import PT from 'prop-types';
+import React from "react";
+import PT from "prop-types";
 
-import style from './style.module.scss';
+import style from "./style.module.scss";
 
-export default function Switch({
-  checked,
-  className,
-  label,
-  onChange,
-}) {
+export default function Switch({ checked, className, label, onChange }) {
   let containerStyle = style.container;
   if (className) containerStyle += ` ${className}`;
   if (checked) containerStyle += ` ${style.checked}`;
@@ -17,7 +12,7 @@ export default function Switch({
     <div className={containerStyle}>
       {label === undefined ? null : <div className={style.label}>{label}</div>}
       <label className={style.switch}>
-        <input type='checkbox' checked={checked} onChange={onChange} />
+        <input type="checkbox" checked={checked} onChange={onChange} />
         <i></i>
       </label>
     </div>

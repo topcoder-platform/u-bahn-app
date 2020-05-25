@@ -2,10 +2,10 @@
  * Encapsulates API communication.
  */
 
-import axios from 'axios';
-import config from '../config';
+import axios from "axios";
+import config from "../config";
 
-import defaultOrgLogoUrl from '../assets/images/u-bahn-logo.svg';
+import defaultOrgLogoUrl from "../assets/images/u-bahn-logo.svg";
 
 export default class Api {
   /**
@@ -16,21 +16,21 @@ export default class Api {
   constructor({ token }) {
     this.api = axios.create({
       headers: {
-        'Content-Type': 'application/json',
-      }
+        "Content-Type": "application/json",
+      },
     });
     if (token) this.api.defaults.headers.common.Authorization = token;
 
     this.mocks = {
       groups: [
-        'C++ Developers',
-        'Java Developers',
-        'AWS Experts',
-        'South East Regios',
-        'Topcoder Members',
-        'Adrenaline junkies',
-        'Midninght programmers',
-        'Work hard & play hard group',
+        "C++ Developers",
+        "Java Developers",
+        "AWS Experts",
+        "South East Regios",
+        "Topcoder Members",
+        "Adrenaline junkies",
+        "Midninght programmers",
+        "Work hard & play hard group",
       ],
     };
     this.mocks.groups.sort();
@@ -60,7 +60,7 @@ export default class Api {
     let groups = [...this.mocks.groups];
     if (filter) {
       const f = filter.toLocaleLowerCase();
-      groups = groups.filter(g => g.toLocaleLowerCase().includes(f));
+      groups = groups.filter((g) => g.toLocaleLowerCase().includes(f));
     }
     return groups;
   }
@@ -89,12 +89,14 @@ export default class Api {
   }
 
   /**
-   * Gets the specified 
-   * @param {string} userId 
+   * Gets the specified
+   * @param {string} userId
    * @return {Promise<object>} Resolves to user object.
    */
   async getUser(userId) {
-    const { data } = await this.api(`${config.SEARCH_API_BASE}/users/${userId}`);
+    const { data } = await this.api(
+      `${config.SEARCH_API_BASE}/users/${userId}`
+    );
 
     return data;
   }
@@ -106,12 +108,20 @@ export default class Api {
    * @param {string} [roleId] Optional. Role filter.
    * @return {Promise<object[]>} Resolves to user object array.
    */
-  async getUsers({ search, groupId, roleId, page, limit, criteria, sortBy } = {}) {
+  async getUsers({
+    search,
+    groupId,
+    roleId,
+    page,
+    limit,
+    criteria,
+    sortBy,
+  } = {}) {
     let { headers, data } = await this.api(`${config.SEARCH_API_BASE}/users`, {
       params: { search, groupId, roleId, page, limit, criteria, sortBy },
     });
 
-    const total = headers['x-total-count'] || 0;
+    const total = headers["x-total-count"] || 0;
 
     return { total, data };
   }
@@ -125,17 +135,20 @@ export default class Api {
     const entity = { ...user };
     delete entity.id;
 
-    let data
+    let data;
 
     try {
-      const response = await this.api.post(`${config.SEARCH_API_BASE}/users/${user.id}`, entity)
-      data = response.data
+      const response = await this.api.post(
+        `${config.SEARCH_API_BASE}/users/${user.id}`,
+        entity
+      );
+      data = response.data;
     } catch (error) {
-      const mockData = {...user}
-      data = mockData
+      const mockData = { ...user };
+      data = mockData;
     }
 
-    return data
+    return data;
   }
 
   /**
@@ -152,7 +165,7 @@ export default class Api {
     const res = await axios.post(`${config.UI_API_BASE}/uploads`, data, {
       cancelToken: options.cancelToken,
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
       onUploadProgress: options.onUploadProgress,
     });
@@ -161,43 +174,43 @@ export default class Api {
 
   async getLocations() {
     const mockLocationTags = [
-      { name: 'New York' },
-      { name: 'Tokyo' },
-      { name: 'Katarinaborough' },
-      { name: 'Paris' },
-      { name: 'London' },
-      { name: 'Sofia' },
-      { name: 'Prague' },
-      { name: 'San Francisco' },
-      { name: 'Miami' },
-      { name: 'Bangalore' },
-      { name: 'Amsterdam' },
-      { name: 'Colombo' },
-      { name: 'Melbourne' }
+      { name: "New York" },
+      { name: "Tokyo" },
+      { name: "Katarinaborough" },
+      { name: "Paris" },
+      { name: "London" },
+      { name: "Sofia" },
+      { name: "Prague" },
+      { name: "San Francisco" },
+      { name: "Miami" },
+      { name: "Bangalore" },
+      { name: "Amsterdam" },
+      { name: "Colombo" },
+      { name: "Melbourne" },
     ];
     return mockLocationTags;
   }
 
   async getSkills() {
     const mockSkillsTags = [
-      { name: '.Net' },
-      { name: 'API' },
-      { name: 'C++' },
-      { name: 'React' },
-      { name: 'Jekyll' },
-      { name: 'Python' },
-      { name: 'PHP' },
-      { name: 'Rust' },
-      { name: 'Angular' },
-      { name: 'Java' },
-      { name: 'Vue' },
-      { name: 'Gatsby' },
-      { name: 'Swift' },
-      { name: 'C#' },
-      { name: 'Javascript' },
-      { name: 'Node' },
-      { name: 'AWS' },
-      { name: 'Unity' }
+      { name: ".Net" },
+      { name: "API" },
+      { name: "C++" },
+      { name: "React" },
+      { name: "Jekyll" },
+      { name: "Python" },
+      { name: "PHP" },
+      { name: "Rust" },
+      { name: "Angular" },
+      { name: "Java" },
+      { name: "Vue" },
+      { name: "Gatsby" },
+      { name: "Swift" },
+      { name: "C#" },
+      { name: "Javascript" },
+      { name: "Node" },
+      { name: "AWS" },
+      { name: "Unity" },
     ];
 
     return mockSkillsTags;
@@ -205,9 +218,9 @@ export default class Api {
 
   async getAchievements() {
     const mockAchievementsTags = [
-      { name: 'Informatika' },
-      { name: 'Upwork' },
-      { name: 'TopCoder' }
+      { name: "Informatika" },
+      { name: "Upwork" },
+      { name: "TopCoder" },
     ];
 
     return mockAchievementsTags;
@@ -215,18 +228,18 @@ export default class Api {
 
   async getMyGroups() {
     return [
-      { name: 'Group 1', count: 42 },
-      { name: 'Group 2', count: 42 },
-      { name: 'Group 3', count: 42 }
+      { name: "Group 1", count: 42 },
+      { name: "Group 2", count: 42 },
+      { name: "Group 3", count: 42 },
     ];
   }
 
   async getOtherGroups() {
     return [
-      { name: 'C++ Developers', count: 42 },
-      { name: 'Java Developers', count: 42 },
-      { name: 'AWS Experts', count: 42 },
-      { name: 'South East Region', count: 42 }
+      { name: "C++ Developers", count: 42 },
+      { name: "Java Developers", count: 42 },
+      { name: "AWS Experts", count: 42 },
+      { name: "South East Region", count: 42 },
     ];
   }
 }

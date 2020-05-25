@@ -2,28 +2,23 @@
  * Initial content of the Upload component.
  */
 
-import React from 'react';
-import PT from 'prop-types';
+import React from "react";
+import PT from "prop-types";
 
-import Api from '../../../services/api';
+import Api from "../../../services/api";
 
-import spreadsheetIcon from '../../../assets/images/spreadsheet-icon.svg';
+import spreadsheetIcon from "../../../assets/images/spreadsheet-icon.svg";
 
-import style from './style.module.scss';
-import Message from '../Message';
+import style from "./style.module.scss";
+import Message from "../Message";
 
 /**
- * 
+ *
  * @param {function} [onError] Optional. Error callback. If provided, it will be
  *  called with errors happening during HTTP calls handled by the component.
  * @param {string} templateId XLS template ID.
  */
-export default function Initial({
-  api,
-  onError,
-  onUpload,
-  templateId,
-}) {
+export default function Initial({ api, onError, onUpload, templateId }) {
   const [dragover, setDragover] = React.useState(false);
   const fileInputRef = React.useRef();
 
@@ -39,10 +34,11 @@ export default function Initial({
   };
 
   const upload = (files) => {
-    const allowedMineTypes = ['application/vnd.ms-excel', 'text/csv'];
-    if (files && files[0] && allowedMineTypes.indexOf(files[0].type) !== -1) onUpload(files[0]);
+    const allowedMineTypes = ["application/vnd.ms-excel", "text/csv"];
+    if (files && files[0] && allowedMineTypes.indexOf(files[0].type) !== -1)
+      onUpload(files[0]);
     else setInvalidFileExtension(true);
-  }
+  };
 
   let contentStyle = style.content;
   if (dragover) contentStyle += ` ${style.dragover}`;
@@ -63,16 +59,16 @@ export default function Initial({
         e.preventDefault();
       }}
     >
-      {invalidFileExtension &&
+      {invalidFileExtension && (
         <div className={style.message}>
           <Message
-            message={'Only XLS and CSV files are allowed'}
+            message={"Only XLS and CSV files are allowed"}
             onClose={() => setInvalidFileExtension(false)}
-            title={'Upload Error'}
+            title={"Upload Error"}
           />
         </div>
-      }
-      {!invalidFileExtension &&
+      )}
+      {!invalidFileExtension && (
         <>
           <input
             className={style.fileInput}
@@ -82,8 +78,7 @@ export default function Initial({
           />
           <img src={spreadsheetIcon} alt="icon" />
           <div className={style.label1}>
-            Drag profile data, or
-            &zwnj;
+            Drag profile data, or &zwnj;
             <span
               className={style.browse}
               onClick={() => {
@@ -94,14 +89,11 @@ export default function Initial({
             </span>
           </div>
           <div className={style.label2}>Supports XLS or CSV file</div>
-          <div
-            className={style.label3}
-            onClick={downloadTemplate}
-          >
+          <div className={style.label3} onClick={downloadTemplate}>
             Download Import Template (.XLS)
           </div>
         </>
-      }
+      )}
     </div>
   );
 }

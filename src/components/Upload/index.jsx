@@ -1,26 +1,23 @@
-import React from 'react';
+import React from "react";
 
-import axios from 'axios';
-import FormData from 'form-data';
-import PT from 'prop-types';
+import axios from "axios";
+import FormData from "form-data";
+import PT from "prop-types";
 
-import Api from '../../services/api';
-import Container from './Container';
-import Initial from './Initial';
-import Message from './Message';
-import Progress from './Progress';
+import Api from "../../services/api";
+import Container from "./Container";
+import Initial from "./Initial";
+import Message from "./Message";
+import Progress from "./Progress";
 
 const STATES = {
-  INITIAL: 'INITIAL',
-  MESSAGE: 'MESSAGE',
-  RESULT: 'RESULT',
-  UPLOADING: 'UPLOADING',
+  INITIAL: "INITIAL",
+  MESSAGE: "MESSAGE",
+  RESULT: "RESULT",
+  UPLOADING: "UPLOADING",
 };
 
-export default function Upload({
-  api,
-  templateId,
-}) {
+export default function Upload({ api, templateId }) {
   const [state, setState] = React.useState({
     type: STATES.INITIAL,
     data: null,
@@ -31,15 +28,15 @@ export default function Upload({
     setState({
       type: STATES.MESSAGE,
       data: {
-        title: 'Error Occured',
+        title: "Error Occured",
         message,
       },
     });
-  }
+  };
 
   const upload = async (file) => {
     const data = new FormData();
-    data.append('upload', file);
+    data.append("upload", file);
     const source = axios.CancelToken.source();
     setState({
       type: STATES.UPLOADING,
@@ -61,15 +58,15 @@ export default function Upload({
       setState({
         type: STATES.MESSAGE,
         data: {
-          title: 'Import Confirmation',
+          title: "Import Confirmation",
           message: JSON.stringify(res),
         },
-      })
+      });
     } catch (error) {
       if (error instanceof axios.Cancel) setState({ type: STATES.INITIAL });
       else showError(error);
     }
-  }
+  };
 
   let content;
   switch (state.type) {
@@ -94,13 +91,11 @@ export default function Upload({
       break;
     case STATES.UPLOADING:
       content = (
-        <Progress
-          onAbort={state.data.abort}
-          progress={state.data.progress}
-        />
+        <Progress onAbort={state.data.abort} progress={state.data.progress} />
       );
       break;
-    default: throw Error('Invalid state');
+    default:
+      throw Error("Invalid state");
   }
   return <Container>{content}</Container>;
 }

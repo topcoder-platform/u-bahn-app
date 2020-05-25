@@ -1,21 +1,15 @@
-import React from 'react';
-import PT from 'prop-types';
+import React from "react";
+import PT from "prop-types";
 
-import Button from '../../Button';
+import Button from "../../Button";
 
-import style from './style.module.scss';
+import style from "./style.module.scss";
 
-export default function Message({
-  message,
-  onClose,
-  title,
-}) {
+export default function Message({ message, onClose, title }) {
   return (
     <div className={style.container}>
       <h1 className={style.title}>{title}</h1>
-      <div className={style.message}>
-        {message}
-      </div>
+      <div className={style.message}>{message}</div>
       <Button onClick={onClose}>Close</Button>
     </div>
   );

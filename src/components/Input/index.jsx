@@ -1,14 +1,9 @@
-import React from 'react';
-import PT from 'prop-types';
+import React from "react";
+import PT from "prop-types";
 
-import style from './style.module.scss';
+import style from "./style.module.scss";
 
-export default function Input({
-  className,
-  label,
-  onChange,
-  value,
-}) {
+export default function Input({ className, label, onChange, value }) {
   let containerStyle = style.container;
   if (className) containerStyle += ` ${className}`;
 
@@ -17,7 +12,7 @@ export default function Input({
       <div className={style.label}>{label}</div>
       <input className={style.input} onChange={onChange} value={value} />
     </div>
-  )
+  );
 }
 
 Input.propTypes = {

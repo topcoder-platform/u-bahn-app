@@ -1,6 +1,6 @@
 /* A simple 404 page. */
 
-import React from 'react';
+import React from "react";
 
 export default function Error404() {
   return (

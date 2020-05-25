@@ -1,18 +1,19 @@
-import React from 'react';
-import PT from 'prop-types';
+import React from "react";
+import PT from "prop-types";
 
-import style from './style.module.scss';
-import SearchTabFilters from './filters'
+import style from "./style.module.scss";
+import SearchTabFilters from "./filters";
 
-export default function FiltersSideMenu({
-  locations, skills, achievements
-}) {
+export default function FiltersSideMenu({ locations, skills, achievements }) {
   return (
     <div className={style.container}>
-      <SearchTabFilters locations={locations} skills={skills} achievements={achievements} />
+      <SearchTabFilters
+        locations={locations}
+        skills={skills}
+        achievements={achievements}
+      />
     </div>
   );
 }
 
-FiltersSideMenu.propTypes = {
-};
+FiltersSideMenu.propTypes = {};

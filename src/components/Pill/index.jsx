@@ -1,24 +1,19 @@
-import React from 'react';
-import PT from 'prop-types';
+import React from "react";
+import PT from "prop-types";
 
-import style from './style.module.scss';
+import style from "./style.module.scss";
 
-export default function Pill({
-  className,
-  name,
-  onRemove,
-  removable,
-}) {
+export default function Pill({ className, name, onRemove, removable }) {
   let containerStyle = style.container;
   if (className) containerStyle += ` ${className}`;
   return (
     <div className={containerStyle}>
       {name}
-      {
-        removable ? (
-          <button className={style.close} onClick={onRemove}>&times;</button>
-        ) : null
-      }
+      {removable ? (
+        <button className={style.close} onClick={onRemove}>
+          &times;
+        </button>
+      ) : null}
     </div>
   );
 }

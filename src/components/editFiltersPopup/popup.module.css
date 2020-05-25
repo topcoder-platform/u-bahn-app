@@ -108,7 +108,7 @@
 }
 
 .popupFooter {
-  margin-top:auto;
+  margin-top: auto;
   align-self: flex-end;
   min-height: 80px;
 }
@@ -118,5 +118,5 @@
   margin-bottom: 20px;
   margin-right: 25px;
   display: flex;
-  flex-direction: row
+  flex-direction: row;
 }

@@ -5,13 +5,12 @@
  * $font-style {String}
  * $font-url {String}
  */
- @mixin font-family(
-  $font-name, $font-weight, $font-style, $font-url) {
+@mixin font-family($font-name, $font-weight, $font-style, $font-url) {
   @font-face {
     font-family: $font-name;
     font-display: block;
     font-style: $font-style;
     font-weight: $font-weight;
-    src: url('#{$font-url}.ttf') format('truetype');
+    src: url("#{$font-url}.ttf") format("truetype");
   }
 }

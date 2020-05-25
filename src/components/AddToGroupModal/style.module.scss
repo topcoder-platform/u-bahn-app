@@ -54,7 +54,9 @@
   position: relative;
 }
 
-.subTitle { @include h3; }
+.subTitle {
+  @include h3;
+}
 
 .title {
   @include h1;

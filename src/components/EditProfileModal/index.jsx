@@ -1,34 +1,24 @@
-import React from 'react';
-import PT from 'prop-types';
+import React from "react";
+import PT from "prop-types";
 
-import Button from '../Button';
-import Input from '../Input';
-import Modal from '../Modal';
-import Pill from '../Pill';
-import ProfileCard from '../ProfileCard';
+import Button from "../Button";
+import Input from "../Input";
+import Modal from "../Modal";
+import Pill from "../Pill";
+import ProfileCard from "../ProfileCard";
 
-import style from './style.module.scss';
+import style from "./style.module.scss";
 
-import { makeColorIterator, avatarColors } from '../../lib/colors';
+import { makeColorIterator, avatarColors } from "../../lib/colors";
 const colorIterator = makeColorIterator(avatarColors);
 const nextColor = colorIterator.next();
 
-const COMMON_ATTRIBUTES = [
-  'role',
-  'company',
-  'location',
-  'isAvailable'
-]
+const COMMON_ATTRIBUTES = ["role", "company", "location", "isAvailable"];
 
-export default function EditProfileModal({
-  api,
-  onCancel,
-  updateUser,
-  user,
-}) {
+export default function EditProfileModal({ api, onCancel, updateUser, user }) {
   const [localUser, setLocalUser] = React.useState({ ...user });
-  const [skillInputValue, setSkillInputValue] = React.useState('');
-  const [achieInputValue, setAchieInputValue] = React.useState('');
+  const [skillInputValue, setSkillInputValue] = React.useState("");
+  const [achieInputValue, setAchieInputValue] = React.useState("");
 
   return (
     <Modal className={style.container} onCancel={onCancel}>
@@ -71,11 +61,13 @@ export default function EditProfileModal({
             onChange={({ target }) => {
               setLocalUser({
                 ...localUser,
-                attributes: localUser.attributes.map(el =>
-                  (el.attributeName === 'role' ? {...el, value: target.value} : el)
+                attributes: localUser.attributes.map((el) =>
+                  el.attributeName === "role"
+                    ? { ...el, value: target.value }
+                    : el
                 ),
-                title: target.value
-              })
+                title: target.value,
+              });
               setImmediate(() => target.focus());
             }}
             value={localUser.title}
@@ -85,8 +77,10 @@ export default function EditProfileModal({
             onChange={({ target }) => {
               setLocalUser({
                 ...localUser,
-                attributes: localUser.attributes.map(el =>
-                  (el.attributeName === 'company' ? {...el, value: target.value} : el)
+                attributes: localUser.attributes.map((el) =>
+                  el.attributeName === "company"
+                    ? { ...el, value: target.value }
+                    : el
                 ),
                 company: target.value,
               });
@@ -99,8 +93,10 @@ export default function EditProfileModal({
             onChange={({ target }) => {
               setLocalUser({
                 ...localUser,
-                attributes: localUser.attributes.map(el =>
-                  (el.attributeName === 'location' ? {...el, value: target.value} : el)
+                attributes: localUser.attributes.map((el) =>
+                  el.attributeName === "location"
+                    ? { ...el, value: target.value }
+                    : el
                 ),
                 location: target.value,
               });
@@ -114,7 +110,7 @@ export default function EditProfileModal({
           <input
             className={style.input}
             onKeyUp={({ key }) => {
-              if (key === 'Enter') {
+              if (key === "Enter") {
                 const skill = skillInputValue.trim();
                 if (skill) {
                   setLocalUser({
@@ -123,16 +119,16 @@ export default function EditProfileModal({
                       ...localUser.skills,
                       {
                         name: skill,
-                      }
+                      },
                     ],
                   });
                 }
-                setSkillInputValue('');
+                setSkillInputValue("");
               }
             }}
             onChange={({ target }) => {
               let { value } = target;
-              if (value.endsWith(',')) {
+              if (value.endsWith(",")) {
                 const skill = value.slice(0, -1).trim();
                 if (skill) {
                   setLocalUser({
@@ -141,11 +137,11 @@ export default function EditProfileModal({
                       ...localUser.skills,
                       {
                         name: skill,
-                      }
+                      },
                     ],
                   });
                 }
-                value = '';
+                value = "";
               }
               setSkillInputValue(value);
               setImmediate(() => target.focus());
@@ -153,20 +149,18 @@ export default function EditProfileModal({
             placeholder="Enter skill to add"
             value={skillInputValue}
           />
-          {
-            localUser.skills.map((it, key) => (
-              <Pill
-                key={key}
-                name={it.name}
-                onRemove={() => {
-                  setLocalUser({
-                    ...localUser,
-                    skills: localUser.skills.filter(skill => skill !== it),
-                  });
-                }}
-              />
-            ))
-          }
+          {localUser.skills.map((it, key) => (
+            <Pill
+              key={key}
+              name={it.name}
+              onRemove={() => {
+                setLocalUser({
+                  ...localUser,
+                  skills: localUser.skills.filter((skill) => skill !== it),
+                });
+              }}
+            />
+          ))}
         </div>
         <h3>Achievements</h3>
         <div className={style.pillGroup}>
@@ -174,7 +168,7 @@ export default function EditProfileModal({
             className={style.input}
             placeholder="Enter achievements to add"
             onKeyUp={({ key }) => {
-              if (key === 'Enter') {
+              if (key === "Enter") {
                 const achie = achieInputValue.trim();
                 if (achie) {
                   setLocalUser({
@@ -183,16 +177,16 @@ export default function EditProfileModal({
                       ...localUser.achievements,
                       {
                         name: achie,
-                      }
+                      },
                     ],
                   });
                 }
-                setAchieInputValue('');
+                setAchieInputValue("");
               }
             }}
             onChange={({ target }) => {
               let { value } = target;
-              if (value.endsWith(',')) {
+              if (value.endsWith(",")) {
                 const achie = value.slice(0, -1).trim();
                 if (achie) {
                   setLocalUser({
@@ -201,59 +195,54 @@ export default function EditProfileModal({
                       ...localUser.achievements,
                       {
                         name: achie,
-                      }
+                      },
                     ],
                   });
                 }
-                value = '';
+                value = "";
               }
               setAchieInputValue(value);
               setImmediate(() => target.focus());
             }}
             value={achieInputValue}
           />
-          {
-            localUser.achievements.map((it, key) => (
-              <Pill
-                key={key}
-                name={it.name}
-                onRemove={() => {
-                  setLocalUser({
-                    ...localUser,
-                    achievements: localUser.achievements.filter(a => a !== it),
-                  })
-                }}
-              />
-            ))
-          }
+          {localUser.achievements.map((it, key) => (
+            <Pill
+              key={key}
+              name={it.name}
+              onRemove={() => {
+                setLocalUser({
+                  ...localUser,
+                  achievements: localUser.achievements.filter((a) => a !== it),
+                });
+              }}
+            />
+          ))}
         </div>
         <h3>Custom attributes</h3>
         <div className={style.inputs}>
-          {
-            localUser.attributes.filter(
-              attr => !COMMON_ATTRIBUTES.includes(attr.attributeName)
-            ).map((attr, key) => (
+          {localUser.attributes
+            .filter((attr) => !COMMON_ATTRIBUTES.includes(attr.attributeName))
+            .map((attr, key) => (
               <Input
                 key={key}
                 label={attr.attributeName}
                 onChange={({ target }) => {
                   setLocalUser({
                     ...localUser,
-                    attributes: localUser.attributes.map(el =>
-                      (el.attributeName === attr.attributeName ? {...el, value: target.value} : el)
+                    attributes: localUser.attributes.map((el) =>
+                      el.attributeName === attr.attributeName
+                        ? { ...el, value: target.value }
+                        : el
                     ),
-                  })
-                  setImmediate(() => target.focus())
+                  });
+                  setImmediate(() => target.focus());
                 }}
                 value={localUser.attributes[key].value}
               />
-            ))
-          }
+            ))}
         </div>
-        <Button
-          className={style.dangerButton}
-          onClick={onCancel}
-        >
+        <Button className={style.dangerButton} onClick={onCancel}>
           Delete this user
         </Button>
       </div>

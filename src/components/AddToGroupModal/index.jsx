@@ -1,25 +1,20 @@
-import React, { useEffect } from 'react';
-import PT from 'prop-types';
+import React, { useEffect } from "react";
+import PT from "prop-types";
 
-import Api from '../../services/api';
-import Button from '../Button';
-import Group from './Group';
-import Modal from '../Modal';
-import { ReactComponent as ZoomIcon } from '../../assets/images/zoom-icon.svg';
+import Api from "../../services/api";
+import Button from "../Button";
+import Group from "./Group";
+import Modal from "../Modal";
+import { ReactComponent as ZoomIcon } from "../../assets/images/zoom-icon.svg";
 
-import style from './style.module.scss';
+import style from "./style.module.scss";
 
-export default function AddToGroupModal({
-  api,
-  onCancel,
-  updateUser,
-  user,
-}) {
-  const [filter, setFilter] = React.useState('');
+export default function AddToGroupModal({ api, onCancel, updateUser, user }) {
+  const [filter, setFilter] = React.useState("");
   const [otherGroups, setOtherGroups] = React.useState([]);
   const [selected, setSelected] = React.useState(new Set(user.groups));
 
-  const switchSelected = group => {
+  const switchSelected = (group) => {
     const neu = new Set(selected.values());
     if (neu.has(group)) neu.delete(group);
     else neu.add(group);
@@ -29,7 +24,7 @@ export default function AddToGroupModal({
   const updateOtherGroups = React.useCallback(async () => {
     let groups = await api.getGroups(filter);
     const userGroups = new Set(user.groups);
-    groups = groups.filter(g => !userGroups.has(g));
+    groups = groups.filter((g) => !userGroups.has(g));
     setOtherGroups(groups.slice(0, 4));
   }, [api, filter, user]);
 
@@ -45,7 +40,7 @@ export default function AddToGroupModal({
         <input
           className={style.search}
           onChange={({ target }) => {
-            setFilter(target.value)
+            setFilter(target.value);
             setImmediate(() => target.focus());
           }}
           placeholder="Search or create group"
@@ -63,29 +58,25 @@ export default function AddToGroupModal({
       </div>
       <h3 className={style.subTitle}>My groups</h3>
       <div className={style.groups}>
-        {
-          user.groups.map(g => (
-            <Group
-              checked={selected.has(g)}
-              group={g}
-              key={g}
-              onSwitch={() => switchSelected(g)}
-            />
-          ))
-        }
+        {user.groups.map((g) => (
+          <Group
+            checked={selected.has(g)}
+            group={g}
+            key={g}
+            onSwitch={() => switchSelected(g)}
+          />
+        ))}
       </div>
       <h3 className={style.subTitle}>Other Groups</h3>
       <div className={style.groups}>
-        {
-          otherGroups.map(g => (
-            <Group
-              checked={selected.has(g)}
-              group={g}
-              key={g}
-              onSwitch={() => switchSelected(g)}
-            />
-          ))
-        }
+        {otherGroups.map((g) => (
+          <Group
+            checked={selected.has(g)}
+            group={g}
+            key={g}
+            onSwitch={() => switchSelected(g)}
+          />
+        ))}
       </div>
       <div className={style.buttons}>
         <Button onClick={onCancel}>Cancel</Button>

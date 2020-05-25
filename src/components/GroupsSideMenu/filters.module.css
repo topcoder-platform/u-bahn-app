@@ -4,138 +4,138 @@
 
 /* Group Tab filters (lett col) styles */
 .groupTabFilters {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 
-    min-width: 362px;
-    width: 362px;
+  min-width: 362px;
+  width: 362px;
 
-    margin-bottom: 50px;
+  margin-bottom: 50px;
 }
 
 .groupTabFiltersTitleContainer {
-    height: 40px;
+  height: 40px;
 
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .groupTabFiltersTitle {
-    font-family: Helvetica;
-    font-size: 18px;
-    color: gray2;
-    height: 22px;
+  font-family: Helvetica;
+  font-size: 18px;
+  color: gray2;
+  height: 22px;
 
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .groupTabFiltersContent {
-    margin-top: 32px;
-    margin-bottom: 32px;
+  margin-top: 32px;
+  margin-bottom: 32px;
 }
 
 .groupTabFiltersContentSearch {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .groupTabFiltersContentSearchbox {
-    align-self: flex-start;
-    margin-right: 0px;
-    min-width: 247px;
+  align-self: flex-start;
+  margin-right: 0px;
+  min-width: 247px;
 }
 
 .groupTabFiltersContentSearchCreate {
-    align-self: flex-end;
-    margin-left: auto;
+  align-self: flex-end;
+  margin-left: auto;
 }
 
 .groupTabGroupsContainer {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .sectionTitle {
-    margin-top: 40px;
-    text-transform: uppercase;
-    font-family: Helvetica;
-    font-size: 14px;
-    color: gray1;;
+  margin-top: 40px;
+  text-transform: uppercase;
+  font-family: Helvetica;
+  font-size: 14px;
+  color: gray1;
 }
 
 .sectionItemsContainer {
-    margin-top: 15px;
-    display: flex;
-    flex-direction: column;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
 }
 
 .sectionItemsContainer > div {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .sectionItemsContainer > div:first-child {
-    margin-top: 0px;
+  margin-top: 0px;
 }
 
 .sectionItem {
-    cursor: pointer;
-    height: 24px;
-    width: 322px;
-    border-radius: 10px;
-    border: 1px solid gray1_025;
+  cursor: pointer;
+  height: 24px;
+  width: 322px;
+  border-radius: 10px;
+  border: 1px solid gray1_025;
 
-    display: flex;
-    flex-direction: row;
-    padding-left: 17px;
-    padding-top: 13px;
-    padding-bottom: 13px;
-    padding-right: 21px;
+  display: flex;
+  flex-direction: row;
+  padding-left: 17px;
+  padding-top: 13px;
+  padding-bottom: 13px;
+  padding-right: 21px;
 
-    font-family: Helvetica;
-    font-size: 18px;
-    color: gray2;
+  font-family: Helvetica;
+  font-size: 18px;
+  color: gray2;
 }
 
 .sectionItemTitle {
-    align-self: flex-start;
-    color: gray2;
+  align-self: flex-start;
+  color: gray2;
 }
 
 .sectionItemBadge {
-    align-self: flex-start;
-    margin-left: auto;
-    color: gray1;
+  align-self: flex-start;
+  margin-left: auto;
+  color: gray1;
 
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .sectionItemSelected {
-    composes: sectionItem;
-    background-color: blue;
-    border: none;
+  composes: sectionItem;
+  background-color: blue;
+  border: none;
 
-    padding-left: 18px;
-    padding-top: 14px;
-    padding-bottom: 14px;
-    padding-right: 22px;
+  padding-left: 18px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  padding-right: 22px;
 }
 
 .sectionItemSelectedTitle {
-    composes: sectionItemTitle;
-    color: white;
+  composes: sectionItemTitle;
+  color: white;
 }
 
 .sectionItemSelectedBadge {
-    composes: sectionItemBadge;
-    color: white;
+  composes: sectionItemBadge;
+  color: white;
 }
 
 .sectionItemChevron {
-    margin-left: 13px;
+  margin-left: 13px;
 }
