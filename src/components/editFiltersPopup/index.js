@@ -134,7 +134,7 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
           </div>
           <div className={styles.popupFooter}>
             <div className={styles.popupFooterContent}>
-              <Button onClick={onCancel}>Cancel</Button>
+              <Button onClick={handleCancel}>Cancel</Button>
               <Button onClick={handleDone} className={style.doneButton}>
                 Done
               </Button>
