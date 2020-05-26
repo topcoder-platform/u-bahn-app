@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PT from "prop-types";
 
 import { useSearch } from "../../lib/search";
@@ -24,25 +24,18 @@ export default function Availability({
   const handleAvailableClicked = () => {
     const newValue = !isAvailableSelected;
     setIsAvailableSelected(newValue);
+    search[selector]({
+      isAvailableSelected: newValue,
+    });
   };
 
   const handleUnvailableClicked = () => {
     const newValue = !isUnavailableSelected;
     setIsUnavailableSelected(newValue);
-  };
-
-  useEffect(() => {
     search[selector]({
-      isAvailableSelected: isAvailableSelected,
-      isUnavailableSelected: isUnavailableSelected,
+      isUnavailableSelected: newValue,
     });
-  }, [selector, isAvailableSelected, isUnavailableSelected]);
-
-  /* This triggers the child to render when props is changed */
-  useEffect(() => {
-    setIsAvailableSelected(availableSelected);
-    setIsUnavailableSelected(unavailableSelected);
-  }, [availableSelected, unavailableSelected]);
+  };
 
   return (
     <div className={styles.availabilityContainer}>

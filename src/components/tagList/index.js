@@ -24,17 +24,12 @@ export default function TagList({ tags, selected, selector }) {
 
     setSelectedTags(selection);
     setUpdated(updated + 1);
+    search[selector](selection);
   };
 
   const handleShowMores = () => {
     setShowAll(true);
   };
-
-  useEffect(() => {
-    if (selector) {
-      search[selector](selectedTags);
-    }
-  }, [updated]);
 
   /* This triggers the child to render when props.selected is changed */
   useEffect(() => {
