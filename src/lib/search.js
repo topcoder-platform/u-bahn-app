@@ -6,11 +6,8 @@ export const FILTERS = {
   SKILLS: 1,
   ACHIEVEMENTS: 2,
   AVAILABILITY: 3,
-  PROJECTS_COMPLETED: 4,
-  RATING: 5,
-  HOME_OFFICE: 6,
-  RANK: 7,
-  CUSTOM: 8,
+  HOME_OFFICE: 4,
+  CUSTOM: 5,
 };
 
 const defaultFilters = {
@@ -34,23 +31,8 @@ const defaultFilters = {
     group: "General attributes",
     active: true,
   },
-  [FILTERS.RATING]: {
-    text: "Rating",
-    group: "General attributes",
-    active: false,
-  },
-  [FILTERS.PROJECTS_COMPLETED]: {
-    text: "Projects completed",
-    group: "General attributes",
-    active: false,
-  },
   [FILTERS.HOME_OFFICE]: {
     text: "Home office",
-    group: "Company attributes",
-    active: false,
-  },
-  [FILTERS.RANK]: {
-    text: "Rank",
     group: "Company attributes",
     active: false,
   },
@@ -82,20 +64,6 @@ function useProvideSearch() {
   const [selectedAvailability, setSelectedAvailability] = useState({
     isAvailableSelected: false,
     isUnavailableSelected: false,
-  });
-  const [ratingLevel, setRatingLevel] = useState(0);
-  const [ratingRange, setRatingRange] = useState({
-    lowLimit: 0,
-    highLimit: 10,
-    rangeMin: 0,
-    rangeMax: 20,
-  });
-  const [projectsLevel, setProjectsLevel] = useState(0);
-  const [projectsRange, setProjectsRange] = useState({
-    lowLimit: 0,
-    highLimit: 10,
-    rangeMin: 0,
-    rangeMax: 10,
   });
   const [popupShown, setPopupShown] = useState(false);
   const [filters, setFilters] = useState(defaultFilters);
@@ -136,14 +104,6 @@ function useProvideSearch() {
     selectAchievements: setSelectedAchievements,
     selectedAvailability,
     selectAvailability: setSelectedAvailability,
-    ratingLevel,
-    setRatingLevel,
-    ratingRange,
-    setRatingRange,
-    projectsLevel,
-    setProjectsLevel,
-    projectsRange,
-    setProjectsRange,
     popupShown,
     showPopup,
     filters,

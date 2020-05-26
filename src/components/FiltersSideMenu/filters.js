@@ -5,8 +5,6 @@ import WideButton from "../wideButton";
 import Collapsible from "../collapsible";
 import SearchBox from "../searchBox";
 import Availability from "../availability";
-import RangeGroup from "../rangeGroup";
-import Tabs from "../tabs";
 import TagList from "../tagList";
 import EditFiltersPopup from "../editFiltersPopup";
 
@@ -91,33 +89,6 @@ export default function SearchTabFilters({ locations, skills, achievements }) {
       }
     }
 
-    if (search.isFilterActive(FILTERS.RATING)) {
-      let ratingRangeApplied = false;
-      if (
-        search.ratingRange &&
-        (search.ratingRange.lowLimit > search.ratingRange.rangeMin ||
-          search.ratingRange.highLimit < search.ratingRange.rangeMax)
-      ) {
-        ratingRangeApplied = true;
-      }
-      if (search.ratingLevel || ratingRangeApplied) {
-        appliedFilters += 1;
-      }
-    }
-
-    if (search.isFilterActive(FILTERS.PROJECTS_COMPLETED)) {
-      let projectsRangeApplied = false;
-      if (
-        search.projectsRange &&
-        (search.projectsRange.lowLimit > search.projectsRange.rangeMin ||
-          search.projectsRange.highLimit < search.projectsRange.rangeMax)
-      ) {
-        projectsRangeApplied = true;
-      }
-      if (search.projectsLevel || projectsRangeApplied) {
-        appliedFilters += 1;
-      }
-    }
     return appliedFilters;
   }, [search]);
 
@@ -204,34 +175,6 @@ export default function SearchTabFilters({ locations, skills, achievements }) {
           </Collapsible>
         </div>
       )}
-      {search.isFilterActive(FILTERS.PROJECTS_COMPLETED) && (
-        <div className={utilityStyles.mt32}>
-          <Collapsible title="Project completed">
-            <RangeGroup
-              key={1}
-              range={search.ratingRange}
-              selector={"setProjectsRange"}
-            />
-            <Tabs
-              items={tabItems}
-              selectedIndex={0}
-              selector={"setProjectsLevel"}
-            />
-          </Collapsible>
-        </div>
-      )}
-      {search.isFilterActive(FILTERS.RATING) && (
-        <div className={utilityStyles.mt32}>
-          <Collapsible title="Rating">
-            <RangeGroup
-              key={2}
-              range={search.projectsRange}
-              selector={"setRatingRange"}
-            />
-            <Tabs items={tabItems} selector={"setRatingLevel"} />
-          </Collapsible>
-        </div>
-      )}
 
       <div className={utilityStyles.mt32}>
         <WideButton text="+ Add filter" action={handleAddFilter} />
@@ -252,20 +195,6 @@ SearchTabFilters.propTypes = {
   achievements: PT.array,
 };
 
-const tabItems = [
-  {
-    text: "New",
-  },
-
-  {
-    text: "Pro",
-  },
-
-  {
-    text: "Expert",
-  },
-];
-
 function Summary({ filtersApplied }) {
   const search = useSearch();
 
@@ -276,20 +205,6 @@ function Summary({ filtersApplied }) {
     search.selectAvailability({
       isAvailableSelected: false,
       isUnavailableSelected: false,
-    });
-    search.setRatingLevel(null);
-    search.setRatingRange({
-      lowLimit: 0,
-      highLimit: 10,
-      rangeMin: 0,
-      rangeMax: 10,
-    });
-    search.setProjectsLevel(null);
-    search.setProjectsRange({
-      lowLimit: 0,
-      highLimit: 10,
-      rangeMin: 0,
-      rangeMax: 20,
     });
   };
 
