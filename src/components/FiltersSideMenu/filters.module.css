@@ -20,7 +20,7 @@
 .searchTabFiltersSummary {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .searchTabFiltersSummaryTextContainer {
@@ -54,7 +54,6 @@
 }
 
 .searchTabFiltersSummaryResetBtn {
-  margin-left: auto;
   align-self: flex-end;
 }
 
