@@ -22,7 +22,6 @@ export default function SearchBox({ name, value, placeholder, onChange }) {
         <i className={styles.searchboxIcon}></i>
         <input
           className={styles.searchboxInput}
-          type="search"
           name={name}
           value={query}
           placeholder={placeholder}
