@@ -1,0 +1,11 @@
+@import "../../styles/mixins";
+
+.doneButton {
+  background: $textColor;
+  color: $white;
+  margin-left: 15px;
+
+  &:hover {
+    background: $textColor4;
+  }
+}

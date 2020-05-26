@@ -1,0 +1,72 @@
+/* importing colors */
+@value colors: "../../styles/colors.module.css";
+@value gray1, green1, gray1_025 from colors;
+
+/* Availability */
+.availabilityContainer {
+  margin: 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+.availabilityItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+
+  cursor: pointer;
+  width: 50%;
+  height: 40px;
+
+  font-family: Helvetica;
+  font-size: 16px;
+  color: gray1;
+}
+
+.availabilityItemLeft {
+  composes: availabilityItem;
+  border-top: 1px solid gray1_025;
+  border-bottom: 1px solid gray1_025;
+  border-left: 1px solid gray1_025;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.availabilityItemRight {
+  composes: availabilityItem;
+  border-top: 1px solid gray1_025;
+  border-bottom: 1px solid gray1_025;
+  border-left: 1px solid gray1_025;
+  border-right: 1px solid gray1_025;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.availabilityItemGroup {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+}
+
+.availabilityItemStateActive {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  position: relative;
+  background: green1;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.availabilityItemStateInactive {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  position: relative;
+  background: gray1_025;
+  cursor: pointer;
+  margin-right: 8px;
+}

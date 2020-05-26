@@ -1,0 +1,75 @@
+/* importing colors */
+@value colors: "../../styles/colors.module.css";
+@value gray2, gray1_025 from colors;
+
+/* Search Tab filters styles */
+
+.searchTabFilters {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  min-width: 362px;
+  width: 362px;
+
+  margin-bottom: 50px;
+}
+
+/* Filters summary */
+
+.searchTabFiltersSummary {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.searchTabFiltersSummaryTextContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.searchTabFiltersSummaryTextContainerRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.searchTabFiltersSummaryTextIcon {
+  order: 1;
+  background: url("/sprites.png") no-repeat -69px -77px;
+  width: 20px;
+  height: 16px;
+}
+
+.searchTabFiltersSummaryText {
+  order: 2;
+  margin-left: 12px;
+  margin-right: auto;
+  align-self: flex-start;
+
+  font-family: Helvetica;
+  font-size: 18px;
+  color: gray2;
+}
+
+.searchTabFiltersSummaryResetBtn {
+  align-self: flex-end;
+}
+
+/* Location filters */
+
+.searchTabFiltersLocation {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+
+  min-height: 308px;
+  border-radius: 5px;
+  border: 1px solid gray1_025;
+}
+
+.searchTabFiltersLocationHeader {
+  height: 50px;
+  border-bottom: 1px solid gray1_025;
+}

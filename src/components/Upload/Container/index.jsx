@@ -2,12 +2,12 @@
  * Container of upload & upload result components.
  */
 
-import React from 'react';
-import PT from 'prop-types';
+import React from "react";
+import PT from "prop-types";
 
-import emptyCard from '../../../assets/images/empty-card.svg';
+import emptyCard from "../../../assets/images/empty-card.svg";
 
-import style from './style.module.scss';
+import style from "./style.module.scss";
 
 function DecorativeCard() {
   return (
@@ -16,7 +16,7 @@ function DecorativeCard() {
       className={style.decorativeCard}
       src={emptyCard}
     />
-  )
+  );
 }
 
 export default function Container({ children }) {
@@ -29,7 +29,7 @@ export default function Container({ children }) {
       </div>
       {children}
     </div>
-  )
+  );
 }
 
 Container.propTypes = {

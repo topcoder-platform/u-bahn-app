@@ -1,6 +1,5 @@
 @import "../../styles/mixins";
 
-
 .availability {
   border: 1px solid $lightGray2;
   border-radius: 4px;
@@ -72,6 +71,7 @@
 }
 
 .rightSide {
+  // flex: 1;
   margin-top: 10px;
 }
 
@@ -82,6 +82,32 @@
 .sort {
   color: $textColor;
   font: 400 12pt/1.25 Inter;
+  position: relative;
+  cursor: pointer;
+
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    margin-top: 0.5em;
+    box-shadow: 2px 2px 4px 0 $shadow;
+    background: $white;
+    z-index: 1000;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    overflow: hidden;
+  }
+
+  .dropdownItem {
+    line-height: 1.5;
+    text-align: right;
+    padding: 0 24px;
+
+    &:hover {
+      background-color: $blue;
+    }
+  }
 }
 
 .sortMode {

@@ -2,6 +2,9 @@
 
 .container {
   display: flex;
+  height: 791px;
+  max-height: 791px;
+  overflow-y: auto;
 }
 
 .editor {
@@ -15,7 +18,9 @@
     flex: 1;
   }
 
-  h3 { @include h3; }
+  h3 {
+    @include h3;
+  }
 }
 
 .dangerButton {
@@ -45,6 +50,7 @@
   outline: none;
   padding: 0 10px;
   width: 100%;
+  box-sizing: border-box;
 
   &::placeholder {
     opacity: 0.5;
@@ -67,5 +73,7 @@
   color: $white;
   margin-left: 20px;
 
-  &:hover { background: $blue; }
+  &:hover {
+    background: $blue;
+  }
 }

@@ -9,13 +9,21 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "form-data": "^3.0.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.6",
     "node-sass": "^4.14.1",
+    "prettier": "^2.0.5",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "regenerator-runtime": "^0.13.5"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
   },
   "scripts": {
     "start": "react-scripts start",
@@ -39,5 +47,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
