@@ -16,4 +16,8 @@ export default function FiltersSideMenu({ locations, skills, achievements }) {
   );
 }
 
-FiltersSideMenu.propTypes = {};
+FiltersSideMenu.propTypes = {
+  locations: PT.array.isRequired,
+  skills: PT.array.isRequired,
+  achievements: PT.array.isRequired,
+};

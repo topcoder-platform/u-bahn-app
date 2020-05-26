@@ -27,10 +27,15 @@ export default function GroupsSideMenu({ userGroups, allGroups, profiles }) {
       <GroupTabFilters
         myGroups={userGroupsData}
         groups={allGroupsData}
+        data={data}
         onGroupSelected={handleGroupSelected}
       />
     </div>
   );
 }
 
-GroupsSideMenu.propTypes = {};
+GroupsSideMenu.propTypes = {
+  userGroups: PT.array.isRequired,
+  allGroups: PT.array.isRequired,
+  profiles: PT.array.isRequired,
+};
