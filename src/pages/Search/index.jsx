@@ -19,10 +19,21 @@ import { useSearch, FILTERS } from "../../lib/search";
 import { makeColorIterator, avatarColors } from "../../lib/colors";
 const colorIterator = makeColorIterator(avatarColors);
 
+const NESTEDPROPERTIES = [
+  "skills",
+  "roles",
+  "achievements",
+  "externalProfiles",
+  "attributes",
+  "groups",
+];
+// Attributes of a user that can be found under the nested property `attributes` of the user
+const USERATTRIBUTES = ["isAvailable", "company", "location"];
+
 export default function SearchPage() {
   const [api] = React.useState(() => new Api({ token: "dummy-auth-token" }));
   const [page, setPage] = React.useState(1);
-  const byPage = 10;
+  const byPage = 12;
   const [totalResults, setTotalResults] = React.useState(0);
   const [search, setSearch] = React.useState(null);
   const [tab, setTab] = React.useState(TABS.SEARCH);
@@ -34,7 +45,7 @@ export default function SearchPage() {
   const [myGroups, setMyGroups] = React.useState([]);
   const [allGroups, setAllGroups] = React.useState([]);
 
-  const [sortBy, setSortBy] = React.useState("Rating");
+  const [sortBy, setSortBy] = React.useState("Name");
   const [sortByDropdownShown, setSortByDropdownShown] = React.useState(false);
 
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
@@ -103,25 +114,27 @@ export default function SearchPage() {
       });
 
       data = data.map((p) => {
-        if (!p.groups) p.groups = [];
-        if (!p.skills) p.skills = [];
-        if (!p.achievements) p.achievements = [];
+        NESTEDPROPERTIES.forEach((nestedProperty) => {
+          if (!p[nestedProperty]) {
+            p[nestedProperty] = [];
+          }
+        });
 
-        if (p.attributes && p.attributes.length !== 0) {
-          p.isAvailable = (
-            p.attributes.find((attr) => attr.attributeName === "isAvailable") ||
-            {}
-          ).value;
-          p.title = (
-            p.attributes.find((attr) => attr.attributeName === "role") || {}
-          ).value;
-          p.company = (
-            p.attributes.find((attr) => attr.attributeName === "company") || {}
-          ).value;
-          p.location = (
-            p.attributes.find((attr) => attr.attributeName === "location") || {}
-          ).value;
+        // TODO - In the original code, p.role used to exist and read from
+        // TODO - attributes. Roles is property on the user object itself and one
+        // TODO - need not read from attribute. So I need to figure out how to accommodate it
+
+        if (p.attributes) {
+          for (let i = 0; i < p.attributes.length; i++) {
+            const userAttribute = p.attributes[i];
+
+            if (USERATTRIBUTES.includes(userAttribute.attribute.name)) {
+              p[userAttribute.attribute.name] = userAttribute.value;
+            }
+          }
         }
+
+        p.name = `${p.firstName} ${p.lastName}`;
 
         return p;
       });
@@ -207,14 +220,6 @@ export default function SearchPage() {
                     <li
                       className={style.dropdownItem}
                       onClick={() => {
-                        handleSort("Rating");
-                      }}
-                    >
-                      Rating
-                    </li>
-                    <li
-                      className={style.dropdownItem}
-                      onClick={() => {
                         handleSort("Name");
                       }}
                     >
@@ -231,10 +236,10 @@ export default function SearchPage() {
                     <li
                       className={style.dropdownItem}
                       onClick={() => {
-                        handleSort("Avaibility");
+                        handleSort("Availability");
                       }}
                     >
-                      Avaibility
+                      Availability
                     </li>
                   </ul>
                 )}

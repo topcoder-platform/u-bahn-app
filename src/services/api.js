@@ -83,7 +83,7 @@ export default class Api {
    * @return {Promise<object>} Template meta object.
    */
   async getTemplate(templateId) {
-    const url = `${config.UI_API_BASE}/templates/${templateId}`;
+    const url = `${config.SEARCH_UI_API_URL}/templates/${templateId}`;
     const { data } = await axios(url);
     return data;
   }
@@ -94,9 +94,7 @@ export default class Api {
    * @return {Promise<object>} Resolves to user object.
    */
   async getUser(userId) {
-    const { data } = await this.api(
-      `${config.SEARCH_API_BASE}/users/${userId}`
-    );
+    const { data } = await this.api(`${config.API_URL}/users/${userId}`);
 
     return data;
   }
@@ -117,11 +115,20 @@ export default class Api {
     criteria,
     sortBy,
   } = {}) {
-    let { headers, data } = await this.api(`${config.SEARCH_API_BASE}/users`, {
-      params: { search, groupId, roleId, page, limit, criteria, sortBy },
+    let { headers, data } = await this.api(`${config.API_URL}/users`, {
+      params: {
+        search,
+        groupId,
+        roleId,
+        page,
+        limit,
+        criteria,
+        sortBy,
+        enrich: true,
+      },
     });
 
-    const total = headers["x-total-count"] || 0;
+    const total = headers["x-total"] || 0;
 
     return { total, data };
   }
@@ -138,12 +145,13 @@ export default class Api {
     let data;
 
     try {
-      const response = await this.api.post(
-        `${config.SEARCH_API_BASE}/users/${user.id}`,
+      const response = await this.api.patch(
+        `${config.API_URL}/users/${user.id}`,
         entity
       );
       data = response.data;
     } catch (error) {
+      // TODO - What should happen when update fails?
       const mockData = { ...user };
       data = mockData;
     }
@@ -162,7 +170,7 @@ export default class Api {
    * @return {Promise<object>} Resolves to the API response payload.
    */
   async upload(data, options = {}) {
-    const res = await axios.post(`${config.UI_API_BASE}/uploads`, data, {
+    const res = await axios.post(`${config.SEARCH_UI_API_URL}/uploads`, data, {
       cancelToken: options.cancelToken,
       headers: {
         "Content-Type": "multipart/form-data",

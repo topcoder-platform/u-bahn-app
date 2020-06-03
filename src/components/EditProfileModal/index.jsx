@@ -13,12 +13,14 @@ import { makeColorIterator, avatarColors } from "../../lib/colors";
 const colorIterator = makeColorIterator(avatarColors);
 const nextColor = colorIterator.next();
 
+// TODO - Role is not an attribute but a nested property on user
+// TODO - Remove it from Common Attribute and use it like other nested attributes (like skill / achievements)
 const COMMON_ATTRIBUTES = ["role", "company", "location", "isAvailable"];
 
 export default function EditProfileModal({ api, onCancel, updateUser, user }) {
   const [localUser, setLocalUser] = React.useState({ ...user });
   const [skillInputValue, setSkillInputValue] = React.useState("");
-  const [achieInputValue, setAchieInputValue] = React.useState("");
+  const [achievementInputValue, setAchievementInputValue] = React.useState("");
 
   return (
     <Modal className={style.container} onCancel={onCancel}>
@@ -152,7 +154,7 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
           {localUser.skills.map((it, key) => (
             <Pill
               key={key}
-              name={it.name}
+              name={it.skill.name}
               onRemove={() => {
                 setLocalUser({
                   ...localUser,
@@ -169,7 +171,7 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
             placeholder="Enter achievements to add"
             onKeyUp={({ key }) => {
               if (key === "Enter") {
-                const achie = achieInputValue.trim();
+                const achie = achievementInputValue.trim();
                 if (achie) {
                   setLocalUser({
                     ...localUser,
@@ -181,7 +183,7 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
                     ],
                   });
                 }
-                setAchieInputValue("");
+                setAchievementInputValue("");
               }
             }}
             onChange={({ target }) => {
@@ -201,10 +203,10 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
                 }
                 value = "";
               }
-              setAchieInputValue(value);
+              setAchievementInputValue(value);
               setImmediate(() => target.focus());
             }}
-            value={achieInputValue}
+            value={achievementInputValue}
           />
           {localUser.achievements.map((it, key) => (
             <Pill

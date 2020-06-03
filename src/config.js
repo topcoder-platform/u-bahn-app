@@ -3,11 +3,10 @@
  */
 
 export default {
-  SEARCH_API_BASE:
-    process.env.SEARCH_API_BASE || "https://vast-castle-91628.herokuapp.com",
-  UI_API_BASE:
-    process.env.UI_API_BASE ||
+  API_URL:
+    process.env.REACT_APP_API_URL || "https://vast-castle-91628.herokuapp.com",
+  SEARCH_UI_API_URL:
+    process.env.REACT_APP_SEARCH_UI_API_URL ||
     "https://u-bahn-search-ui-api-dev.herokuapp.com/api",
-  V5_API_BASE:
-    process.env.V5_API_BASE || "https://ubahn-api-dev.herokuapp.com/v5",
+  BULK_UPLOAD_TEMPLATE_ID: process.env.REACT_BULK_UPLOAD_TEMPLATE_ID,
 };

@@ -28,18 +28,26 @@ export default function ProfileCard({
   const [profileData, setProfileData] = useState(profile);
   const [showAddToGroup, setShowAddToGroup] = React.useState(false);
   const [showEditModal, setShowEditModal] = React.useState(false);
-  const [available, setAvailable] = React.useState(profile.isAvailable);
+  const [available, setAvailable] = React.useState(
+    profile.isAvailable === "true"
+  );
 
   useEffect(() => {
     setProfileData(profile);
-    setAvailable(profile.isAvailable);
+    setAvailable(profile.isAvailable === "true");
   }, [profile]);
 
   const switchAvailability = (profile) => {
     const updated = profile;
-    updated.isAvailable = !updated.isAvailable;
-    setAvailable(updated.isAvailable);
-    updateUser(updated);
+    updated.isAvailable = updated.isAvailable === "true" ? "false" : "true";
+    setAvailable(updated.isAvailable === "true");
+    // TODO - This seems to call the generic update user api
+    // TODO - However, we need to update the attribute associated with availability
+    // TODO - Availability is NOT a property on the User model. It exists as an attribute
+    // TODO - of the user and is part of the UserAttribute + Attribute model where the
+    // TODO - id exists under attribute and the value under user attribute
+    // TODO - Thus, update this api call to update the attribute value and not the user model
+    // updateUser(updated);
   };
 
   const removeGroupFromProfile = (group) => {
@@ -79,7 +87,7 @@ export default function ProfileCard({
           </div>
           <div className={styles.headerControls}>
             <div className={styles.headerControlsText}>
-              {profileData.isAvailable ? "Available" : "Unavailable"}
+              {available ? "Available" : "Unavailable"}
             </div>
             {/*<Switch isOn={profileData.isAvailable} onChange={() => switchAvailability(profileData)} />*/}
             <Switch
