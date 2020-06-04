@@ -84,7 +84,7 @@ export default class Api {
    */
   async getTemplate(templateId) {
     const url = `${config.SEARCH_UI_API_URL}/templates/${templateId}`;
-    const { data } = await axios(url);
+    const { data } = await this.api(url);
     return data;
   }
 
@@ -165,18 +165,19 @@ export default class Api {
    * @param {object} [options]
    * @param {function} [options.onUploadProgress] Optional. Upload progress
    *  callback.
-   * @param {CancelToken} [options.cancelToken] Optional. Cancel token from
-   *  axios.
    * @return {Promise<object>} Resolves to the API response payload.
    */
   async upload(data, options = {}) {
-    const res = await axios.post(`${config.SEARCH_UI_API_URL}/uploads`, data, {
-      cancelToken: options.cancelToken,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      onUploadProgress: options.onUploadProgress,
-    });
+    const res = await this.api.post(
+      `${config.SEARCH_UI_API_URL}/uploads`,
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: options.onUploadProgress,
+      }
+    );
     return res.data;
   }
 

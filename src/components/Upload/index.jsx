@@ -1,6 +1,5 @@
 import React from "react";
 
-import axios from "axios";
 import FormData from "form-data";
 import PT from "prop-types";
 
@@ -37,20 +36,17 @@ export default function Upload({ api, templateId }) {
   const upload = async (file) => {
     const data = new FormData();
     data.append("upload", file);
-    const source = axios.CancelToken.source();
     setState({
       type: STATES.UPLOADING,
-      data: { abort: source.cancel, progress: 0 },
+      data: { progress: 0 },
     });
     try {
-      const res = await api.upload(data, {
-        cancelToken: source.token,
+      await api.upload(data, {
         onUploadProgress: ({ loaded, total }) => {
           setState({
             type: STATES.UPLOADING,
             data: {
               progress: loaded / total,
-              abort: source.cancel,
             },
           });
         },
@@ -58,13 +54,13 @@ export default function Upload({ api, templateId }) {
       setState({
         type: STATES.MESSAGE,
         data: {
-          title: "Import Confirmation",
-          message: JSON.stringify(res),
+          title: "Profiles uploaded successfully",
+          message:
+            "The uploaded profiles are now being processed. This may take some time, depending on the number of profiles. Once processed, you will be able to see the profiles in the search page.",
         },
       });
     } catch (error) {
-      if (error instanceof axios.Cancel) setState({ type: STATES.INITIAL });
-      else showError(error);
+      showError(error);
     }
   };
 
@@ -90,9 +86,7 @@ export default function Upload({ api, templateId }) {
       );
       break;
     case STATES.UPLOADING:
-      content = (
-        <Progress onAbort={state.data.abort} progress={state.data.progress} />
-      );
+      content = <Progress progress={state.data.progress} />;
       break;
     default:
       throw Error("Invalid state");

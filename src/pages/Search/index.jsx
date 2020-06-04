@@ -17,6 +17,8 @@ import Api from "../../services/api";
 import style from "./style.module.scss";
 import { useSearch, FILTERS } from "../../lib/search";
 import { makeColorIterator, avatarColors } from "../../lib/colors";
+import config from "../../config";
+
 const colorIterator = makeColorIterator(avatarColors);
 
 const NESTEDPROPERTIES = [
@@ -276,7 +278,9 @@ export default function SearchPage() {
       );
       break;
     case TABS.UPLOADS:
-      mainContent = <Upload api={api} templateId="DummyTemplateId" />;
+      mainContent = (
+        <Upload api={api} templateId={config.BULK_UPLOAD_TEMPLATE_ID} />
+      );
       break;
     default:
       throw Error("Invalid tab");

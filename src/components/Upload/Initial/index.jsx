@@ -34,7 +34,10 @@ export default function Initial({ api, onError, onUpload, templateId }) {
   };
 
   const upload = (files) => {
-    const allowedMineTypes = ["application/vnd.ms-excel", "text/csv"];
+    const allowedMineTypes = [
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ];
     if (files && files[0] && allowedMineTypes.indexOf(files[0].type) !== -1)
       onUpload(files[0]);
     else setInvalidFileExtension(true);
