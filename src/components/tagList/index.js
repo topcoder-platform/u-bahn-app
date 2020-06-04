@@ -6,7 +6,7 @@ import { useSearch } from "../../lib/search";
 
 import styles from "./tagList.module.scss";
 
-export default function TagList({ tags, selected, selector }) {
+export default function TagList({ tags, selected, selector, noResultsText }) {
   const search = useSearch();
 
   const [selectedTags, setSelectedTags] = useState(selected);
@@ -68,7 +68,7 @@ export default function TagList({ tags, selected, selector }) {
         <Tag text="More.." highlighted={true} onChange={handleShowMore} />
       )}
       {tags.length === 0 && (
-        <span className={styles.message}>No location found</span>
+        <span className={styles.message}>{noResultsText}</span>
       )}
     </div>
   );

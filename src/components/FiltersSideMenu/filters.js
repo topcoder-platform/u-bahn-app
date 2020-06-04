@@ -122,6 +122,7 @@ export default function SearchTabFilters({ locations, skills, achievements }) {
               tags={locationsData}
               selected={search.selectedLocations}
               selector={"selectLocations"}
+              noResultsText={"No location found"}
             />
           </Collapsible>
         </div>
@@ -153,6 +154,7 @@ export default function SearchTabFilters({ locations, skills, achievements }) {
               tags={skillsData}
               selected={search.selectedSkills}
               selector={"selectSkills"}
+              noResultsText={"No skill found"}
             />
           </Collapsible>
         </div>
@@ -171,6 +173,7 @@ export default function SearchTabFilters({ locations, skills, achievements }) {
               tags={achievementsData}
               selected={search.selectedAchievements}
               selector={"selectAchievements"}
+              noResultsText={"No achievement found"}
             />
           </Collapsible>
         </div>
