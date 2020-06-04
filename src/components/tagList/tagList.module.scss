@@ -1,0 +1,20 @@
+@import "../../styles/mixins.scss";
+
+/* TagList */
+div.tagList {
+  margin-left: -8px;
+  margin-top: 11px;
+}
+
+div.tagList > button {
+  margin-left: 8px;
+  margin-top: 8px;
+}
+
+.message {
+  @include textTypeB;
+  padding: 0 20% 20px;
+  max-width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
