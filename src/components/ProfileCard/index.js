@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import PT from "prop-types";
 
 import Switch from "../Switch";
@@ -10,146 +10,242 @@ import EditProfileModal from "../EditProfileModal";
 import styles from "./profileCard.module.css";
 import iconStyles from "../../styles/icons.module.css";
 
+import config from "../../config";
+
+/**
+ * Returns the availability of the user
+ * Availability is an attribute on the user and thus
+ * needs to be extracted from the user's profile
+ * @param {Object} profile The user profile
+ * @param {String} attributeName The attribute for which the value is requested
+ */
+function getAttributeDetails(profile, attributeName) {
+  const detail = profile.attributes.find(
+    (a) => a.attribute.name === attributeName
+  );
+
+  switch (attributeName) {
+    case config.PRIMARY_ATTRIBUTES.availability:
+      return {
+        id: detail.attribute.id,
+        value: detail.value === "true",
+      };
+    case config.PRIMARY_ATTRIBUTES.company:
+    case config.PRIMARY_ATTRIBUTES.location:
+      return {
+        id: detail.attribute.id,
+        value: detail.value,
+      };
+    default:
+      throw Error(`Unknown attribute ${attributeName}`);
+  }
+}
+
+/**
+ * Returns the initials for the user using the user name
+ * @param {String} userName The user name
+ */
+function getUserNameInitial(userName) {
+  let initials = userName.match(/\b\w/g) || [];
+  initials = ((initials.shift() || "") + (initials.pop() || "")).toUpperCase();
+
+  return initials;
+}
+
 /**
  * ProfileCard - a profile card component
  * profile: the user profile
  * avatarColor: the color of the avatar
  */
-export default function ProfileCard({
-  api,
-  stripped,
-  profile,
-  avatarColor,
-  updateUser,
-}) {
-  let initials = profile.name.match(/\b\w/g) || [];
-  initials = ((initials.shift() || "") + (initials.pop() || "")).toUpperCase();
 
-  const [profileData, setProfileData] = useState(profile);
-  const [showAddToGroup, setShowAddToGroup] = React.useState(false);
-  const [showEditModal, setShowEditModal] = React.useState(false);
-  const [available, setAvailable] = React.useState(
-    profile.isAvailable === "true"
-  );
+class ProfileCard extends React.Component {
+  constructor(props) {
+    super(props);
 
-  useEffect(() => {
-    setProfileData(profile);
-    setAvailable(profile.isAvailable === "true");
-  }, [profile]);
+    const { profile } = props;
 
-  const switchAvailability = (profile) => {
-    const updated = profile;
-    updated.isAvailable = updated.isAvailable === "true" ? "false" : "true";
-    setAvailable(updated.isAvailable === "true");
-    // TODO - This seems to call the generic update user api
-    // TODO - However, we need to update the attribute associated with availability
-    // TODO - Availability is NOT a property on the User model. It exists as an attribute
-    // TODO - of the user and is part of the UserAttribute + Attribute model where the
-    // TODO - id exists under attribute and the value under user attribute
-    // TODO - Thus, update this api call to update the attribute value and not the user model
-    // updateUser(updated);
-  };
+    // The profile data structure received is converted to a format
+    // that is easy to use for rendering the UI
+    const user = {
+      id: profile.id,
+      handle: profile.handle,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      groups: [], // TODO
+      skills: [], // TODO
+      achievement: [], // TODO
+      role: "", // TODO
+      availability: getAttributeDetails(
+        profile,
+        config.PRIMARY_ATTRIBUTES.availability
+      ),
+      company: getAttributeDetails(profile, config.PRIMARY_ATTRIBUTES.company),
+      location: getAttributeDetails(
+        profile,
+        config.PRIMARY_ATTRIBUTES.location
+      ),
+      customAttributes: [],
+    };
 
-  const removeGroupFromProfile = (group) => {
-    const updated = profile;
-    updated.groups = updated.groups.filter((g) => g !== group);
-    updateUser(updated);
-  };
+    this.state = {
+      user,
+      showManageGroupsModal: false,
+      showEditUserModal: false,
+    };
+  }
 
-  let containerStyle = styles.profileCard;
-  if (stripped) containerStyle += ` ${styles.stripped}`;
+  /**
+   * Shows / hides the manage groups modal
+   */
+  toggleManageGroupsModal() {
+    this.setState((prevState) => ({
+      showManageGroupsModal: !prevState.showManageGroupsModal,
+    }));
+  }
 
-  return (
-    <div className={containerStyle}>
-      {showAddToGroup ? (
-        <AddToGroupModal
-          api={api}
-          onCancel={() => setShowAddToGroup(false)}
-          updateUser={updateUser}
-          user={profile}
-        />
-      ) : null}
-      {showEditModal ? (
-        <EditProfileModal
-          api={api}
-          onCancel={() => setShowEditModal(false)}
-          updateUser={updateUser}
-          user={profile}
-        />
-      ) : null}
-      <div className={styles.profileCardHeaderContainer}>
-        <div className={styles.profileCardHeader}>
-          <div
-            className={styles.avatar}
-            style={{ backgroundColor: avatarColor }}
-          >
-            <div className={styles.avatarText}>{initials}</div>
-          </div>
-          <div className={styles.headerControls}>
-            <div className={styles.headerControlsText}>
-              {available ? "Available" : "Unavailable"}
-            </div>
-            {/*<Switch isOn={profileData.isAvailable} onChange={() => switchAvailability(profileData)} />*/}
-            <Switch
-              checked={available}
-              onChange={() => switchAvailability(profileData)}
-            />
-            <EditButton onClick={() => setShowEditModal(true)} />
-          </div>
-        </div>
-      </div>
-      <div className={styles.profileCardMainContainer}>
-        <div className={styles.profileCardMain}>
-          <div className={styles.mainNameRow}>
-            <div className={styles.mainNameText}>{profileData.name}</div>
-            {!!profileData.rating && (
-              <div className={styles.mainNameBagde}>{profileData.rating}</div>
-            )}
-          </div>
-          <div className={styles.mainHandleRow}>
-            <div>{profileData.handle}</div>
-          </div>
-          <div className={styles.mainTitleRow}>
-            <div>{profileData.title}</div>
-          </div>
-          <div className={styles.mainCompanyRow}>
-            <div>{profileData.company}</div>
-          </div>
-        </div>
-      </div>
-      <div className={styles.profileCardFooterContainer}>
-        <div className={styles.profileCardFooter}>
-          <div className={styles.groupHeading}>
-            <div className={iconStyles.bookmark}></div>
-            <div className={styles.groupTitle}>Group</div>
-          </div>
-          <div className={styles.groupContent}>
-            {profileData.groups.map((group, index) => {
-              return (
-                <Tag
-                  key={"profileTag" + index}
-                  text={group}
-                  showRemoveButton={true}
-                  icon={TAG_ICONS.CROSS}
-                  selectable={false}
-                  action={() => removeGroupFromProfile(group)}
-                />
-              );
-            })}
+  /**
+   * Shows / hides the edit user modal
+   */
+  toggleEditUserModal() {
+    this.setState((prevState) => ({
+      showEditUserModal: !prevState.showEditUserModal,
+    }));
+  }
 
+  toggleUserAvailability() {
+    this.setState(
+      (prevState) => {
+        const user = JSON.parse(JSON.stringify(prevState.user));
+
+        user.availability.value = !user.availability.value;
+
+        return { user };
+      },
+      () => this.updateUserAttribute(config.PRIMARY_ATTRIBUTES.availability)
+    );
+  }
+
+  async updateUserAttribute(attributeName) {
+    let payload = {};
+    const { user } = this.state;
+
+    switch (attributeName) {
+      case config.PRIMARY_ATTRIBUTES.availability:
+        payload.userId = user.id;
+        payload.attributeId = user.availability.id;
+        payload.value = user.availability.value ? "true" : "false";
+        break;
+      default:
+        throw Error(`Unknown attribute name ${attributeName}`);
+    }
+
+    await this.props.api.updateUserAttribute(payload);
+  }
+
+  render() {
+    const { api, stripped, avatarColor } = this.props;
+    const { user, showManageGroupsModal, showEditUserModal } = this.state;
+
+    console.log(user.availability);
+
+    let containerStyle = styles.profileCard;
+
+    if (stripped) {
+      containerStyle += ` ${styles.stripped}`;
+    }
+
+    return (
+      <div className={containerStyle}>
+        {showManageGroupsModal ? (
+          <AddToGroupModal
+            api={api}
+            onCancel={() => this.toggleManageGroupsModal()}
+            // TODO updateUser={updateUser}
+            user={user}
+          />
+        ) : null}
+        {showEditUserModal ? (
+          <EditProfileModal
+            api={api}
+            onCancel={() => this.toggleEditUserModal()}
+            // TODO updateUser={updateUser}
+            user={user}
+          />
+        ) : null}
+        <div className={styles.profileCardHeaderContainer}>
+          <div className={styles.profileCardHeader}>
             <div
-              className={styles.plusButton}
-              onClick={() => setShowAddToGroup(!showAddToGroup)}
+              className={styles.avatar}
+              style={{ backgroundColor: avatarColor }}
             >
-              <div className={styles.plusButtonIcon}>
-                <div className={iconStyles.plus} />
+              <div className={styles.avatarText}>
+                {getUserNameInitial(`${user.firstName} ${user.lastName}`)}
+              </div>
+            </div>
+            <div className={styles.headerControls}>
+              <div className={styles.headerControlsText}>
+                {user.availability.value ? "Available" : "Unavailable"}
+              </div>
+              <Switch
+                checked={user.availability.value}
+                onChange={() => this.toggleUserAvailability()}
+              />
+              <EditButton onClick={() => this.toggleEditUserModal()} />
+            </div>
+          </div>
+        </div>
+        <div className={styles.profileCardMainContainer}>
+          <div className={styles.profileCardMain}>
+            <div className={styles.mainNameRow}>
+              <div
+                className={styles.mainNameText}
+              >{`${user.firstName} ${user.lastName}`}</div>
+            </div>
+            <div className={styles.mainHandleRow}>
+              <div>{user.handle}</div>
+            </div>
+            <div className={styles.mainTitleRow}>
+              <div>{user.role}</div>
+            </div>
+            <div className={styles.mainCompanyRow}>
+              <div>{user.company.value}</div>
+            </div>
+          </div>
+        </div>
+        <div className={styles.profileCardFooterContainer}>
+          <div className={styles.profileCardFooter}>
+            <div className={styles.groupHeading}>
+              <div className={iconStyles.bookmark}></div>
+              <div className={styles.groupTitle}>Group</div>
+            </div>
+            <div className={styles.groupContent}>
+              {user.groups.map((group, index) => {
+                return (
+                  <Tag
+                    key={"profileTag" + index}
+                    text={group}
+                    showRemoveButton={true}
+                    icon={TAG_ICONS.CROSS}
+                    selectable={false}
+                    // TODO action={() => removeGroupFromProfile(group)}
+                  />
+                );
+              })}
+
+              <div
+                className={styles.plusButton}
+                // TODO onClick={() => setShowAddToGroup(!showAddToGroup)}
+              >
+                <div className={styles.plusButtonIcon}>
+                  <div className={iconStyles.plus} />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 ProfileCard.propTypes = {
@@ -163,3 +259,5 @@ function EditButton({ onClick }) {
     </div>
   );
 }
+
+export default ProfileCard;

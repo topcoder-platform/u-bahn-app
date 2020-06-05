@@ -33,7 +33,7 @@ const NESTEDPROPERTIES = [
 const USERATTRIBUTES = ["isAvailable", "company", "location"];
 
 export default function SearchPage() {
-  const [api] = React.useState(() => new Api({ token: "dummy-auth-token" }));
+  const [api] = React.useState(() => new Api());
   const [page, setPage] = React.useState(1);
   const byPage = 12;
   const [totalResults, setTotalResults] = React.useState(0);
@@ -78,7 +78,7 @@ export default function SearchPage() {
         searchContext.filters[FILTERS.SKILLS].active &&
         searchContext.selectedSkills.length > 0
       ) {
-        criteria.skills = searchContext.selectedSkills;
+        criteria["skill.name"] = searchContext.selectedSkills;
       }
       if (
         searchContext.filters[FILTERS.ACHIEVEMENTS].active &&
@@ -115,31 +115,31 @@ export default function SearchPage() {
         sortBy,
       });
 
-      data = data.map((p) => {
-        NESTEDPROPERTIES.forEach((nestedProperty) => {
-          if (!p[nestedProperty]) {
-            p[nestedProperty] = [];
-          }
-        });
+      // data = data.map((p) => {
+      //   NESTEDPROPERTIES.forEach((nestedProperty) => {
+      //     if (!p[nestedProperty]) {
+      //       p[nestedProperty] = [];
+      //     }
+      //   });
 
-        // TODO - In the original code, p.role used to exist and read from
-        // TODO - attributes. Roles is property on the user object itself and one
-        // TODO - need not read from attribute. So I need to figure out how to accommodate it
+      //   // TODO - In the original code, p.role used to exist and read from
+      //   // TODO - attributes. Roles is property on the user object itself and one
+      //   // TODO - need not read from attribute. So I need to figure out how to accommodate it
 
-        if (p.attributes) {
-          for (let i = 0; i < p.attributes.length; i++) {
-            const userAttribute = p.attributes[i];
+      //   if (p.attributes) {
+      //     for (let i = 0; i < p.attributes.length; i++) {
+      //       const userAttribute = p.attributes[i];
 
-            if (USERATTRIBUTES.includes(userAttribute.attribute.name)) {
-              p[userAttribute.attribute.name] = userAttribute.value;
-            }
-          }
-        }
+      //       if (USERATTRIBUTES.includes(userAttribute.attribute.name)) {
+      //         p[userAttribute.attribute.name] = userAttribute.value;
+      //       }
+      //     }
+      //   }
 
-        p.name = `${p.firstName} ${p.lastName}`;
+      //   p.name = `${p.firstName} ${p.lastName}`;
 
-        return p;
-      });
+      //   return p;
+      // });
 
       const locations = await api.getLocations();
       const skills = await api.getSkills();
@@ -158,7 +158,6 @@ export default function SearchPage() {
     })();
   }, [api, search, page, byPage, sortBy, searchContext]);
 
-  let filteredUsers = users;
   // if (tab === TABS.GROUPS) {
   //   const currentGroup = (groups.find(g => g.current) || {}).name;
   //   if (currentGroup) {
@@ -167,8 +166,6 @@ export default function SearchPage() {
   //     );
   //   }
   // }
-
-  const visibleUsers = filteredUsers;
 
   const handleSort = (attr) => {
     setSortBy(attr);
@@ -188,11 +185,7 @@ export default function SearchPage() {
                 achievements={achievements}
               />
             ) : (
-              <GroupsSideMenu
-                userGroups={myGroups}
-                allGroups={allGroups}
-                profiles={users}
-              />
+              <GroupsSideMenu userGroups={myGroups} allGroups={allGroups} />
             )}
           </div>
           <div className={style.rightSide}>
@@ -248,7 +241,7 @@ export default function SearchPage() {
               </div>
             </div>
             <div>
-              {visibleUsers.map((user, index) => {
+              {users.map((user, index) => {
                 const nextColor = colorIterator.next();
                 return (
                   <ProfileCard
@@ -256,11 +249,6 @@ export default function SearchPage() {
                     key={"profile-" + user.id}
                     profile={user}
                     avatarColor={nextColor.value}
-                    updateUser={async (updatedUser) => {
-                      const u = [...users];
-                      u[index] = await api.updateUser(updatedUser);
-                      setUsers(u);
-                    }}
                   />
                 );
               })}

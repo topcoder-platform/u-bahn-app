@@ -13,13 +13,16 @@ export default class Api {
    * @param {string} [token] Optional. The authentication token to use with API
    *  requests.
    */
-  constructor({ token }) {
+  constructor() {
     this.api = axios.create({
       headers: {
         "Content-Type": "application/json",
       },
     });
-    if (token) this.api.defaults.headers.common.Authorization = token;
+
+    // TODO - Replace with actual token once login is integrated
+    this.api.defaults.headers.common.Authorization =
+      process.env.REACT_APP_DEV_TOKEN;
 
     this.mocks = {
       groups: [
@@ -34,6 +37,19 @@ export default class Api {
       ],
     };
     this.mocks.groups.sort();
+  }
+
+  /**
+   * Returns the attribute id and the value on the user
+   * @param {Object} user The user object
+   * @param {String} attributeName The attribute for which we need details about
+   */
+  _getAttributeDetails(user, attributeName) {
+    const detail = user.attributes.find(
+      (a) => a.attribute.name === attributeName
+    );
+
+    return { id: detail.attribute.id, value: detail.value };
   }
 
   /**
@@ -122,9 +138,9 @@ export default class Api {
         roleId,
         page,
         limit,
-        criteria,
         sortBy,
         enrich: true,
+        ...criteria,
       },
     });
 
@@ -133,30 +149,54 @@ export default class Api {
     return { total, data };
   }
 
+  async updateUserAttribute(attribute) {
+    console.log(attribute);
+    const url = `${config.API_URL}/users/${attribute.userId}/attributes/${attribute.attributeId}`;
+    const payload = { value: attribute.value };
+
+    await this.api.patch(url, payload);
+  }
+
   /**
    * Stores updated user object into API.
    * @param {object} user
+   * @param {String} attribute Which attribute on the user gets updated
    * @return {Promise<object>} Resolves to the resulting user object.
    */
-  async updateUser(user) {
-    const entity = { ...user };
-    delete entity.id;
+  async updateUser(user, attribute) {
+    let url;
+    let payload;
+    let response;
 
-    let data;
+    const { id } = user;
+    switch (attribute) {
+      case config.PRIMARY_ATTRIBUTES.availability:
+        const detail = this._getAttributeDetails(
+          user,
+          config.PRIMARY_ATTRIBUTES.availability
+        );
+        url = `${config.API_URL}/users/${id}/attributes/${detail.id}`;
+        payload = {
+          value: detail.value,
+        };
+        break;
+      default:
+        throw Error(`Unsupported attribute ${attribute}`);
+    }
+
+    console.log(url, payload);
+
+    return user;
 
     try {
-      const response = await this.api.patch(
-        `${config.API_URL}/users/${user.id}`,
-        entity
-      );
-      data = response.data;
+      response = await this.api.patch(url, payload);
     } catch (error) {
       // TODO - What should happen when update fails?
       const mockData = { ...user };
-      data = mockData;
+      response = { data: mockData };
     }
 
-    return data;
+    return response.data;
   }
 
   /**

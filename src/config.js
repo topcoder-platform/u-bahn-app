@@ -9,4 +9,10 @@ export default {
     process.env.REACT_APP_SEARCH_UI_API_URL ||
     "https://u-bahn-search-ui-api-dev.herokuapp.com/api",
   BULK_UPLOAD_TEMPLATE_ID: process.env.REACT_APP_BULK_UPLOAD_TEMPLATE_ID,
+
+  PRIMARY_ATTRIBUTES: {
+    availability: "isAvailable",
+    company: "company",
+    location: "location",
+  },
 };
