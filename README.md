@@ -23,7 +23,7 @@ $ npm install
 // Will install the dependenceis
 ```
 
-followed by
+followed by:
 
 ```bash
 $ npm start
