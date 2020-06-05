@@ -149,8 +149,11 @@ export default class Api {
     return { total, data };
   }
 
+  /**
+   * Updates attributes on a user
+   * @param {Object} attribute The attribute object containing all the details to update the attribute
+   */
   async updateUserAttribute(attribute) {
-    console.log(attribute);
     const url = `${config.API_URL}/users/${attribute.userId}/attributes/${attribute.attributeId}`;
     const payload = { value: attribute.value };
 
@@ -158,45 +161,17 @@ export default class Api {
   }
 
   /**
-   * Stores updated user object into API.
-   * @param {object} user
-   * @param {String} attribute Which attribute on the user gets updated
-   * @return {Promise<object>} Resolves to the resulting user object.
+   * Updates properties that directly exist on the user object
+   * @param {Object} user The data that the user needs to be updated to
    */
-  async updateUser(user, attribute) {
-    let url;
-    let payload;
-    let response;
+  async updateUser(user) {
+    const url = `${config.API_URL}/users/${user.id}`;
+    const payload = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
 
-    const { id } = user;
-    switch (attribute) {
-      case config.PRIMARY_ATTRIBUTES.availability:
-        const detail = this._getAttributeDetails(
-          user,
-          config.PRIMARY_ATTRIBUTES.availability
-        );
-        url = `${config.API_URL}/users/${id}/attributes/${detail.id}`;
-        payload = {
-          value: detail.value,
-        };
-        break;
-      default:
-        throw Error(`Unsupported attribute ${attribute}`);
-    }
-
-    console.log(url, payload);
-
-    return user;
-
-    try {
-      response = await this.api.patch(url, payload);
-    } catch (error) {
-      // TODO - What should happen when update fails?
-      const mockData = { ...user };
-      response = { data: mockData };
-    }
-
-    return response.data;
+    await this.api.patch(url, payload);
   }
 
   /**

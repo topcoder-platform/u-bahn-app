@@ -14,5 +14,7 @@ export default {
     availability: "isAvailable",
     company: "company",
     location: "location",
+    firstName: "firstName",
+    lastName: "lastName",
   },
 };

@@ -115,32 +115,6 @@ export default function SearchPage() {
         sortBy,
       });
 
-      // data = data.map((p) => {
-      //   NESTEDPROPERTIES.forEach((nestedProperty) => {
-      //     if (!p[nestedProperty]) {
-      //       p[nestedProperty] = [];
-      //     }
-      //   });
-
-      //   // TODO - In the original code, p.role used to exist and read from
-      //   // TODO - attributes. Roles is property on the user object itself and one
-      //   // TODO - need not read from attribute. So I need to figure out how to accommodate it
-
-      //   if (p.attributes) {
-      //     for (let i = 0; i < p.attributes.length; i++) {
-      //       const userAttribute = p.attributes[i];
-
-      //       if (USERATTRIBUTES.includes(userAttribute.attribute.name)) {
-      //         p[userAttribute.attribute.name] = userAttribute.value;
-      //       }
-      //     }
-      //   }
-
-      //   p.name = `${p.firstName} ${p.lastName}`;
-
-      //   return p;
-      // });
-
       const locations = await api.getLocations();
       const skills = await api.getSkills();
       const achievements = await api.getAchievements();
