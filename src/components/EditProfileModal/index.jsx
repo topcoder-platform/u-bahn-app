@@ -9,25 +9,29 @@ import ProfileCard from "../ProfileCard";
 
 import style from "./style.module.scss";
 
-import { makeColorIterator, avatarColors } from "../../lib/colors";
-const colorIterator = makeColorIterator(avatarColors);
-const nextColor = colorIterator.next();
-
+// TODO - Role is not an attribute but a nested property on user
+// TODO - Remove it from Common Attribute and use it like other nested attributes (like skill / achievements)
 const COMMON_ATTRIBUTES = ["role", "company", "location", "isAvailable"];
 
 export default function EditProfileModal({ api, onCancel, updateUser, user }) {
-  const [localUser, setLocalUser] = React.useState({ ...user });
+  const [localUser, setLocalUser] = React.useState(user);
   const [skillInputValue, setSkillInputValue] = React.useState("");
-  const [achieInputValue, setAchieInputValue] = React.useState("");
+  const [achievementInputValue, setAchievementInputValue] = React.useState("");
+
+  const updateUserFromChild = (userDataFromChild) => {
+    setLocalUser(userDataFromChild);
+  };
 
   return (
     <Modal className={style.container} onCancel={onCancel}>
       <ProfileCard
         api={api}
         stripped
-        updateUser={setLocalUser}
         profile={localUser}
-        avatarColor={nextColor.value}
+        avatarColor={localUser.avatarColor}
+        saveChanges={false}
+        formatData={false}
+        updateUser={updateUserFromChild}
       />
       <div className={style.editor}>
         <div className={style.header}>
@@ -36,6 +40,7 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
           <Button
             className={style.saveButton}
             onClick={() => {
+              // TODO - pass the update to the parent
               updateUser(localUser);
               onCancel();
             }}
@@ -46,22 +51,33 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
         <h3>General</h3>
         <div className={style.inputs}>
           <Input
-            label="Full name"
+            label="First name"
             onChange={({ target }) => {
               setLocalUser({
                 ...localUser,
-                name: target.value,
+                firstName: target.value,
               });
               setImmediate(() => target.focus());
             }}
-            value={localUser.name}
+            value={localUser.firstName}
+          />
+          <Input
+            label="Last name"
+            onChange={({ target }) => {
+              setLocalUser({
+                ...localUser,
+                lastName: target.value,
+              });
+              setImmediate(() => target.focus());
+            }}
+            value={localUser.lastName}
           />
           <Input
             label="Current role"
             onChange={({ target }) => {
               setLocalUser({
                 ...localUser,
-                attributes: localUser.attributes.map((el) =>
+                attributes: localUser.customAttributes.map((el) =>
                   el.attributeName === "role"
                     ? { ...el, value: target.value }
                     : el
@@ -77,32 +93,28 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
             onChange={({ target }) => {
               setLocalUser({
                 ...localUser,
-                attributes: localUser.attributes.map((el) =>
-                  el.attributeName === "company"
-                    ? { ...el, value: target.value }
-                    : el
-                ),
-                company: target.value,
+                company: {
+                  id: localUser.company.id,
+                  value: target.value,
+                },
               });
               setImmediate(() => target.focus());
             }}
-            value={localUser.company}
+            value={localUser.company.value}
           />
           <Input
             label="Location"
             onChange={({ target }) => {
               setLocalUser({
                 ...localUser,
-                attributes: localUser.attributes.map((el) =>
-                  el.attributeName === "location"
-                    ? { ...el, value: target.value }
-                    : el
-                ),
-                location: target.value,
+                location: {
+                  id: localUser.location.id,
+                  value: target.value,
+                },
               });
               setImmediate(() => target.focus());
             }}
-            value={localUser.location}
+            value={localUser.location.value}
           />
         </div>
         <h3>Skills</h3>
@@ -152,7 +164,7 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
           {localUser.skills.map((it, key) => (
             <Pill
               key={key}
-              name={it.name}
+              name={it.skill.name}
               onRemove={() => {
                 setLocalUser({
                   ...localUser,
@@ -169,7 +181,7 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
             placeholder="Enter achievements to add"
             onKeyUp={({ key }) => {
               if (key === "Enter") {
-                const achie = achieInputValue.trim();
+                const achie = achievementInputValue.trim();
                 if (achie) {
                   setLocalUser({
                     ...localUser,
@@ -181,7 +193,7 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
                     ],
                   });
                 }
-                setAchieInputValue("");
+                setAchievementInputValue("");
               }
             }}
             onChange={({ target }) => {
@@ -201,10 +213,10 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
                 }
                 value = "";
               }
-              setAchieInputValue(value);
+              setAchievementInputValue(value);
               setImmediate(() => target.focus());
             }}
-            value={achieInputValue}
+            value={achievementInputValue}
           />
           {localUser.achievements.map((it, key) => (
             <Pill
@@ -221,7 +233,7 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
         </div>
         <h3>Custom attributes</h3>
         <div className={style.inputs}>
-          {localUser.attributes
+          {localUser.customAttributes
             .filter((attr) => !COMMON_ATTRIBUTES.includes(attr.attributeName))
             .map((attr, key) => (
               <Input
@@ -230,7 +242,7 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
                 onChange={({ target }) => {
                   setLocalUser({
                     ...localUser,
-                    attributes: localUser.attributes.map((el) =>
+                    attributes: localUser.customAttributes.map((el) =>
                       el.attributeName === attr.attributeName
                         ? { ...el, value: target.value }
                         : el
@@ -238,7 +250,7 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
                   });
                   setImmediate(() => target.focus());
                 }}
-                value={localUser.attributes[key].value}
+                value={localUser.customAttributes[key].value}
               />
             ))}
         </div>

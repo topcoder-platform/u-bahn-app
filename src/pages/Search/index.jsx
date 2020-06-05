@@ -17,12 +17,25 @@ import Api from "../../services/api";
 import style from "./style.module.scss";
 import { useSearch, FILTERS } from "../../lib/search";
 import { makeColorIterator, avatarColors } from "../../lib/colors";
+import config from "../../config";
+
 const colorIterator = makeColorIterator(avatarColors);
 
+const NESTEDPROPERTIES = [
+  "skills",
+  "roles",
+  "achievements",
+  "externalProfiles",
+  "attributes",
+  "groups",
+];
+// Attributes of a user that can be found under the nested property `attributes` of the user
+const USERATTRIBUTES = ["isAvailable", "company", "location"];
+
 export default function SearchPage() {
-  const [api] = React.useState(() => new Api({ token: "dummy-auth-token" }));
+  const [api] = React.useState(() => new Api());
   const [page, setPage] = React.useState(1);
-  const byPage = 10;
+  const byPage = 12;
   const [totalResults, setTotalResults] = React.useState(0);
   const [search, setSearch] = React.useState(null);
   const [tab, setTab] = React.useState(TABS.SEARCH);
@@ -34,7 +47,7 @@ export default function SearchPage() {
   const [myGroups, setMyGroups] = React.useState([]);
   const [allGroups, setAllGroups] = React.useState([]);
 
-  const [sortBy, setSortBy] = React.useState("Rating");
+  const [sortBy, setSortBy] = React.useState("Name");
   const [sortByDropdownShown, setSortByDropdownShown] = React.useState(false);
 
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
@@ -65,7 +78,7 @@ export default function SearchPage() {
         searchContext.filters[FILTERS.SKILLS].active &&
         searchContext.selectedSkills.length > 0
       ) {
-        criteria.skills = searchContext.selectedSkills;
+        criteria["skill.name"] = searchContext.selectedSkills;
       }
       if (
         searchContext.filters[FILTERS.ACHIEVEMENTS].active &&
@@ -102,30 +115,6 @@ export default function SearchPage() {
         sortBy,
       });
 
-      data = data.map((p) => {
-        if (!p.groups) p.groups = [];
-        if (!p.skills) p.skills = [];
-        if (!p.achievements) p.achievements = [];
-
-        if (p.attributes && p.attributes.length !== 0) {
-          p.isAvailable = (
-            p.attributes.find((attr) => attr.attributeName === "isAvailable") ||
-            {}
-          ).value;
-          p.title = (
-            p.attributes.find((attr) => attr.attributeName === "role") || {}
-          ).value;
-          p.company = (
-            p.attributes.find((attr) => attr.attributeName === "company") || {}
-          ).value;
-          p.location = (
-            p.attributes.find((attr) => attr.attributeName === "location") || {}
-          ).value;
-        }
-
-        return p;
-      });
-
       const locations = await api.getLocations();
       const skills = await api.getSkills();
       const achievements = await api.getAchievements();
@@ -143,7 +132,6 @@ export default function SearchPage() {
     })();
   }, [api, search, page, byPage, sortBy, searchContext]);
 
-  let filteredUsers = users;
   // if (tab === TABS.GROUPS) {
   //   const currentGroup = (groups.find(g => g.current) || {}).name;
   //   if (currentGroup) {
@@ -152,8 +140,6 @@ export default function SearchPage() {
   //     );
   //   }
   // }
-
-  const visibleUsers = filteredUsers;
 
   const handleSort = (attr) => {
     setSortBy(attr);
@@ -173,11 +159,7 @@ export default function SearchPage() {
                 achievements={achievements}
               />
             ) : (
-              <GroupsSideMenu
-                userGroups={myGroups}
-                allGroups={allGroups}
-                profiles={users}
-              />
+              <GroupsSideMenu userGroups={myGroups} allGroups={allGroups} />
             )}
           </div>
           <div className={style.rightSide}>
@@ -207,14 +189,6 @@ export default function SearchPage() {
                     <li
                       className={style.dropdownItem}
                       onClick={() => {
-                        handleSort("Rating");
-                      }}
-                    >
-                      Rating
-                    </li>
-                    <li
-                      className={style.dropdownItem}
-                      onClick={() => {
                         handleSort("Name");
                       }}
                     >
@@ -231,17 +205,17 @@ export default function SearchPage() {
                     <li
                       className={style.dropdownItem}
                       onClick={() => {
-                        handleSort("Avaibility");
+                        handleSort("Availability");
                       }}
                     >
-                      Avaibility
+                      Availability
                     </li>
                   </ul>
                 )}
               </div>
             </div>
             <div>
-              {visibleUsers.map((user, index) => {
+              {users.map((user, index) => {
                 const nextColor = colorIterator.next();
                 return (
                   <ProfileCard
@@ -249,11 +223,6 @@ export default function SearchPage() {
                     key={"profile-" + user.id}
                     profile={user}
                     avatarColor={nextColor.value}
-                    updateUser={async (updatedUser) => {
-                      const u = [...users];
-                      u[index] = await api.updateUser(updatedUser);
-                      setUsers(u);
-                    }}
                   />
                 );
               })}
@@ -271,7 +240,9 @@ export default function SearchPage() {
       );
       break;
     case TABS.UPLOADS:
-      mainContent = <Upload api={api} templateId="DummyTemplateId" />;
+      mainContent = (
+        <Upload api={api} templateId={config.BULK_UPLOAD_TEMPLATE_ID} />
+      );
       break;
     default:
       throw Error("Invalid tab");

@@ -13,13 +13,16 @@ export default class Api {
    * @param {string} [token] Optional. The authentication token to use with API
    *  requests.
    */
-  constructor({ token }) {
+  constructor() {
     this.api = axios.create({
       headers: {
         "Content-Type": "application/json",
       },
     });
-    if (token) this.api.defaults.headers.common.Authorization = token;
+
+    // TODO - Replace with actual token once login is integrated
+    this.api.defaults.headers.common.Authorization =
+      process.env.REACT_APP_DEV_TOKEN;
 
     this.mocks = {
       groups: [
@@ -34,6 +37,19 @@ export default class Api {
       ],
     };
     this.mocks.groups.sort();
+  }
+
+  /**
+   * Returns the attribute id and the value on the user
+   * @param {Object} user The user object
+   * @param {String} attributeName The attribute for which we need details about
+   */
+  _getAttributeDetails(user, attributeName) {
+    const detail = user.attributes.find(
+      (a) => a.attribute.name === attributeName
+    );
+
+    return { id: detail.attribute.id, value: detail.value };
   }
 
   /**
@@ -83,8 +99,8 @@ export default class Api {
    * @return {Promise<object>} Template meta object.
    */
   async getTemplate(templateId) {
-    const url = `${config.UI_API_BASE}/templates/${templateId}`;
-    const { data } = await axios(url);
+    const url = `${config.SEARCH_UI_API_URL}/templates/${templateId}`;
+    const { data } = await this.api(url);
     return data;
   }
 
@@ -94,9 +110,7 @@ export default class Api {
    * @return {Promise<object>} Resolves to user object.
    */
   async getUser(userId) {
-    const { data } = await this.api(
-      `${config.SEARCH_API_BASE}/users/${userId}`
-    );
+    const { data } = await this.api(`${config.API_URL}/users/${userId}`);
 
     return data;
   }
@@ -117,38 +131,47 @@ export default class Api {
     criteria,
     sortBy,
   } = {}) {
-    let { headers, data } = await this.api(`${config.SEARCH_API_BASE}/users`, {
-      params: { search, groupId, roleId, page, limit, criteria, sortBy },
+    let { headers, data } = await this.api(`${config.API_URL}/users`, {
+      params: {
+        search,
+        groupId,
+        roleId,
+        page,
+        limit,
+        sortBy,
+        enrich: true,
+        ...criteria,
+      },
     });
 
-    const total = headers["x-total-count"] || 0;
+    const total = headers["x-total"] || 0;
 
     return { total, data };
   }
 
   /**
-   * Stores updated user object into API.
-   * @param {object} user
-   * @return {Promise<object>} Resolves to the resulting user object.
+   * Updates attributes on a user
+   * @param {Object} attribute The attribute object containing all the details to update the attribute
+   */
+  async updateUserAttribute(attribute) {
+    const url = `${config.API_URL}/users/${attribute.userId}/attributes/${attribute.attributeId}`;
+    const payload = { value: attribute.value };
+
+    await this.api.patch(url, payload);
+  }
+
+  /**
+   * Updates properties that directly exist on the user object
+   * @param {Object} user The data that the user needs to be updated to
    */
   async updateUser(user) {
-    const entity = { ...user };
-    delete entity.id;
+    const url = `${config.API_URL}/users/${user.id}`;
+    const payload = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
 
-    let data;
-
-    try {
-      const response = await this.api.post(
-        `${config.SEARCH_API_BASE}/users/${user.id}`,
-        entity
-      );
-      data = response.data;
-    } catch (error) {
-      const mockData = { ...user };
-      data = mockData;
-    }
-
-    return data;
+    await this.api.patch(url, payload);
   }
 
   /**
@@ -157,18 +180,19 @@ export default class Api {
    * @param {object} [options]
    * @param {function} [options.onUploadProgress] Optional. Upload progress
    *  callback.
-   * @param {CancelToken} [options.cancelToken] Optional. Cancel token from
-   *  axios.
    * @return {Promise<object>} Resolves to the API response payload.
    */
   async upload(data, options = {}) {
-    const res = await axios.post(`${config.UI_API_BASE}/uploads`, data, {
-      cancelToken: options.cancelToken,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      onUploadProgress: options.onUploadProgress,
-    });
+    const res = await this.api.post(
+      `${config.SEARCH_UI_API_URL}/uploads`,
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: options.onUploadProgress,
+      }
+    );
     return res.data;
   }
 
