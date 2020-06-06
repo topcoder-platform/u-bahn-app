@@ -77,16 +77,14 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
             onChange={({ target }) => {
               setLocalUser({
                 ...localUser,
-                attributes: localUser.customAttributes.map((el) =>
-                  el.attributeName === "role"
-                    ? { ...el, value: target.value }
-                    : el
-                ),
-                title: target.value,
+                title: {
+                  id: localUser.title.id,
+                  value: target.value,
+                },
               });
               setImmediate(() => target.focus());
             }}
-            value={localUser.title}
+            value={localUser.title.value}
           />
           <Input
             label="Company"

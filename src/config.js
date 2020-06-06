@@ -16,5 +16,6 @@ export default {
     location: "location",
     firstName: "firstName",
     lastName: "lastName",
+    title: "title",
   },
 };

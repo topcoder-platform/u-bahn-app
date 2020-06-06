@@ -31,6 +31,7 @@ function getAttributeDetails(profile, attributeName) {
         id: detail.attribute.id,
         value: detail.value === "true",
       };
+    case config.PRIMARY_ATTRIBUTES.title:
     case config.PRIMARY_ATTRIBUTES.company:
     case config.PRIMARY_ATTRIBUTES.location:
       return {
@@ -77,7 +78,7 @@ class ProfileCard extends React.Component {
         groups: [], // TODO
         skills: [], // TODO
         achievements: [], // TODO
-        roles: [], // TODO
+        title: getAttributeDetails(profile, config.PRIMARY_ATTRIBUTES.title),
         isAvailable: getAttributeDetails(
           profile,
           config.PRIMARY_ATTRIBUTES.availability
@@ -184,6 +185,7 @@ class ProfileCard extends React.Component {
 
     for (let i = 0; i < changedKeys.length; i++) {
       switch (changedKeys[i]) {
+        case config.PRIMARY_ATTRIBUTES.title:
         case config.PRIMARY_ATTRIBUTES.availability:
         case config.PRIMARY_ATTRIBUTES.company:
         case config.PRIMARY_ATTRIBUTES.location:
@@ -261,6 +263,7 @@ class ProfileCard extends React.Component {
         payload.attributeId = user.isAvailable.id;
         payload.value = user.isAvailable.value ? "true" : "false";
         break;
+      case config.PRIMARY_ATTRIBUTES.title:
       case config.PRIMARY_ATTRIBUTES.company:
       case config.PRIMARY_ATTRIBUTES.location:
         payload.userId = user.id;
@@ -335,7 +338,7 @@ class ProfileCard extends React.Component {
               <div>@{user.handle}</div>
             </div>
             <div className={styles.mainTitleRow}>
-              <div>{user.role}</div>
+              <div>{user.title.value}</div>
             </div>
             <div className={styles.mainCompanyRow}>
               <div>{user.company.value}</div>
