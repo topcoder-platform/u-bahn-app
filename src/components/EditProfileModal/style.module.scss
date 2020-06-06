@@ -77,3 +77,10 @@
     background: $blue;
   }
 }
+
+.message {
+  @include textTypeB;
+  padding: 3px;
+  max-width: 100%;
+  box-sizing: border-box;
+}

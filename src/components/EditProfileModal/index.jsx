@@ -16,7 +16,6 @@ const COMMON_ATTRIBUTES = ["role", "company", "location", "isAvailable"];
 export default function EditProfileModal({ api, onCancel, updateUser, user }) {
   const [localUser, setLocalUser] = React.useState(user);
   const [skillInputValue, setSkillInputValue] = React.useState("");
-  const [achievementInputValue, setAchievementInputValue] = React.useState("");
 
   const updateUserFromChild = (userDataFromChild) => {
     setLocalUser(userDataFromChild);
@@ -174,60 +173,15 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
         </div>
         <h3>Achievements</h3>
         <div className={style.pillGroup}>
-          <input
-            className={style.input}
-            placeholder="Enter achievements to add"
-            onKeyUp={({ key }) => {
-              if (key === "Enter") {
-                const achie = achievementInputValue.trim();
-                if (achie) {
-                  setLocalUser({
-                    ...localUser,
-                    achievements: [
-                      ...localUser.achievements,
-                      {
-                        name: achie,
-                      },
-                    ],
-                  });
-                }
-                setAchievementInputValue("");
-              }
-            }}
-            onChange={({ target }) => {
-              let { value } = target;
-              if (value.endsWith(",")) {
-                const achie = value.slice(0, -1).trim();
-                if (achie) {
-                  setLocalUser({
-                    ...localUser,
-                    achievements: [
-                      ...localUser.achievements,
-                      {
-                        name: achie,
-                      },
-                    ],
-                  });
-                }
-                value = "";
-              }
-              setAchievementInputValue(value);
-              setImmediate(() => target.focus());
-            }}
-            value={achievementInputValue}
-          />
-          {localUser.achievements.map((it, key) => (
-            <Pill
-              key={key}
-              name={it.name}
-              onRemove={() => {
-                setLocalUser({
-                  ...localUser,
-                  achievements: localUser.achievements.filter((a) => a !== it),
-                });
-              }}
-            />
-          ))}
+          {localUser.achievements.length > 0 &&
+            localUser.achievements.map((value, key) => (
+              <Pill key={key} name={value} removable={false} />
+            ))}
+          {localUser.achievements.length === 0 && (
+            <span className={style.message}>
+              {"This user has no achievements"}
+            </span>
+          )}
         </div>
         <h3>Custom attributes</h3>
         <div className={style.inputs}>

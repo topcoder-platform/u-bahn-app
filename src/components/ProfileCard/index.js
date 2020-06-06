@@ -44,6 +44,17 @@ function getAttributeDetails(profile, attributeName) {
 }
 
 /**
+ * Returns the user's achievements
+ */
+function getAchievements(profile) {
+  const achievements = profile.achievements
+    ? profile.achievements.map((a) => a.name)
+    : [];
+
+  return achievements;
+}
+
+/**
  * Returns the initials for the user using the user name
  * @param {String} userName The user name
  */
@@ -77,7 +88,7 @@ class ProfileCard extends React.Component {
         lastName: profile.lastName,
         groups: [], // TODO
         skills: [], // TODO
-        achievements: [], // TODO
+        achievements: getAchievements(profile),
         title: getAttributeDetails(profile, config.PRIMARY_ATTRIBUTES.title),
         isAvailable: getAttributeDetails(
           profile,
