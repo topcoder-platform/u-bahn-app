@@ -174,6 +174,12 @@ export default class Api {
     await this.api.patch(url, payload);
   }
 
+  async deleteUser(user) {
+    const url = `${config.API_URL}/users/${user.id}`;
+
+    await this.api.delete(url);
+  }
+
   /**
    * Uploads profiles to import.
    * @param {FormData} data Payload to upload.

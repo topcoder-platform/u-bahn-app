@@ -13,63 +13,7 @@ import iconStyles from "../../styles/icons.module.css";
 
 import config from "../../config";
 
-/**
- * Returns the availability of the user
- * Availability is an attribute on the user and thus
- * needs to be extracted from the user's profile
- * @param {Object} profile The user profile
- * @param {String} attributeName The attribute for which the value is requested
- */
-function getAttributeDetails(profile, attributeName) {
-  const detail = profile.attributes.find(
-    (a) => a.attribute.name === attributeName
-  );
-
-  switch (attributeName) {
-    case config.PRIMARY_ATTRIBUTES.availability:
-      return {
-        id: detail.attribute.id,
-        value: detail.value === "true",
-      };
-    case config.PRIMARY_ATTRIBUTES.title:
-    case config.PRIMARY_ATTRIBUTES.company:
-    case config.PRIMARY_ATTRIBUTES.location:
-      return {
-        id: detail.attribute.id,
-        value: detail.value,
-      };
-    default:
-      throw Error(`Unknown attribute ${attributeName}`);
-  }
-}
-
-/**
- * Returns the user's achievements
- */
-function getAchievements(profile) {
-  const achievements = profile.achievements
-    ? profile.achievements.map((a) => a.name)
-    : [];
-
-  return achievements;
-}
-
-/**
- * Returns the initials for the user using the user name
- * @param {String} userName The user name
- */
-function getUserNameInitial(userName) {
-  let initials = userName.match(/\b\w/g) || [];
-  initials = ((initials.shift() || "") + (initials.pop() || "")).toUpperCase();
-
-  return initials;
-}
-
-/**
- * ProfileCard - a profile card component
- * profile: the user profile
- * avatarColor: the color of the avatar
- */
+import * as cardHelper from "./helper";
 
 class ProfileCard extends React.Component {
   constructor(props) {
@@ -88,22 +32,28 @@ class ProfileCard extends React.Component {
         lastName: profile.lastName,
         groups: [], // TODO
         skills: [], // TODO
-        achievements: getAchievements(profile),
-        title: getAttributeDetails(profile, config.PRIMARY_ATTRIBUTES.title),
-        isAvailable: getAttributeDetails(
+        achievements: cardHelper.getAchievements(profile),
+        title: cardHelper.getAttributeDetails(
+          profile,
+          config.PRIMARY_ATTRIBUTES.title
+        ),
+        isAvailable: cardHelper.getAttributeDetails(
           profile,
           config.PRIMARY_ATTRIBUTES.availability
         ),
-        company: getAttributeDetails(
+        company: cardHelper.getAttributeDetails(
           profile,
           config.PRIMARY_ATTRIBUTES.company
         ),
-        location: getAttributeDetails(
+        location: cardHelper.getAttributeDetails(
           profile,
           config.PRIMARY_ATTRIBUTES.location
         ),
         customAttributes: [],
         avatarColor,
+        // Indicates if the user has been deleted. The user is still shown in this case, but with a
+        // clear indicator about its deleted status.
+        isDeleted: false,
       };
     } else {
       // Data is already in the format seen above. No further processing needed
@@ -117,6 +67,7 @@ class ProfileCard extends React.Component {
     };
 
     this.updateUserFromChild = this.updateUserFromChild.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
   }
 
   /**
@@ -288,6 +239,20 @@ class ProfileCard extends React.Component {
     await this.props.api.updateUserAttribute(payload);
   }
 
+  /**
+   * Deletes the user
+   * ! Will call api
+   */
+  async deleteUser() {
+    await this.props.api.deleteUser({ id: this.state.user.id });
+
+    this.toggleEditUserModal();
+
+    this.setState({
+      user: Object.assign(this.state.user, { isDeleted: true }),
+    });
+  }
+
   render() {
     const { api, stripped, avatarColor } = this.props;
     const { user, showManageGroupsModal, showEditUserModal } = this.state;
@@ -314,6 +279,7 @@ class ProfileCard extends React.Component {
             onCancel={() => this.toggleEditUserModal()}
             updateUser={this.updateUserFromChild}
             user={user}
+            deleteUser={this.deleteUser}
           />
         ) : null}
         <div className={styles.profileCardHeaderContainer}>
@@ -323,7 +289,9 @@ class ProfileCard extends React.Component {
               style={{ backgroundColor: avatarColor }}
             >
               <div className={styles.avatarText}>
-                {getUserNameInitial(`${user.firstName} ${user.lastName}`)}
+                {cardHelper.getUserNameInitial(
+                  `${user.firstName} ${user.lastName}`
+                )}
               </div>
             </div>
             <div className={styles.headerControls}>
@@ -388,6 +356,11 @@ class ProfileCard extends React.Component {
             </div>
           </div>
         </div>
+        {user.isDeleted && (
+          <div className={styles.deletedCard}>
+            <span>This user has been deleted</span>
+          </div>
+        )}
       </div>
     );
   }

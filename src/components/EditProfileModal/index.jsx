@@ -13,12 +13,24 @@ import style from "./style.module.scss";
 // TODO - Remove it from Common Attribute and use it like other nested attributes (like skill / achievements)
 const COMMON_ATTRIBUTES = ["role", "company", "location", "isAvailable"];
 
-export default function EditProfileModal({ api, onCancel, updateUser, user }) {
+export default function EditProfileModal({
+  api,
+  onCancel,
+  updateUser,
+  user,
+  deleteUser,
+}) {
   const [localUser, setLocalUser] = React.useState(user);
   const [skillInputValue, setSkillInputValue] = React.useState("");
 
   const updateUserFromChild = (userDataFromChild) => {
     setLocalUser(userDataFromChild);
+  };
+
+  const confirmDeleteUser = () => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      deleteUser();
+    }
   };
 
   return (
@@ -206,7 +218,7 @@ export default function EditProfileModal({ api, onCancel, updateUser, user }) {
               />
             ))}
         </div>
-        <Button className={style.dangerButton} onClick={onCancel}>
+        <Button className={style.dangerButton} onClick={confirmDeleteUser}>
           Delete this user
         </Button>
       </div>
@@ -218,5 +230,6 @@ EditProfileModal.propTypes = {
   api: PT.shape().isRequired,
   onCancel: PT.func.isRequired,
   updateUser: PT.func.isRequired,
+  deleteUser: PT.func.isRequired,
   user: PT.shape().isRequired,
 };
