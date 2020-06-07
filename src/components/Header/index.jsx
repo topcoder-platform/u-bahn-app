@@ -9,6 +9,8 @@ import { ReactComponent as GroupsTabIcon } from "../../assets/images/groups-tab-
 import { ReactComponent as UploadsTabIcon } from "../../assets/images/uploads-tab-icon.svg";
 import { ReactComponent as ZoomIcon } from "../../assets/images/zoom-icon.svg";
 
+import { useAuth0 } from "../../react-auth0-spa";
+
 import style from "./style.module.scss";
 
 export const TABS = {
@@ -37,6 +39,8 @@ export default function Header({
     value = value || searchText;
     onSearch && onSearch(value);
   };
+
+  console.log(useAuth0());
 
   return (
     <div className={style.container}>

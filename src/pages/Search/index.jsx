@@ -34,7 +34,6 @@ function getOrderByText(orderBy) {
 }
 
 export default function SearchPage() {
-  const [api] = React.useState(() => new Api());
   const [page, setPage] = React.useState(1);
   const [totalResults, setTotalResults] = React.useState(0);
   const [search, setSearch] = React.useState(null);
@@ -63,6 +62,7 @@ export default function SearchPage() {
     };
   });
 
+  const api = new Api();
   const searchContext = useSearch();
 
   const usersPerPage = searchContext.pagination.perPage;
@@ -81,7 +81,8 @@ export default function SearchPage() {
       setMyGroups(myGroups);
       setAllGroups(allGroups);
     })();
-  }, [api]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     (async () => {
@@ -148,7 +149,8 @@ export default function SearchPage() {
       setUsers(data);
       setTotalResults(Number(total));
     })();
-  }, [api, search, orderBy, searchContext]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, orderBy, searchContext]);
 
   // if (tab === TABS.GROUPS) {
   //   const currentGroup = (groups.find(g => g.current) || {}).name;

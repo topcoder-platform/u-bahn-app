@@ -22,4 +22,9 @@ export default {
     lastName: "lastName",
     title: "title",
   },
+
+  AUTH0: {
+    domain: "topcoder-dev.auth0.com",
+    clientId: "sY1QEijoXdKsoXXpi7aPZPCqnvl8H36U",
+  },
 };
