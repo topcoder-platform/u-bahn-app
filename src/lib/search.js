@@ -1,5 +1,6 @@
 import React from "react";
 import { createContext, useContext, useState } from "react";
+import config from "../config";
 
 export const FILTERS = {
   LOCATIONS: 0,
@@ -67,6 +68,10 @@ function useProvideSearch() {
   });
   const [popupShown, setPopupShown] = useState(false);
   const [filters, setFilters] = useState(defaultFilters);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    perPage: config.ITEMS_PER_PAGE,
+  });
 
   const showPopup = () => {
     setPopupShown(true);
@@ -93,6 +98,13 @@ function useProvideSearch() {
     setFilters(filters);
   };
 
+  const changePageNumber = (newPageNumber) => {
+    setPagination({
+      ...pagination,
+      page: newPageNumber,
+    });
+  };
+
   return {
     query,
     setQuery,
@@ -112,5 +124,7 @@ function useProvideSearch() {
     activateFilter,
     desactivateFilter,
     desactivateAllFilters,
+    pagination,
+    changePageNumber,
   };
 }

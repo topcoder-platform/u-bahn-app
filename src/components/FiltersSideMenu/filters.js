@@ -209,6 +209,7 @@ function Summary({ filtersApplied }) {
       isAvailableSelected: false,
       isUnavailableSelected: false,
     });
+    search.changePageNumber(1);
   };
 
   return (

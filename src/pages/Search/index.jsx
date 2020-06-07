@@ -21,23 +21,24 @@ import config from "../../config";
 
 const colorIterator = makeColorIterator(avatarColors);
 
-const NESTEDPROPERTIES = [
-  "skills",
-  "roles",
-  "achievements",
-  "externalProfiles",
-  "attributes",
-  "groups",
-];
-// Attributes of a user that can be found under the nested property `attributes` of the user
-const USERATTRIBUTES = ["isAvailable", "company", "location"];
+function getOrderByText(orderBy) {
+  switch (orderBy) {
+    case "location":
+      return "Location";
+    case "isAvailable":
+      return "Availability";
+    case config.DEFAULT_SORT_ORDER:
+    default:
+      return "Name";
+  }
+}
 
 export default function SearchPage() {
   const [api] = React.useState(() => new Api());
   const [page, setPage] = React.useState(1);
-  const byPage = 12;
   const [totalResults, setTotalResults] = React.useState(0);
   const [search, setSearch] = React.useState(null);
+  const [isSearching, setIsSearching] = React.useState(false);
   const [tab, setTab] = React.useState(TABS.SEARCH);
   const [users, setUsers] = React.useState([]);
 
@@ -47,7 +48,7 @@ export default function SearchPage() {
   const [myGroups, setMyGroups] = React.useState([]);
   const [allGroups, setAllGroups] = React.useState([]);
 
-  const [sortBy, setSortBy] = React.useState("Name");
+  const [orderBy, setOrderBy] = React.useState(config.DEFAULT_SORT_ORDER);
   const [sortByDropdownShown, setSortByDropdownShown] = React.useState(false);
 
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
@@ -64,6 +65,24 @@ export default function SearchPage() {
 
   const searchContext = useSearch();
 
+  const usersPerPage = searchContext.pagination.perPage;
+
+  React.useEffect(() => {
+    (async () => {
+      const locations = await api.getLocations();
+      const skills = await api.getSkills();
+      const achievements = await api.getAchievements();
+      const myGroups = await api.getMyGroups();
+      const allGroups = await api.getOtherGroups();
+
+      setLocations(locations);
+      setSkills(skills);
+      setAchievements(achievements);
+      setMyGroups(myGroups);
+      setAllGroups(allGroups);
+    })();
+  }, [api]);
+
   React.useEffect(() => {
     (async () => {
       const criteria = {};
@@ -78,7 +97,7 @@ export default function SearchPage() {
         searchContext.filters[FILTERS.SKILLS].active &&
         searchContext.selectedSkills.length > 0
       ) {
-        criteria["skill.name"] = searchContext.selectedSkills;
+        criteria.skills = searchContext.selectedSkills;
       }
       if (
         searchContext.filters[FILTERS.ACHIEVEMENTS].active &&
@@ -89,8 +108,8 @@ export default function SearchPage() {
       if (searchContext.filters[FILTERS.AVAILABILITY].active) {
         if (
           searchContext.selectedAvailability &&
-          "isAvailableSelected" in searchContext.selectedAvailability &&
-          "isUnavailableSelected" in searchContext.selectedAvailability
+          ("isAvailableSelected" in searchContext.selectedAvailability ||
+            "isUnavailableSelected" in searchContext.selectedAvailability)
         ) {
           const availabilityFilter = searchContext.selectedAvailability;
           if (
@@ -102,35 +121,34 @@ export default function SearchPage() {
             !availabilityFilter.isAvailableSelected &&
             availabilityFilter.isUnavailableSelected
           ) {
-            criteria.isUnavailable = true;
+            criteria.isAvailable = false;
           }
         }
       }
 
+      setIsSearching(true);
+      setUsers([]);
+
       let { total, data } = await api.getUsers({
         search: search,
         criteria,
-        page: page,
-        limit: byPage,
-        sortBy,
+        page: searchContext.pagination.page,
+        limit: searchContext.pagination.perPage,
+        orderBy,
       });
 
-      const locations = await api.getLocations();
-      const skills = await api.getSkills();
-      const achievements = await api.getAchievements();
-      const myGroups = await api.getMyGroups();
-      const allGroups = await api.getOtherGroups();
+      setIsSearching(false);
+
+      // Set the profile background color for each user
+      data.forEach((u) => {
+        const nextColor = colorIterator.next();
+        u.avatarColor = nextColor.value;
+      });
 
       setUsers(data);
       setTotalResults(Number(total));
-
-      setLocations(locations);
-      setSkills(skills);
-      setAchievements(achievements);
-      setMyGroups(myGroups);
-      setAllGroups(allGroups);
     })();
-  }, [api, search, page, byPage, sortBy, searchContext]);
+  }, [api, search, orderBy, searchContext]);
 
   // if (tab === TABS.GROUPS) {
   //   const currentGroup = (groups.find(g => g.current) || {}).name;
@@ -142,7 +160,7 @@ export default function SearchPage() {
   // }
 
   const handleSort = (attr) => {
-    setSortBy(attr);
+    setOrderBy(attr);
   };
 
   let mainContent;
@@ -162,80 +180,99 @@ export default function SearchPage() {
               <GroupsSideMenu userGroups={myGroups} allGroups={allGroups} />
             )}
           </div>
-          <div className={style.rightSide}>
-            <div className={style.cardsHeader}>
-              <div className={style.visibleCardsInfo}>
-                Showing {byPage * page - (byPage - 1)}-
-                {byPage * page > totalResults ? totalResults : byPage * page} of{" "}
-                {totalResults} profiles
+          {!isSearching && users.length > 0 && (
+            <div className={style.rightSide}>
+              <div className={style.cardsHeader}>
+                <div className={style.visibleCardsInfo}>
+                  Showing {usersPerPage * page - (usersPerPage - 1)}-
+                  {usersPerPage * page > totalResults
+                    ? totalResults
+                    : usersPerPage * page}{" "}
+                  of {totalResults} profiles
+                </div>
+                <div
+                  className={style.sort}
+                  onClick={() => setSortByDropdownShown(!sortByDropdownShown)}
+                  style={{
+                    marginRight:
+                      windowWidth > 1280
+                        ? windowWidth -
+                          460 -
+                          Math.floor((windowWidth - 460) / 392) * 392
+                        : 0,
+                  }}
+                >
+                  Sort by
+                  {!!orderBy && (
+                    <span className={style.sortMode}>
+                      {getOrderByText(orderBy)}
+                    </span>
+                  )}
+                  <DownArrowIcon />
+                  {sortByDropdownShown && (
+                    <ul className={style.dropdown}>
+                      <li
+                        className={style.dropdownItem}
+                        onClick={() => handleSort("name")}
+                      >
+                        Name
+                      </li>
+                      <li
+                        className={style.dropdownItem}
+                        onClick={() => handleSort("location")}
+                      >
+                        Location
+                      </li>
+                      <li
+                        className={style.dropdownItem}
+                        onClick={() => handleSort("isAvailable")}
+                      >
+                        Availability
+                      </li>
+                    </ul>
+                  )}
+                </div>
               </div>
-              <div
-                className={style.sort}
-                onClick={() => setSortByDropdownShown(!sortByDropdownShown)}
-                style={{
-                  marginRight:
-                    windowWidth > 1280
-                      ? windowWidth -
-                        460 -
-                        Math.floor((windowWidth - 460) / 392) * 392
-                      : 0,
-                }}
-              >
-                Sort by
-                {!!sortBy && <span className={style.sortMode}>{sortBy}</span>}
-                <DownArrowIcon />
-                {sortByDropdownShown && (
-                  <ul className={style.dropdown}>
-                    <li
-                      className={style.dropdownItem}
-                      onClick={() => {
-                        handleSort("Name");
-                      }}
-                    >
-                      Name
-                    </li>
-                    <li
-                      className={style.dropdownItem}
-                      onClick={() => {
-                        handleSort("Location");
-                      }}
-                    >
-                      Location
-                    </li>
-                    <li
-                      className={style.dropdownItem}
-                      onClick={() => {
-                        handleSort("Availability");
-                      }}
-                    >
-                      Availability
-                    </li>
-                  </ul>
-                )}
+              <div>
+                {users.map((user, index) => {
+                  return (
+                    <ProfileCard
+                      api={api}
+                      key={"profile-" + user.id}
+                      profile={user}
+                      avatarColor={user.avatarColor}
+                    />
+                  );
+                })}
+              </div>
+              <div>
+                <Pagination
+                  currentPage={page}
+                  itemsPerPage={usersPerPage}
+                  numPages={totalResults}
+                  onPage={setPage}
+                />
               </div>
             </div>
-            <div>
-              {users.map((user, index) => {
-                const nextColor = colorIterator.next();
-                return (
-                  <ProfileCard
-                    api={api}
-                    key={"profile-" + user.id}
-                    profile={user}
-                    avatarColor={nextColor.value}
-                  />
-                );
-              })}
+          )}
+          {isSearching && (
+            <div className={style.rightSide}>
+              <div className={style.cardsHeader}>
+                <div className={style.visibleCardsInfo}>
+                  Loading users. This can take some time. Please wait...
+                </div>
+              </div>
             </div>
-            <div>
-              <Pagination
-                currentPage={page}
-                byPage={byPage}
-                numPages={totalResults}
-                onPage={setPage}
-              />
+          )}
+          {!isSearching && users.length === 0 && (
+            <div className={style.rightSide}>
+              <div className={style.cardsHeader}>
+                <div className={style.visibleCardsInfo}>
+                  No users found. Try applying a different filter.
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </>
       );
       break;

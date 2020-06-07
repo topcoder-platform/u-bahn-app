@@ -26,6 +26,7 @@ export default function Availability({
     setIsAvailableSelected(newValue);
     search[selector]({
       isAvailableSelected: newValue,
+      isUnavailableSelected,
     });
   };
 
@@ -34,6 +35,7 @@ export default function Availability({
     setIsUnavailableSelected(newValue);
     search[selector]({
       isUnavailableSelected: newValue,
+      isAvailableSelected,
     });
   };
 
