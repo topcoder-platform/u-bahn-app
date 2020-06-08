@@ -64,3 +64,15 @@ export function getUserNameInitial(userName) {
 
   return initials;
 }
+
+export async function updateUserSkills(api, { id, skills }) {
+  let url;
+
+  for (let i = 0; i < skills.length; i++) {
+    if (skills[i].isDeleted) {
+      url = `${config.API_URL}/users/${id}/skills/${skills[i].id}`;
+
+      await api.delete(url);
+    }
+  }
+}

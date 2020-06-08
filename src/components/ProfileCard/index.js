@@ -156,6 +156,7 @@ class ProfileCard extends React.Component {
    * @param {Array} changedKeys The properties on the user object that have changed
    */
   async updateUser(changedKeys) {
+    console.log(changedKeys);
     const { user } = this.state;
     const url = `${config.API_URL}/users/${user.id}`;
     let updatedName = false;
@@ -163,6 +164,15 @@ class ProfileCard extends React.Component {
 
     for (let i = 0; i < changedKeys.length; i++) {
       switch (changedKeys[i]) {
+        case config.PRIMARY_ATTRIBUTES.skills:
+          try {
+            await cardHelper.updateUserSkills(this.props.api, user);
+          } catch (error) {
+            console.log(error);
+            // TODO - Handle errors
+          }
+
+          break;
         case config.PRIMARY_ATTRIBUTES.title:
         case config.PRIMARY_ATTRIBUTES.availability:
         case config.PRIMARY_ATTRIBUTES.company:

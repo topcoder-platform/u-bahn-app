@@ -42,6 +42,20 @@ export default function EditProfileModal({
     }
   };
 
+  /**
+   * Marks the skill for deletion
+   * @param {String} skillId The skill id of the skill to delete
+   */
+  const deleteSkill = (skillId) => {
+    const index = localUser.skills.findIndex((item) => item.id === skillId);
+
+    const skills = JSON.parse(JSON.stringify(localUser.skills));
+
+    skills[index].isDeleted = true;
+
+    setLocalUser({ ...localUser, skills });
+  };
+
   return (
     <Modal className={style.container} onCancel={onCancel}>
       <ProfileCard
@@ -185,20 +199,17 @@ export default function EditProfileModal({
             placeholder="Enter skill to add"
             value={skillInputValue}
           />
-          {localUser.skills.map((item, key) => (
-            <Pill
-              key={key}
-              name={item.name}
-              onRemove={() => {
-                setLocalUser({
-                  ...localUser,
-                  skills: localUser.skills.filter(
-                    (skill) => skill.id !== item.id
-                  ),
-                });
-              }}
-            />
-          ))}
+          {localUser.skills
+            .filter((item) => !item.isDeleted)
+            .map((item, key) => (
+              <Pill
+                key={key}
+                name={item.name}
+                onRemove={() => {
+                  deleteSkill(item.id);
+                }}
+              />
+            ))}
         </div>
         <h3>Achievements</h3>
         <div className={style.pillGroup}>

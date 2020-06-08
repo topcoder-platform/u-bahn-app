@@ -18,10 +18,12 @@ export default {
     firstName: "firstName",
     lastName: "lastName",
     title: "title",
+    skills: "skills",
   },
 
   AUTH0: {
     domain: process.env.REACT_APP_AUTH0_DOMAIN,
     clientId: process.env.REACT_APP_AUTH0_CLIENTID,
+    audience: process.env.REACT_APP_AUTH0_AUDIENCE,
   },
 };

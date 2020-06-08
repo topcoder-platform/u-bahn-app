@@ -8,7 +8,7 @@ import axios from "axios";
 import { useAuth0 } from "../react-auth0-spa";
 
 export default () => {
-  const { getIdTokenClaims, loginWithRedirect } = useAuth0();
+  const { getTokenSilently, loginWithRedirect } = useAuth0();
   const api = useRef(
     axios.create({
       headers: {
@@ -24,7 +24,7 @@ export default () => {
         if (process.env.REACT_APP_DEV_TOKEN) {
           token = process.env.REACT_APP_DEV_TOKEN;
         } else {
-          token = (await getIdTokenClaims()).__raw;
+          token = await getTokenSilently();
         }
         config.headers.authorization = `Bearer ${token}`;
         config.cancelToken = axios.CancelToken.source().token;
