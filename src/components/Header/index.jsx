@@ -28,6 +28,7 @@ export default function Header({
 }) {
   const [org, setOrg] = React.useState({});
   const [searchText, setSearchText] = React.useState();
+  const [showAccountDropdown, setShowAccountDropdown] = React.useState(false);
 
   React.useEffect(() => {
     (async () => {
@@ -40,7 +41,19 @@ export default function Header({
     onSearch && onSearch(value);
   };
 
-  console.log(useAuth0());
+  const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
+  const logoutWithRedirect = () => {
+    logout({
+      redirect: window.location.origin,
+    });
+  };
+
+  if (!isAuthenticated) {
+    loginWithRedirect({});
+
+    return null;
+  }
 
   return (
     <div className={style.container}>
@@ -62,9 +75,22 @@ export default function Header({
             placeholder="Search talent or keyword"
           />
         </div>
-        <div className={style.accountMenu}>
-          Ashton W
+        <div
+          className={style.accountMenu}
+          onClick={() => setShowAccountDropdown(!showAccountDropdown)}
+        >
+          {user.nickname}
           <DownArrow className={style.downArrow} />
+          {showAccountDropdown && (
+            <ul className={style.dropdown}>
+              <li
+                className={style.dropdownItem}
+                onClick={() => logoutWithRedirect()}
+              >
+                Logout
+              </li>
+            </ul>
+          )}
         </div>
       </div>
       <div className={style.bottom}>

@@ -58,9 +58,9 @@ export default function Pagination({ currentPage, itemsPerPage, numPages }) {
   buttons.push(
     <button
       className={`${style.button} ${
-        currentPage === numPages / itemsPerPage ? style.disabled : ""
+        currentPage === numPages ? style.disabled : ""
       }`}
-      disabled={currentPage === numPages / itemsPerPage}
+      disabled={currentPage === numPages}
       onClick={() => search.changePageNumber(currentPage + 1)}
       key="next"
     >

@@ -173,9 +173,7 @@ export default class Api {
     //   },
     // });
 
-    const total = headers["x-total"] || 0;
-
-    return { total, data };
+    return { headers, data };
   }
 
   /**

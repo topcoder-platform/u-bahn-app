@@ -12,7 +12,7 @@ REACT_APP_SEARCH_UI_API_URL => The endpoint from which the user can download the
 REACT_BULK_UPLOAD_TEMPLATE_ID => The id of the database record which is associated with the bulk upload template file. You would need to query the endpoint under REACT_APP_SEARCH_UI_API_URL to get the id and then set it against this variable
 ```
 
-You can create a `.env.local` file and provide the above configuration.
+You can create a `.env.local` file and provide the above configuration. Note that there's more configuration that you can change and you can find this under `src/config.js`. The above configurations are the minimum ones, that you need to launch the app successfully.
 
 Once the configuration is set, you can proceed to deploy.
 

@@ -36,6 +36,7 @@ function getOrderByText(orderBy) {
 export default function SearchPage() {
   const [page, setPage] = React.useState(1);
   const [totalResults, setTotalResults] = React.useState(0);
+  const [totalPages, setTotalPages] = React.useState(0);
   const [search, setSearch] = React.useState(null);
   const [isSearching, setIsSearching] = React.useState(false);
   const [tab, setTab] = React.useState(TABS.SEARCH);
@@ -126,11 +127,14 @@ export default function SearchPage() {
           }
         }
       }
+      if (searchContext.pagination.page !== page) {
+        setPage(page);
+      }
 
       setIsSearching(true);
       setUsers([]);
 
-      let { total, data } = await api.getUsers({
+      let { headers, data } = await api.getUsers({
         search: search,
         criteria,
         page: searchContext.pagination.page,
@@ -147,7 +151,8 @@ export default function SearchPage() {
       });
 
       setUsers(data);
-      setTotalResults(Number(total));
+      setTotalResults(Number(headers["x-total"]));
+      setTotalPages(Number(headers["x-total-pages"]));
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, orderBy, searchContext]);
@@ -251,8 +256,7 @@ export default function SearchPage() {
                 <Pagination
                   currentPage={page}
                   itemsPerPage={usersPerPage}
-                  numPages={totalResults}
-                  onPage={setPage}
+                  numPages={totalPages}
                 />
               </div>
             </div>

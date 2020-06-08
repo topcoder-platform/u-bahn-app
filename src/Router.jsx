@@ -13,7 +13,7 @@ import history from "./lib/history";
 import loader from "./assets/images/loading.svg";
 
 export default function AppRouter() {
-  const { loading, isAuthenticated, loginWithRedirect } = useAuth0();
+  const { loading } = useAuth0();
 
   if (loading) {
     return (
@@ -34,10 +34,6 @@ export default function AppRouter() {
         <img src={loader} alt="Loading" />
       </div>
     );
-  }
-
-  if (!isAuthenticated) {
-    return loginWithRedirect({});
   }
 
   return (
