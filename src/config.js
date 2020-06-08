@@ -21,7 +21,7 @@ export default {
   },
 
   AUTH0: {
-    domain: "topcoder-dev.auth0.com",
-    clientId: "sY1QEijoXdKsoXXpi7aPZPCqnvl8H36U",
+    domain: process.env.REACT_APP_AUTH0_DOMAIN,
+    clientId: process.env.REACT_APP_AUTH0_CLIENTID,
   },
 };
