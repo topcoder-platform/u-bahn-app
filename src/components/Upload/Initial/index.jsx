@@ -5,12 +5,13 @@
 import React from "react";
 import PT from "prop-types";
 
-import Api from "../../../services/api";
+import api from "../../../services/api";
 
 import spreadsheetIcon from "../../../assets/images/spreadsheet-icon.svg";
 
 import style from "./style.module.scss";
 import Message from "../Message";
+import config from "../../../config";
 
 /**
  *
@@ -18,15 +19,17 @@ import Message from "../Message";
  *  called with errors happening during HTTP calls handled by the component.
  * @param {string} templateId XLS template ID.
  */
-export default function Initial({ api, onError, onUpload, templateId }) {
+export default function Initial({ onError, onUpload, templateId }) {
+  const apiClient = api();
   const [dragover, setDragover] = React.useState(false);
   const fileInputRef = React.useRef();
 
   const [invalidFileExtension, setInvalidFileExtension] = React.useState(false);
 
   const downloadTemplate = async () => {
+    const url = `${config.SEARCH_UI_API_URL}/templates/${templateId}`;
     try {
-      const data = await api.getTemplate(templateId);
+      const { data } = await apiClient.get(url);
       window.location = data.url;
     } catch (error) {
       if (onError) onError(error.toJSON());
@@ -102,7 +105,6 @@ export default function Initial({ api, onError, onUpload, templateId }) {
 }
 
 Initial.propTypes = {
-  api: PT.instanceOf(Api).isRequired,
   onError: PT.func,
   onUpload: PT.func.isRequired,
   templateId: PT.string.isRequired,

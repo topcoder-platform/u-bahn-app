@@ -3,11 +3,13 @@ import React from "react";
 import FormData from "form-data";
 import PT from "prop-types";
 
-import Api from "../../services/api";
+import api from "../../services/api";
 import Container from "./Container";
 import Initial from "./Initial";
 import Message from "./Message";
 import Progress from "./Progress";
+
+import config from "../../config";
 
 const STATES = {
   INITIAL: "INITIAL",
@@ -16,7 +18,7 @@ const STATES = {
   UPLOADING: "UPLOADING",
 };
 
-export default function Upload({ api, templateId }) {
+export default function Upload({ templateId }) {
   const [state, setState] = React.useState({
     type: STATES.INITIAL,
     data: null,
@@ -34,14 +36,22 @@ export default function Upload({ api, templateId }) {
   };
 
   const upload = async (file) => {
+    const apiClient = api();
+    const url = `${config.SEARCH_UI_API_URL}/uploads`;
     const data = new FormData();
+
     data.append("upload", file);
+
     setState({
       type: STATES.UPLOADING,
       data: { progress: 0 },
     });
+
     try {
-      await api.upload(data, {
+      await apiClient.post(url, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
         onUploadProgress: ({ loaded, total }) => {
           setState({
             type: STATES.UPLOADING,
@@ -51,6 +61,7 @@ export default function Upload({ api, templateId }) {
           });
         },
       });
+
       setState({
         type: STATES.MESSAGE,
         data: {
@@ -78,7 +89,6 @@ export default function Upload({ api, templateId }) {
     case STATES.INITIAL:
       content = (
         <Initial
-          api={api}
           onError={showError}
           onUpload={upload}
           templateId={templateId}
@@ -95,6 +105,5 @@ export default function Upload({ api, templateId }) {
 }
 
 Upload.propTypes = {
-  api: PT.instanceOf(Api).isRequired,
   templateId: PT.string.isRequired,
 };

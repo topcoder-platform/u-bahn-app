@@ -78,6 +78,13 @@
   }
 }
 
+.disabledButton {
+  background: $blue !important;
+  border: none;
+  color: $white;
+  margin-left: 20px;
+}
+
 .message {
   @include textTypeB;
   padding: 3px;

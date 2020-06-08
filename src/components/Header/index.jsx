@@ -1,7 +1,7 @@
 import React from "react";
 import PT from "prop-types";
 
-import Api from "../../services/api";
+import staticData from "../../services/static-data";
 
 import { ReactComponent as DownArrow } from "../../assets/images/down-arrow.svg";
 import { ReactComponent as SearchTabIcon } from "../../assets/images/search-tab-icon.svg";
@@ -20,7 +20,6 @@ export const TABS = {
 };
 
 export default function Header({
-  api,
   currentTab,
   onSearch,
   onTabChange,
@@ -32,9 +31,9 @@ export default function Header({
 
   React.useEffect(() => {
     (async () => {
-      setOrg(await api.getOrganization(organizationId));
+      setOrg(await staticData.getOrganization(organizationId));
     })();
-  }, [api, organizationId]);
+  }, [organizationId]);
 
   const handleSearch = (value) => {
     value = value || searchText;
@@ -125,7 +124,6 @@ export default function Header({
 }
 
 Header.propTypes = {
-  api: PT.instanceOf(Api).isRequired,
   currentTab: PT.oneOf(Object.values(TABS)),
   onSearch: PT.func.isRequired,
   onTabChange: PT.func.isRequired,

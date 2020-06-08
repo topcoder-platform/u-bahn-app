@@ -15,6 +15,8 @@ import config from "../../config";
 
 import * as cardHelper from "./helper";
 
+import withApiHook from "../../lib/withApiHook";
+
 class ProfileCard extends React.Component {
   constructor(props) {
     super(props);
@@ -64,6 +66,7 @@ class ProfileCard extends React.Component {
       user,
       showManageGroupsModal: false,
       showEditUserModal: false,
+      updatingAvailability: false,
     };
 
     this.updateUserFromChild = this.updateUserFromChild.bind(this);
@@ -99,9 +102,21 @@ class ProfileCard extends React.Component {
 
         user.isAvailable.value = !user.isAvailable.value;
 
-        return { user };
+        const updatingAvailability = !prevState.updatingAvailability;
+
+        return { user, updatingAvailability };
       },
-      () => this.updateUserAttribute(config.PRIMARY_ATTRIBUTES.availability)
+      async () => {
+        try {
+          await this.updateUserAttribute(
+            config.PRIMARY_ATTRIBUTES.availability
+          );
+        } catch (error) {
+          console.log(error);
+          // TODO - Handle error
+        }
+        this.setState({ updatingAvailability: false });
+      }
     );
   }
 
@@ -142,6 +157,7 @@ class ProfileCard extends React.Component {
    */
   async updateUser(changedKeys) {
     const { user } = this.state;
+    const url = `${config.API_URL}/users/${user.id}`;
     let updatedName = false;
     let payload;
 
@@ -151,7 +167,12 @@ class ProfileCard extends React.Component {
         case config.PRIMARY_ATTRIBUTES.availability:
         case config.PRIMARY_ATTRIBUTES.company:
         case config.PRIMARY_ATTRIBUTES.location:
-          await this.updateUserAttribute(changedKeys[i]);
+          try {
+            await this.updateUserAttribute(changedKeys[i]);
+          } catch (error) {
+            console.log(error);
+            // TODO - Handle errors
+          }
 
           break;
         case config.PRIMARY_ATTRIBUTES.firstName:
@@ -159,19 +180,22 @@ class ProfileCard extends React.Component {
           if (!updatedName) {
             if (changedKeys.includes(config.PRIMARY_ATTRIBUTES.lastName)) {
               payload = {
-                id: user.id,
                 firstName: user.firstName,
                 lastName: user.lastName,
               };
               updatedName = true;
             } else {
               payload = {
-                id: user.id,
                 firstName: user.firstName,
               };
             }
 
-            await this.props.api.updateUser(payload);
+            try {
+              await this.props.api.patch(url, payload);
+            } catch (error) {
+              console.log(error);
+              // TODO - handle errors
+            }
           }
 
           break;
@@ -180,19 +204,22 @@ class ProfileCard extends React.Component {
           if (!updatedName) {
             if (changedKeys.includes(config.PRIMARY_ATTRIBUTES.firstName)) {
               payload = {
-                id: user.id,
                 firstName: user.firstName,
                 lastName: user.lastName,
               };
               updatedName = true;
             } else {
               payload = {
-                id: user.id,
                 lastName: user.lastName,
               };
             }
 
-            await this.props.api.updateUser(payload);
+            try {
+              await this.props.api.patch(url, payload);
+            } catch (error) {
+              console.log(error);
+              // TODO - handle errors
+            }
           }
 
           break;
@@ -201,6 +228,8 @@ class ProfileCard extends React.Component {
         // TODO throw Error(`Unknown attribute ${changedKeys[i]}`);
       }
     }
+
+    this.toggleEditUserModal();
   }
 
   /**
@@ -236,7 +265,9 @@ class ProfileCard extends React.Component {
         throw Error(`Unknown attribute name ${attributeName}`);
     }
 
-    await this.props.api.updateUserAttribute(payload);
+    const url = `${config.API_URL}/users/${payload.userId}/attributes/${payload.attributeId}`;
+
+    await this.props.api.patch(url, { value: payload.value });
   }
 
   /**
@@ -244,7 +275,8 @@ class ProfileCard extends React.Component {
    * ! Will call api
    */
   async deleteUser() {
-    await this.props.api.deleteUser({ id: this.state.user.id });
+    const url = `${config.API_URL}/users/${this.state.user.id}`;
+    await this.props.api.delete(url);
 
     this.toggleEditUserModal();
 
@@ -254,8 +286,13 @@ class ProfileCard extends React.Component {
   }
 
   render() {
-    const { api, stripped, avatarColor } = this.props;
-    const { user, showManageGroupsModal, showEditUserModal } = this.state;
+    const { stripped, avatarColor } = this.props;
+    const {
+      user,
+      showManageGroupsModal,
+      showEditUserModal,
+      updatingAvailability,
+    } = this.state;
 
     let containerStyle = styles.profileCard;
 
@@ -267,7 +304,6 @@ class ProfileCard extends React.Component {
       <div className={containerStyle}>
         {showManageGroupsModal ? (
           <AddToGroupModal
-            api={api}
             onCancel={() => this.toggleManageGroupsModal()}
             // TODO updateUser={updateUser}
             user={user}
@@ -275,7 +311,6 @@ class ProfileCard extends React.Component {
         ) : null}
         {showEditUserModal ? (
           <EditProfileModal
-            api={api}
             onCancel={() => this.toggleEditUserModal()}
             updateUser={this.updateUserFromChild}
             user={user}
@@ -295,7 +330,13 @@ class ProfileCard extends React.Component {
               </div>
             </div>
             <div className={styles.headerControls}>
-              <div className={styles.headerControlsText}>
+              <div
+                className={
+                  updatingAvailability
+                    ? styles.headerControlsUpdateText
+                    : styles.headerControlsText
+                }
+              >
                 {user.isAvailable.value ? "Available" : "Unavailable"}
               </div>
               <Switch
@@ -385,4 +426,4 @@ function EditButton({ onClick }) {
   );
 }
 
-export default ProfileCard;
+export default withApiHook(ProfileCard);

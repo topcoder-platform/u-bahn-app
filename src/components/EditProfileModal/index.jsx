@@ -14,7 +14,6 @@ import style from "./style.module.scss";
 const COMMON_ATTRIBUTES = ["role", "company", "location", "isAvailable"];
 
 export default function EditProfileModal({
-  api,
   onCancel,
   updateUser,
   user,
@@ -22,9 +21,17 @@ export default function EditProfileModal({
 }) {
   const [localUser, setLocalUser] = React.useState(user);
   const [skillInputValue, setSkillInputValue] = React.useState("");
+  const [isSavingChanges, setIsSavingChanges] = React.useState(false);
 
   const updateUserFromChild = (userDataFromChild) => {
-    setLocalUser(userDataFromChild);
+    // Only availability can be updated
+    setLocalUser({
+      ...localUser,
+      isAvailable: {
+        id: localUser.isAvailable.id,
+        value: userDataFromChild.isAvailable.value,
+      },
+    });
   };
 
   const confirmDeleteUser = () => {
@@ -36,7 +43,6 @@ export default function EditProfileModal({
   return (
     <Modal className={style.container} onCancel={onCancel}>
       <ProfileCard
-        api={api}
         stripped
         profile={localUser}
         avatarColor={localUser.avatarColor}
@@ -47,16 +53,20 @@ export default function EditProfileModal({
       <div className={style.editor}>
         <div className={style.header}>
           <h1>Edit Profile</h1>
-          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={onCancel} disabled={isSavingChanges}>
+            Cancel
+          </Button>
           <Button
-            className={style.saveButton}
+            className={
+              isSavingChanges ? style.disabledButton : style.saveButton
+            }
             onClick={() => {
-              // TODO - pass the update to the parent
+              setIsSavingChanges(true);
               updateUser(localUser);
-              onCancel();
             }}
+            disabled={isSavingChanges}
           >
-            Save
+            {isSavingChanges ? "Saving changes, please wait..." : "Save"}
           </Button>
         </div>
         <h3>General</h3>
@@ -227,7 +237,6 @@ export default function EditProfileModal({
 }
 
 EditProfileModal.propTypes = {
-  api: PT.shape().isRequired,
   onCancel: PT.func.isRequired,
   updateUser: PT.func.isRequired,
   deleteUser: PT.func.isRequired,

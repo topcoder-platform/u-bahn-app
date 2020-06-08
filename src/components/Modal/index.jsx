@@ -4,7 +4,7 @@ import PT from "prop-types";
 
 import style from "./style.module.scss";
 
-export default function Modal({ children, className, onCancel }) {
+export default function Modal({ children, className }) {
   const [portal, setPortal] = React.useState();
 
   React.useEffect(() => {
@@ -32,10 +32,6 @@ export default function Modal({ children, className, onCancel }) {
           </div>
           <button
             aria-label="Cancel"
-            onKeyDown={(e) => {
-              if (e.key === "Escape") onCancel();
-            }}
-            onClick={() => onCancel()}
             className={style.overlay}
             ref={(node) => {
               if (node) {
@@ -53,5 +49,4 @@ export default function Modal({ children, className, onCancel }) {
 Modal.propTypes = {
   children: PT.node,
   className: PT.string,
-  onCancel: PT.func,
 };

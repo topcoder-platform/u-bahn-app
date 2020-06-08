@@ -12,12 +12,15 @@ import ProfileCard from "../../components/ProfileCard";
 import Upload from "../../components/Upload";
 
 import { ReactComponent as DownArrowIcon } from "../../assets/images/down-arrow.svg";
-import Api from "../../services/api";
+import api from "../../services/api";
+import staticData from "../../services/static-data";
 
 import style from "./style.module.scss";
 import { useSearch, FILTERS } from "../../lib/search";
 import { makeColorIterator, avatarColors } from "../../lib/colors";
 import config from "../../config";
+import { useAuth0 } from "../../react-auth0-spa";
+import helper from "./helper";
 
 const colorIterator = makeColorIterator(avatarColors);
 
@@ -34,6 +37,8 @@ function getOrderByText(orderBy) {
 }
 
 export default function SearchPage() {
+  const apiClient = api();
+  const { isLoading, isAuthenticated } = useAuth0();
   const [page, setPage] = React.useState(1);
   const [totalResults, setTotalResults] = React.useState(0);
   const [totalPages, setTotalPages] = React.useState(0);
@@ -63,18 +68,21 @@ export default function SearchPage() {
     };
   });
 
-  const api = new Api();
   const searchContext = useSearch();
 
   const usersPerPage = searchContext.pagination.perPage;
 
   React.useEffect(() => {
+    if (isLoading || !isAuthenticated) {
+      return;
+    }
+
     (async () => {
-      const locations = await api.getLocations();
-      const skills = await api.getSkills();
-      const achievements = await api.getAchievements();
-      const myGroups = await api.getMyGroups();
-      const allGroups = await api.getOtherGroups();
+      const locations = await staticData.getLocations();
+      const skills = await staticData.getSkills();
+      const achievements = await staticData.getAchievements();
+      const myGroups = await staticData.getMyGroups();
+      const allGroups = await staticData.getOtherGroups();
 
       setLocations(locations);
       setSkills(skills);
@@ -83,9 +91,13 @@ export default function SearchPage() {
       setAllGroups(allGroups);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isLoading, isAuthenticated]);
 
   React.useEffect(() => {
+    if (isLoading || !isAuthenticated) {
+      return;
+    }
+
     (async () => {
       const criteria = {};
 
@@ -134,13 +146,15 @@ export default function SearchPage() {
       setIsSearching(true);
       setUsers([]);
 
-      let { headers, data } = await api.getUsers({
+      const { url, options } = helper.getSearchUsersRequestDetails({
         search: search,
         criteria,
         page: searchContext.pagination.page,
         limit: searchContext.pagination.perPage,
         orderBy,
       });
+
+      let { headers, data } = await apiClient.get(url, options);
 
       setIsSearching(false);
 
@@ -155,7 +169,7 @@ export default function SearchPage() {
       setTotalPages(Number(headers["x-total-pages"]));
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, orderBy, searchContext]);
+  }, [isLoading, isAuthenticated, search, orderBy, searchContext]);
 
   // if (tab === TABS.GROUPS) {
   //   const currentGroup = (groups.find(g => g.current) || {}).name;
@@ -171,6 +185,11 @@ export default function SearchPage() {
   };
 
   let mainContent;
+
+  if (!isAuthenticated) {
+    mainContent = null;
+  }
+
   switch (tab) {
     case TABS.SEARCH:
     case TABS.GROUPS:
@@ -244,7 +263,6 @@ export default function SearchPage() {
                 {users.map((user, index) => {
                   return (
                     <ProfileCard
-                      api={api}
                       key={"profile-" + user.id}
                       profile={user}
                       avatarColor={user.avatarColor}
@@ -283,9 +301,7 @@ export default function SearchPage() {
       );
       break;
     case TABS.UPLOADS:
-      mainContent = (
-        <Upload api={api} templateId={config.BULK_UPLOAD_TEMPLATE_ID} />
-      );
+      mainContent = <Upload templateId={config.BULK_UPLOAD_TEMPLATE_ID} />;
       break;
     default:
       throw Error("Invalid tab");
@@ -294,7 +310,6 @@ export default function SearchPage() {
   return (
     <div>
       <Header
-        api={api}
         currentTab={tab}
         onTabChange={setTab}
         onSearch={setSearch}

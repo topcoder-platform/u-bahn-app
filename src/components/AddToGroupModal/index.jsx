@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import PT from "prop-types";
 
-import Api from "../../services/api";
+import staticData from "../../services/static-data";
 import Button from "../Button";
 import Group from "./Group";
 import Modal from "../Modal";
@@ -9,7 +9,7 @@ import { ReactComponent as ZoomIcon } from "../../assets/images/zoom-icon.svg";
 
 import style from "./style.module.scss";
 
-export default function AddToGroupModal({ api, onCancel, updateUser, user }) {
+export default function AddToGroupModal({ onCancel, updateUser, user }) {
   const [filter, setFilter] = React.useState("");
   const [otherGroups, setOtherGroups] = React.useState([]);
   const [selected, setSelected] = React.useState(new Set(user.groups));
@@ -22,11 +22,11 @@ export default function AddToGroupModal({ api, onCancel, updateUser, user }) {
   };
 
   const updateOtherGroups = React.useCallback(async () => {
-    let groups = await api.getGroups(filter);
+    let groups = await staticData.getGroups(filter);
     const userGroups = new Set(user.groups);
     groups = groups.filter((g) => !userGroups.has(g));
     setOtherGroups(groups.slice(0, 4));
-  }, [api, filter, user]);
+  }, [filter, user]);
 
   useEffect(() => {
     updateOtherGroups();
@@ -49,7 +49,7 @@ export default function AddToGroupModal({ api, onCancel, updateUser, user }) {
         <Button
           className={style.createButton}
           onClick={async () => {
-            await api.createGroup(filter);
+            await staticData.createGroup(filter);
             await updateOtherGroups();
           }}
         >
@@ -98,7 +98,6 @@ export default function AddToGroupModal({ api, onCancel, updateUser, user }) {
 }
 
 AddToGroupModal.propTypes = {
-  api: PT.instanceOf(Api).isRequired,
   onCancel: PT.func.isRequired,
   updateUser: PT.func.isRequired,
   user: PT.shape().isRequired,

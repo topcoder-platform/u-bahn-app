@@ -185,6 +185,14 @@
   margin-right: 13px;
 }
 
+.headerControlsUpdateText {
+  font-family: Helvetica;
+  font-size: 14px;
+  color: gray1;
+  margin-right: 13px;
+  opacity: 0.5;
+}
+
 .groupHeading {
   display: flex;
   flex-direction: row;
