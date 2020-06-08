@@ -33,7 +33,7 @@ class ProfileCard extends React.Component {
         firstName: profile.firstName,
         lastName: profile.lastName,
         groups: [], // TODO
-        skills: [], // TODO
+        skills: cardHelper.getSkills(profile),
         achievements: cardHelper.getAchievements(profile),
         title: cardHelper.getAttributeDetails(
           profile,
@@ -276,7 +276,14 @@ class ProfileCard extends React.Component {
    */
   async deleteUser() {
     const url = `${config.API_URL}/users/${this.state.user.id}`;
-    await this.props.api.delete(url);
+
+    try {
+      await this.props.api.delete(url);
+    } catch (error) {
+      console.log(error);
+      // TODO - Handle error
+      return;
+    }
 
     this.toggleEditUserModal();
 

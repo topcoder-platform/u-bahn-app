@@ -85,6 +85,13 @@
   margin-left: 20px;
 }
 
+.disabledDangerButton {
+  background: $red !important;
+  border: none;
+  color: $white;
+  margin-top: 20px;
+}
+
 .message {
   @include textTypeB;
   padding: 3px;

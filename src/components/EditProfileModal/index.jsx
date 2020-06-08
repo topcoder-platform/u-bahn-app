@@ -22,6 +22,7 @@ export default function EditProfileModal({
   const [localUser, setLocalUser] = React.useState(user);
   const [skillInputValue, setSkillInputValue] = React.useState("");
   const [isSavingChanges, setIsSavingChanges] = React.useState(false);
+  const [isDeletingUser, setIsDeletingUser] = React.useState(false);
 
   const updateUserFromChild = (userDataFromChild) => {
     // Only availability can be updated
@@ -36,6 +37,7 @@ export default function EditProfileModal({
 
   const confirmDeleteUser = () => {
     if (window.confirm("Are you sure you want to delete this user?")) {
+      setIsDeletingUser(true);
       deleteUser();
     }
   };
@@ -53,7 +55,10 @@ export default function EditProfileModal({
       <div className={style.editor}>
         <div className={style.header}>
           <h1>Edit Profile</h1>
-          <Button onClick={onCancel} disabled={isSavingChanges}>
+          <Button
+            onClick={onCancel}
+            disabled={isSavingChanges || isDeletingUser}
+          >
             Cancel
           </Button>
           <Button
@@ -64,7 +69,7 @@ export default function EditProfileModal({
               setIsSavingChanges(true);
               updateUser(localUser);
             }}
-            disabled={isSavingChanges}
+            disabled={isSavingChanges || isDeletingUser}
           >
             {isSavingChanges ? "Saving changes, please wait..." : "Save"}
           </Button>
@@ -180,14 +185,16 @@ export default function EditProfileModal({
             placeholder="Enter skill to add"
             value={skillInputValue}
           />
-          {localUser.skills.map((it, key) => (
+          {localUser.skills.map((item, key) => (
             <Pill
               key={key}
-              name={it.skill.name}
+              name={item.name}
               onRemove={() => {
                 setLocalUser({
                   ...localUser,
-                  skills: localUser.skills.filter((skill) => skill !== it),
+                  skills: localUser.skills.filter(
+                    (skill) => skill.id !== item.id
+                  ),
                 });
               }}
             />
@@ -228,8 +235,14 @@ export default function EditProfileModal({
               />
             ))}
         </div>
-        <Button className={style.dangerButton} onClick={confirmDeleteUser}>
-          Delete this user
+        <Button
+          className={
+            isDeletingUser ? style.disabledDangerButton : style.dangerButton
+          }
+          onClick={confirmDeleteUser}
+          disabled={isDeletingUser || isSavingChanges}
+        >
+          {isDeletingUser ? "Deleting" : "Delete this user"}
         </Button>
       </div>
     </Modal>

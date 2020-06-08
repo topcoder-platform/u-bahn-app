@@ -32,6 +32,7 @@ export function getAttributeDetails(profile, attributeName) {
 
 /**
  * Returns the user's achievements
+ * @param {Object} profile The user profile
  */
 export function getAchievements(profile) {
   const achievements = profile.achievements
@@ -39,6 +40,18 @@ export function getAchievements(profile) {
     : [];
 
   return achievements;
+}
+
+/**
+ * Returns the user's skills
+ * @param {Object} profile The user profile
+ */
+export function getSkills(profile) {
+  const skills = profile.skills
+    ? profile.skills.map((a) => ({ name: a.skill.name, id: a.skillId }))
+    : [];
+
+  return skills;
 }
 
 /**

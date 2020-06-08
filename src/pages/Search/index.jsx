@@ -186,7 +186,7 @@ export default function SearchPage() {
 
   let mainContent;
 
-  if (!isAuthenticated) {
+  if (isLoading || !isAuthenticated) {
     mainContent = null;
   }
 
