@@ -8,7 +8,7 @@ import axios from "axios";
 import { useAuth0 } from "../react-auth0-spa";
 
 export default () => {
-  const { getTokenSilently, loginWithRedirect } = useAuth0();
+  const { getIdTokenClaims, loginWithRedirect } = useAuth0();
   const api = useRef(
     axios.create({
       headers: {
@@ -24,7 +24,7 @@ export default () => {
         if (process.env.REACT_APP_DEV_TOKEN) {
           token = process.env.REACT_APP_DEV_TOKEN;
         } else {
-          token = await getTokenSilently();
+          token = (await getIdTokenClaims()).__raw;
         }
         config.headers.authorization = `Bearer ${token}`;
         config.cancelToken = axios.CancelToken.source().token;
@@ -34,7 +34,7 @@ export default () => {
     const responseInterceptorId = currentAPI.interceptors.response.use(
       null,
       async (error) => {
-        if (error.config && error.response && error.response.status === 401) {
+        if (error.config && error.response && error.response.status === 403) {
           await loginWithRedirect({
             redirect_uri: window.location.origin,
           });

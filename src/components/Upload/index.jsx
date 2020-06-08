@@ -3,7 +3,6 @@ import React from "react";
 import FormData from "form-data";
 import PT from "prop-types";
 
-import api from "../../services/api";
 import Container from "./Container";
 import Initial from "./Initial";
 import Message from "./Message";
@@ -18,7 +17,7 @@ const STATES = {
   UPLOADING: "UPLOADING",
 };
 
-export default function Upload({ templateId }) {
+export default function Upload({ templateId, api }) {
   const [state, setState] = React.useState({
     type: STATES.INITIAL,
     data: null,
@@ -36,7 +35,6 @@ export default function Upload({ templateId }) {
   };
 
   const upload = async (file) => {
-    const apiClient = api();
     const url = `${config.SEARCH_UI_API_URL}/uploads`;
     const data = new FormData();
 
@@ -48,7 +46,7 @@ export default function Upload({ templateId }) {
     });
 
     try {
-      await apiClient.post(url, data, {
+      await api.post(url, data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -106,4 +104,5 @@ export default function Upload({ templateId }) {
 
 Upload.propTypes = {
   templateId: PT.string.isRequired,
+  api: PT.shape().isRequired,
 };

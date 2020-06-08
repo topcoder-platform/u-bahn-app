@@ -301,7 +301,9 @@ export default function SearchPage() {
       );
       break;
     case TABS.UPLOADS:
-      mainContent = <Upload templateId={config.BULK_UPLOAD_TEMPLATE_ID} />;
+      mainContent = (
+        <Upload templateId={config.BULK_UPLOAD_TEMPLATE_ID} api={apiClient} />
+      );
       break;
     default:
       throw Error("Invalid tab");
