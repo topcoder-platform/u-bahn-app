@@ -156,7 +156,6 @@ class ProfileCard extends React.Component {
    * @param {Array} changedKeys The properties on the user object that have changed
    */
   async updateUser(changedKeys) {
-    console.log(changedKeys);
     const { user } = this.state;
     const url = `${config.API_URL}/users/${user.id}`;
     let updatedName = false;
@@ -171,6 +170,14 @@ class ProfileCard extends React.Component {
             console.log(error);
             // TODO - Handle errors
           }
+
+          // Remove the deleted skills from the user state
+          const userCopy = JSON.parse(JSON.stringify(this.state.user));
+          userCopy.skills = userCopy.skills.filter(
+            (item) => item.isDeleted !== true
+          );
+
+          this.setState({ user: userCopy });
 
           break;
         case config.PRIMARY_ATTRIBUTES.title:
