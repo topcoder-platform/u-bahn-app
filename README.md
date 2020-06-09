@@ -13,6 +13,8 @@ REACT_APP_SEARCH_UI_API_URL => The endpoint from which the user can download the
 
 REACT_BULK_UPLOAD_TEMPLATE_ID => The id of the database record which is associated with the bulk upload template file. You would need to query the endpoint under REACT_APP_SEARCH_UI_API_URL to get the id and then set it against this variable
 
+REACT_APP_EMSI_SKILLPROVIDER_ID => The skill provider id with name 'EMSI'. Denotes that the skills with an externalId are using EMSI as the skill provider
+
 REACT_APP_AUTH0_DOMAIN => The Auth0 login domain
 
 REACT_APP_AUTH0_CLIENTID => The Auth0 clientId

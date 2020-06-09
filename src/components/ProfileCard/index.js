@@ -33,21 +33,21 @@ class ProfileCard extends React.Component {
         firstName: profile.firstName,
         lastName: profile.lastName,
         groups: [], // TODO
-        skills: cardHelper.getSkills(profile),
-        achievements: cardHelper.getAchievements(profile),
-        title: cardHelper.getAttributeDetails(
+        skills: cardHelper.getUserSkills(profile),
+        achievements: cardHelper.getUserAchievements(profile),
+        title: cardHelper.getUserAttributeDetails(
           profile,
           config.PRIMARY_ATTRIBUTES.title
         ),
-        isAvailable: cardHelper.getAttributeDetails(
+        isAvailable: cardHelper.getUserAttributeDetails(
           profile,
           config.PRIMARY_ATTRIBUTES.availability
         ),
-        company: cardHelper.getAttributeDetails(
+        company: cardHelper.getUserAttributeDetails(
           profile,
           config.PRIMARY_ATTRIBUTES.company
         ),
-        location: cardHelper.getAttributeDetails(
+        location: cardHelper.getUserAttributeDetails(
           profile,
           config.PRIMARY_ATTRIBUTES.location
         ),

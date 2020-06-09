@@ -6,8 +6,10 @@ import Input from "../Input";
 import Modal from "../Modal";
 import Pill from "../Pill";
 import ProfileCard from "../ProfileCard";
+import SuggestionBox from "../SuggestionBox";
 
 import style from "./style.module.scss";
+import config from "../../config";
 
 // TODO - Role is not an attribute but a nested property on user
 // TODO - Remove it from Common Attribute and use it like other nested attributes (like skill / achievements)
@@ -20,7 +22,6 @@ export default function EditProfileModal({
   deleteUser,
 }) {
   const [localUser, setLocalUser] = React.useState(user);
-  const [skillInputValue, setSkillInputValue] = React.useState("");
   const [isSavingChanges, setIsSavingChanges] = React.useState(false);
   const [isDeletingUser, setIsDeletingUser] = React.useState(false);
 
@@ -44,14 +45,42 @@ export default function EditProfileModal({
 
   /**
    * Marks the skill for deletion
-   * @param {String} skillId The skill id of the skill to delete
+   * @param {String} skillExternalId The external id of the skill to delete
    */
-  const deleteSkill = (skillId) => {
-    const index = localUser.skills.findIndex((item) => item.id === skillId);
+  const deleteSkill = (skillExternalId) => {
+    const index = localUser.skills.findIndex(
+      (item) => item.externalId === skillExternalId
+    );
 
     const skills = JSON.parse(JSON.stringify(localUser.skills));
 
     skills[index].isDeleted = true;
+
+    setLocalUser({ ...localUser, skills });
+  };
+
+  /**
+   * Adds a new skill
+   * @param {Object} skill The skill object
+   */
+  const addSkill = (skill) => {
+    // Verify that the skill does not already exist on the user
+    const exists = localUser.skills.find(
+      (existingSkill) => existingSkill.externalId === skill.id
+    );
+
+    if (exists) {
+      return;
+    }
+
+    const skills = JSON.parse(JSON.stringify(localUser.skills));
+
+    skills.push({
+      externalId: skill.id, // The skill id returned from EMSI becomes externalId in our db
+      isNew: true,
+      name: skill.name,
+      skillProviderId: config.EMSI_SKILLPROVIDER_ID,
+    });
 
     setLocalUser({ ...localUser, skills });
   };
@@ -157,56 +186,18 @@ export default function EditProfileModal({
         </div>
         <h3>Skills</h3>
         <div className={style.pillGroup}>
-          <input
-            className={style.input}
-            onKeyUp={({ key }) => {
-              if (key === "Enter") {
-                const skill = skillInputValue.trim();
-                if (skill) {
-                  setLocalUser({
-                    ...localUser,
-                    skills: [
-                      ...localUser.skills,
-                      {
-                        name: skill,
-                      },
-                    ],
-                  });
-                }
-                setSkillInputValue("");
-              }
-            }}
-            onChange={({ target }) => {
-              let { value } = target;
-              if (value.endsWith(",")) {
-                const skill = value.slice(0, -1).trim();
-                if (skill) {
-                  setLocalUser({
-                    ...localUser,
-                    skills: [
-                      ...localUser.skills,
-                      {
-                        name: skill,
-                      },
-                    ],
-                  });
-                }
-                value = "";
-              }
-              setSkillInputValue(value);
-              setImmediate(() => target.focus());
-            }}
-            placeholder="Enter skill to add"
-            value={skillInputValue}
+          <SuggestionBox
+            placeholder={"Enter skill to add"}
+            onSelect={addSkill}
           />
           {localUser.skills
             .filter((item) => !item.isDeleted)
-            .map((item, key) => (
+            .map((item) => (
               <Pill
-                key={key}
+                key={`${item.skillProviderId}-${item.externalId}`}
                 name={item.name}
                 onRemove={() => {
-                  deleteSkill(item.id);
+                  deleteSkill(item.externalId);
                 }}
               />
             ))}
