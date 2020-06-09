@@ -72,6 +72,7 @@ export default function SearchPage() {
 
   const usersPerPage = searchContext.pagination.perPage;
 
+  // Static data only
   React.useEffect(() => {
     if (isLoading || !isAuthenticated) {
       return;
@@ -81,18 +82,36 @@ export default function SearchPage() {
       const locations = await staticData.getLocations();
       const skills = await staticData.getSkills();
       const achievements = await staticData.getAchievements();
-      const myGroups = await staticData.getMyGroups();
       const allGroups = await staticData.getOtherGroups();
 
       setLocations(locations);
       setSkills(skills);
       setAchievements(achievements);
-      setMyGroups(myGroups);
       setAllGroups(allGroups);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated]);
 
+  // Non-static data and Non-user related data
+  React.useEffect(() => {
+    if (isLoading || !isAuthenticated) {
+      return;
+    }
+
+    (async () => {
+      const response = await apiClient.get(config.GROUPS_API_URL);
+      const groups = response.data
+        .filter((g) => g.status === "active")
+        .map((g) => ({
+          ...g,
+          count: 0,
+        }));
+      setMyGroups(groups);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, isAuthenticated]);
+
+  // Only user related data (search)
   React.useEffect(() => {
     if (isLoading || !isAuthenticated) {
       return;

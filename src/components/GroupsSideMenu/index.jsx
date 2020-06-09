@@ -6,11 +6,11 @@ import GroupTabFilters from "./filters";
 
 export default function GroupsSideMenu({ userGroups, allGroups }) {
   const [userGroupsData, setUserGroupsData] = useState(userGroups);
-  const [allGroupsData, setAllGroupsData] = useState(userGroups);
+  const [allGroupsData, setAllGroupsData] = useState(allGroups);
 
   useEffect(() => {
     setUserGroupsData(userGroups);
-    setAllGroupsData(userGroups);
+    setAllGroupsData(allGroups);
   }, [userGroups, allGroups]);
 
   const handleGroupSelected = (group) => {

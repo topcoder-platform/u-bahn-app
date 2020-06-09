@@ -110,14 +110,6 @@ async function getAchievements() {
   return mockAchievementsTags;
 }
 
-async function getMyGroups() {
-  return [
-    { name: "Group 1", count: 42 },
-    { name: "Group 2", count: 42 },
-    { name: "Group 3", count: 42 },
-  ];
-}
-
 async function getOtherGroups() {
   return [
     { name: "C++ Developers", count: 42 },
@@ -134,6 +126,5 @@ export default {
   getLocations,
   getSkills,
   getAchievements,
-  getMyGroups,
   getOtherGroups,
 };
