@@ -128,6 +128,12 @@ export function getUserSkills(profile) {
   return skills;
 }
 
+export function getUserGroups(profile) {
+  const groups = profile.groups ? profile.groups : [];
+
+  return groups;
+}
+
 /**
  * Returns the initials for the user using the user name
  * @param {String} userName The user name

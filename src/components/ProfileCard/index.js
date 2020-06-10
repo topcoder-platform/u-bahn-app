@@ -32,7 +32,7 @@ class ProfileCard extends React.Component {
         handle: profile.handle,
         firstName: profile.firstName,
         lastName: profile.lastName,
-        groups: [], // TODO
+        groups: cardHelper.getUserGroups(profile),
         skills: cardHelper.getUserSkills(profile),
         achievements: cardHelper.getUserAchievements(profile),
         title: cardHelper.getUserAttributeDetails(
@@ -51,7 +51,7 @@ class ProfileCard extends React.Component {
           profile,
           config.PRIMARY_ATTRIBUTES.location
         ),
-        customAttributes: [],
+        customAttributes: [], // TODO
         avatarColor,
         // Indicates if the user has been deleted. The user is still shown in this case, but with a
         // clear indicator about its deleted status.
