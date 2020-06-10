@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PT from "prop-types";
 
 import staticData from "../../services/static-data";
@@ -6,12 +6,18 @@ import Button from "../Button";
 import Group from "./Group";
 import Modal from "../Modal";
 import { ReactComponent as ZoomIcon } from "../../assets/images/zoom-icon.svg";
+import api from "../../services/api";
+import { useAuth0 } from "../../react-auth0-spa";
+import * as groupLib from "../../lib/groups";
 
 import style from "./style.module.scss";
 
 export default function AddToGroupModal({ onCancel, updateUser, user }) {
-  const [filter, setFilter] = React.useState("");
+  const apiClient = api();
+  const { isLoading, isAuthenticated, user: auth0User } = useAuth0();
+  const [myGroups, setMyGroups] = React.useState([]);
   const [otherGroups, setOtherGroups] = React.useState([]);
+  const [filter, setFilter] = React.useState("");
   const [selected, setSelected] = React.useState(new Set(user.groups));
 
   const switchSelected = (group) => {
@@ -21,16 +27,30 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
     setSelected(neu);
   };
 
-  const updateOtherGroups = React.useCallback(async () => {
-    let groups = await staticData.getGroups(filter);
-    const userGroups = new Set(user.groups);
-    groups = groups.filter((g) => !userGroups.has(g));
-    setOtherGroups(groups.slice(0, 4));
-  }, [filter, user]);
+  React.useEffect(() => {
+    if (isLoading || !isAuthenticated) {
+      return;
+    }
 
-  useEffect(() => {
-    updateOtherGroups();
-  }, [updateOtherGroups]);
+    (async () => {
+      const groups = await groupLib.getGroups(apiClient, auth0User.nickname);
+
+      setMyGroups(groups.myGroups);
+      setOtherGroups(groups.otherGroups);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, isAuthenticated, auth0User]);
+
+  // const updateOtherGroups = React.useCallback(async () => {
+  //   let groups = await staticData.getGroups(filter);
+  //   const userGroups = new Set(user.groups);
+  //   groups = groups.filter((g) => !userGroups.has(g));
+  //   setOtherGroups(groups.slice(0, 4));
+  // }, [filter, user]);
+
+  // useEffect(() => {
+  //   updateOtherGroups();
+  // }, [updateOtherGroups]);
 
   return (
     <Modal onCancel={onCancel}>
@@ -50,7 +70,7 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
           className={style.createButton}
           onClick={async () => {
             await staticData.createGroup(filter);
-            await updateOtherGroups();
+            // await updateOtherGroups();
           }}
         >
           + Create
@@ -58,12 +78,12 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
       </div>
       <h3 className={style.subTitle}>My groups</h3>
       <div className={style.groups}>
-        {user.groups.map((g) => (
+        {myGroups.map((g) => (
           <Group
-            checked={selected.has(g)}
+            // TODO checked={selected.has(g)}
             group={g}
-            key={g}
-            onSwitch={() => switchSelected(g)}
+            key={g.id}
+            // TODO onSwitch={() => switchSelected(g)}
           />
         ))}
       </div>
@@ -71,10 +91,10 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
       <div className={style.groups}>
         {otherGroups.map((g) => (
           <Group
-            checked={selected.has(g)}
+            // TODO checked={selected.has(g)}
             group={g}
-            key={g}
-            onSwitch={() => switchSelected(g)}
+            key={g.id}
+            // TODO onSwitch={() => switchSelected(g)}
           />
         ))}
       </div>

@@ -20,7 +20,8 @@ import { useSearch, FILTERS } from "../../lib/search";
 import { makeColorIterator, avatarColors } from "../../lib/colors";
 import config from "../../config";
 import { useAuth0 } from "../../react-auth0-spa";
-import { getGroups, getSearchUsersRequestDetails } from "./helper";
+import * as helper from "./helper";
+import * as groupLib from "../../lib/groups";
 
 const colorIterator = makeColorIterator(avatarColors);
 
@@ -97,7 +98,7 @@ export default function SearchPage() {
     }
 
     (async () => {
-      const groups = await getGroups(apiClient, auth0User.nickname);
+      const groups = await groupLib.getGroups(apiClient, auth0User.nickname);
 
       setMyGroups(groups.myGroups);
       setOtherGroups(groups.otherGroups);
@@ -159,7 +160,7 @@ export default function SearchPage() {
       setIsSearching(true);
       setUsers([]);
 
-      const { url, options } = getSearchUsersRequestDetails({
+      const { url, options } = helper.getSearchUsersRequestDetails({
         search: search,
         criteria,
         page: searchContext.pagination.page,

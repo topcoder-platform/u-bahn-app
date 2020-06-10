@@ -29,22 +29,6 @@ function createGroup(group) {
 }
 
 /**
- * Gets groups from API.
- * @param {string} [filter] Optional. Group filter.
- * @return {Promise<string[]>} Resolves to group array.
- */
-async function getGroups(filter) {
-  /* TODO: /groups endpoint does not seem to exist in the provided mock APIs,
-   * thus for now this method is a simple mock-up. */
-  let groups = [...this.mocks.groups];
-  if (filter) {
-    const f = filter.toLocaleLowerCase();
-    groups = groups.filter((g) => g.toLocaleLowerCase().includes(f));
-  }
-  return groups;
-}
-
-/**
  * Gets organization meta data.
  * @param {string} organizationId
  * @return {Promise<object>}
@@ -112,7 +96,6 @@ async function getAchievements() {
 
 export default {
   createGroup,
-  getGroups,
   getOrganization,
   getLocations,
   getSkills,

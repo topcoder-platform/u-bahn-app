@@ -8,14 +8,14 @@ import style from "./style.module.scss";
 export default function Group({ checked, group, onSwitch }) {
   return (
     <div className={style.container}>
-      {group}
+      {group.name}
       <Switch checked={checked} className={style.switch} onChange={onSwitch} />
     </div>
   );
 }
 
 Group.propTypes = {
-  checked: PT.bool.isRequired,
-  group: PT.string.isRequired,
-  onSwitch: PT.func.isRequired,
+  // TODO checked: PT.bool.isRequired,
+  group: PT.shape().isRequired,
+  // onSwitch: PT.func.isRequired,
 };

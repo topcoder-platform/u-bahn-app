@@ -412,7 +412,7 @@ class ProfileCard extends React.Component {
 
               <div
                 className={styles.plusButton}
-                // TODO onClick={() => setShowAddToGroup(!showAddToGroup)}
+                onClick={() => this.toggleManageGroupsModal()}
               >
                 <div className={styles.plusButtonIcon}>
                   <div className={iconStyles.plus} />

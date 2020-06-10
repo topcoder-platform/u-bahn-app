@@ -30,6 +30,8 @@
 
 .groups {
   margin: 0 -30px;
+  max-height: 150px;
+  overflow-y: auto;
 }
 
 .search {

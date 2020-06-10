@@ -239,6 +239,7 @@ div.groupContent > button:first-child {
   flex-direction: column;
   justify-self: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .plusButtonIcon {
