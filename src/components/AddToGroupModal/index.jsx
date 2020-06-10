@@ -110,28 +110,32 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
       </h3>
       <div className={style.groups}>
         {!loadingGroups &&
-          myGroups.map((g) => (
-            <Group
-              checked={g.isSelected === true}
-              group={g}
-              key={g.id}
-              onSwitch={() => switchSelected(g)}
-            />
-          ))}
+          myGroups
+            .filter((g) => g.name.toLowerCase().includes(filter.toLowerCase()))
+            .map((g) => (
+              <Group
+                checked={g.isSelected === true}
+                group={g}
+                key={g.id}
+                onSwitch={() => switchSelected(g)}
+              />
+            ))}
       </div>
       <h3 className={style.subTitle}>
         Other Groups{loadingGroups && " (Loading...)"}
       </h3>
       <div className={style.groups}>
         {loadingGroups &&
-          otherGroups.map((g) => (
-            <Group
-              checked={g.isSelected === true}
-              group={g}
-              key={g.id}
-              onSwitch={() => switchSelected(g)}
-            />
-          ))}
+          otherGroups
+            .filter((g) => g.name.includes(filter))
+            .map((g) => (
+              <Group
+                checked={g.isSelected === true}
+                group={g}
+                key={g.id}
+                onSwitch={() => switchSelected(g)}
+              />
+            ))}
       </div>
       <div className={style.buttons}>
         <Button onClick={onCancel}>Cancel</Button>

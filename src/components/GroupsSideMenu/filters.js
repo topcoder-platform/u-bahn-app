@@ -26,7 +26,8 @@ export default function GroupTabFilters({ myGroups, groups, onGroupSelected }) {
   const [selectedGroup, setSelectedGroup] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [myGroupsData, setMyGroupsData] = useState(myGroups);
-  const [groupsData, setGroupsData] = useState(myGroups);
+  const [groupsData, setGroupsData] = useState(groups);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     setMyGroupsData(myGroups);
@@ -34,14 +35,7 @@ export default function GroupTabFilters({ myGroups, groups, onGroupSelected }) {
   }, [myGroups, groups]);
 
   const filterGroups = (query) => {
-    const q = query.toLowerCase();
-    if (q.length >= 3) {
-      setMyGroupsData(myGroups.filter((g) => g.name.toLowerCase().includes(q)));
-      setGroupsData(groups.filter((g) => g.name.toLowerCase().includes(q)));
-    } else if (query.length === 0) {
-      setMyGroupsData(myGroups);
-      setGroupsData(groups);
-    }
+    setSearchText(query);
   };
 
   return (
@@ -53,7 +47,7 @@ export default function GroupTabFilters({ myGroups, groups, onGroupSelected }) {
         <div className={styles.groupTabFiltersContentSearch}>
           <div className={styles.groupTabFiltersContentSearchbox}>
             <SearchBox
-              value={""}
+              value={searchText}
               placeholder="Search or create group"
               name={"groups search"}
               onChange={filterGroups}
@@ -66,13 +60,17 @@ export default function GroupTabFilters({ myGroups, groups, onGroupSelected }) {
         <div className={styles.groupTabGroupsContainer}>
           <GroupsSection
             title={"My Groups"}
-            items={myGroupsData}
+            items={myGroupsData.filter((group) =>
+              group.name.toLowerCase().includes(searchText.toLowerCase())
+            )}
             onItemClicked={handleGroupItemClicked}
             selectedIndex={selectedGroup === "My Groups" ? selectedIndex : -1}
           />
           <GroupsSection
             title={"Other Groups"}
-            items={groupsData}
+            items={groupsData.filter((group) =>
+              group.name.toLowerCase().includes(searchText.toLowerCase())
+            )}
             onItemClicked={handleGroupItemClicked}
             selectedIndex={
               selectedGroup === "Other Groups" ? selectedIndex : -1
