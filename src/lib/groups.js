@@ -110,7 +110,7 @@ export async function addUserToGroup(apiClient, user, group) {
   const url = `${config.GROUPS_API_URL}/${group.id}/members`;
   const payload = {
     universalUID: user.id,
-    handle: user.handle,
+    membershipType: "user",
   };
 
   await apiClient.post(url, payload);
