@@ -17,5 +17,5 @@ export default function Group({ checked, group, onSwitch }) {
 Group.propTypes = {
   // TODO checked: PT.bool.isRequired,
   group: PT.shape().isRequired,
-  // onSwitch: PT.func.isRequired,
+  onSwitch: PT.func.isRequired,
 };

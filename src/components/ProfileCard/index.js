@@ -160,9 +160,28 @@ class ProfileCard extends React.Component {
     const url = `${config.API_URL}/users/${user.id}`;
     let updatedName = false;
     let payload;
+    let userCopy;
 
     for (let i = 0; i < changedKeys.length; i++) {
       switch (changedKeys[i]) {
+        case config.PRIMARY_ATTRIBUTES.groups:
+          try {
+            await cardHelper.updateUserGroups(this.props.api, user);
+          } catch (error) {
+            console.log(error);
+            // TODO - Handle errors
+          }
+
+          // Remove the removed groups from the user state
+          userCopy = JSON.parse(JSON.stringify(this.state.user));
+          userCopy.groups = userCopy.groups.filter(
+            (item) => item.isDeleted !== true
+          );
+
+          this.setState({ user: userCopy });
+
+          this.toggleManageGroupsModal();
+          break;
         case config.PRIMARY_ATTRIBUTES.skills:
           try {
             await cardHelper.updateUserSkills(this.props.api, user);
@@ -172,13 +191,14 @@ class ProfileCard extends React.Component {
           }
 
           // Remove the deleted skills from the user state
-          const userCopy = JSON.parse(JSON.stringify(this.state.user));
+          userCopy = JSON.parse(JSON.stringify(this.state.user));
           userCopy.skills = userCopy.skills.filter(
             (item) => item.isDeleted !== true
           );
 
           this.setState({ user: userCopy });
 
+          this.toggleEditUserModal();
           break;
         case config.PRIMARY_ATTRIBUTES.title:
         case config.PRIMARY_ATTRIBUTES.availability:
@@ -191,6 +211,7 @@ class ProfileCard extends React.Component {
             // TODO - Handle errors
           }
 
+          this.toggleEditUserModal();
           break;
         case config.PRIMARY_ATTRIBUTES.firstName:
           // Combine updates to first and last name (since they are on the same model)
@@ -215,6 +236,7 @@ class ProfileCard extends React.Component {
             }
           }
 
+          this.toggleEditUserModal();
           break;
         case config.PRIMARY_ATTRIBUTES.lastName:
           // Combine updates to first and last name (since they are on the same model)
@@ -239,14 +261,13 @@ class ProfileCard extends React.Component {
             }
           }
 
+          this.toggleEditUserModal();
           break;
         default:
         // For now, until all key updates are implemented, we do nothing
         // TODO throw Error(`Unknown attribute ${changedKeys[i]}`);
       }
     }
-
-    this.toggleEditUserModal();
   }
 
   /**
@@ -329,7 +350,7 @@ class ProfileCard extends React.Component {
         {showManageGroupsModal ? (
           <AddToGroupModal
             onCancel={() => this.toggleManageGroupsModal()}
-            // TODO updateUser={updateUser}
+            updateUser={this.updateUserFromChild}
             user={user}
           />
         ) : null}
@@ -400,8 +421,8 @@ class ProfileCard extends React.Component {
                 user.groups.map((group, index) => {
                   return (
                     <Tag
-                      key={"profileTag" + index}
-                      text={group}
+                      key={group.id}
+                      text={group.name}
                       showRemoveButton={true}
                       icon={TAG_ICONS.CROSS}
                       selectable={false}

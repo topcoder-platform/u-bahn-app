@@ -79,10 +79,6 @@ export async function getGroups(apiClient, handle) {
   }
 
   if (!response.data || response.data.length !== 1) {
-    alert(
-      "The organization associated with your user does not exist in groups"
-    );
-
     return { myGroups, otherGroups };
   }
 
@@ -104,4 +100,20 @@ export async function getGroups(apiClient, handle) {
   return { myGroups, otherGroups };
 }
 
-export function dummy() {}
+/**
+ * Adds the user to the group
+ * @param {apiClient} apiClient The api client
+ * @param {Object} user The user to add
+ * @param {Object} group The group to add to
+ */
+export async function addUserToGroup(apiClient, user, group) {
+  const url = `${config.GROUPS_API_URL}/${group.id}/members`;
+  const payload = {
+    universalUID: user.id,
+    handle: user.handle,
+  };
+
+  await apiClient.post(url, payload);
+
+  alert(`Added user to group ${group.name}`);
+}

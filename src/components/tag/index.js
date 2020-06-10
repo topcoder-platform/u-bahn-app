@@ -67,7 +67,7 @@ export default function Tag({
     <button className={mainStyle} onClick={onClickAction}>
       {text ? (
         <div className={styles.tagContent}>
-          {text && <div>{text}</div>}
+          {text && <span title={text}>{text}</span>}
           {icon && <TagButton icon={icon} />}
         </div>
       ) : (

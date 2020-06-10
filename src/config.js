@@ -21,6 +21,7 @@ export default {
     lastName: "lastName",
     title: "title",
     skills: "skills",
+    groups: "groups",
   },
 
   AUTH0: {

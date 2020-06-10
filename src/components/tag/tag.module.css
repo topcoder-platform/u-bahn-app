@@ -34,6 +34,12 @@
   justify-content: flex-end;
 }
 
+.tagContent span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .tagHighlighted {
   composes: tag;
   border: 2px solid blue;

@@ -215,9 +215,9 @@
 
 .groupContent {
   margin-top: 12px;
-
   display: flex;
   flex-direction: row;
+  flex-flow: wrap;
 }
 
 div.groupContent > button {

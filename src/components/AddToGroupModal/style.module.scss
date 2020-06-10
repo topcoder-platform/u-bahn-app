@@ -28,6 +28,12 @@
   }
 }
 
+.doneDisabledButton {
+  background: $textColor4 !important;
+  color: $white;
+  margin-left: 15px;
+}
+
 .groups {
   margin: 0 -30px;
   max-height: 150px;

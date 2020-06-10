@@ -14,17 +14,56 @@ import style from "./style.module.scss";
 
 export default function AddToGroupModal({ onCancel, updateUser, user }) {
   const apiClient = api();
+  const [loadingGroups, setIsLoadingGroups] = React.useState(true);
   const { isLoading, isAuthenticated, user: auth0User } = useAuth0();
   const [myGroups, setMyGroups] = React.useState([]);
   const [otherGroups, setOtherGroups] = React.useState([]);
   const [filter, setFilter] = React.useState("");
-  const [selected, setSelected] = React.useState(new Set(user.groups));
+  const [updatingGroups, setUpdatingGroups] = React.useState(false);
+  const [userGroups, setUserGroups] = React.useState(user.groups);
 
-  const switchSelected = (group) => {
-    const neu = new Set(selected.values());
-    if (neu.has(group)) neu.delete(group);
-    else neu.add(group);
-    setSelected(neu);
+  const switchSelected = async (toggledGroup) => {
+    let updatedGroup;
+    let index = myGroups.findIndex((group) => group.id === toggledGroup.id);
+
+    if (index === -1) {
+      index = otherGroups.findIndex((group) => group.id === toggledGroup.id);
+
+      updatedGroup = JSON.parse(JSON.stringify(otherGroups));
+
+      updatedGroup[index].isSelected = !updatedGroup[index].isSelected;
+
+      setOtherGroups(updatedGroup);
+    } else {
+      updatedGroup = JSON.parse(JSON.stringify(myGroups));
+
+      updatedGroup[index].isSelected = !updatedGroup[index].isSelected;
+
+      setMyGroups(updatedGroup);
+    }
+
+    index = userGroups.findIndex((group) => group.id === toggledGroup.id);
+
+    if (index === -1) {
+      updatedGroup = JSON.parse(JSON.stringify(userGroups));
+
+      updatedGroup.push({ ...toggledGroup, isNew: true });
+    } else {
+      updatedGroup = JSON.parse(JSON.stringify(userGroups));
+
+      if (updatedGroup[index].isNew) {
+        // Was added previously. If toggled, it would mean we don't add it
+        updatedGroup.splice(index, 1);
+      } else if (updatedGroup[index].isDeleted) {
+        // Was deleted previously. If toggled, it would mean we don't remove it
+        delete updatedGroup[index].isDeleted;
+      } else {
+        // Exists on the user. If toggled, it would mean we need to remove it
+        updatedGroup[index].isDeleted = true;
+      }
+    }
+
+    setUserGroups(updatedGroup);
   };
 
   React.useEffect(() => {
@@ -37,20 +76,10 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
 
       setMyGroups(groups.myGroups);
       setOtherGroups(groups.otherGroups);
+      setIsLoadingGroups(false);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, auth0User]);
-
-  // const updateOtherGroups = React.useCallback(async () => {
-  //   let groups = await staticData.getGroups(filter);
-  //   const userGroups = new Set(user.groups);
-  //   groups = groups.filter((g) => !userGroups.has(g));
-  //   setOtherGroups(groups.slice(0, 4));
-  // }, [filter, user]);
-
-  // useEffect(() => {
-  //   updateOtherGroups();
-  // }, [updateOtherGroups]);
 
   return (
     <Modal onCancel={onCancel}>
@@ -70,47 +99,56 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
           className={style.createButton}
           onClick={async () => {
             await staticData.createGroup(filter);
-            // await updateOtherGroups();
+            // TODO - await updateOtherGroups();
           }}
         >
           + Create
         </Button>
       </div>
-      <h3 className={style.subTitle}>My groups</h3>
+      <h3 className={style.subTitle}>
+        My groups{loadingGroups && " (Loading...)"}
+      </h3>
       <div className={style.groups}>
-        {myGroups.map((g) => (
-          <Group
-            // TODO checked={selected.has(g)}
-            group={g}
-            key={g.id}
-            // TODO onSwitch={() => switchSelected(g)}
-          />
-        ))}
+        {!loadingGroups &&
+          myGroups.map((g) => (
+            <Group
+              checked={g.isSelected === true}
+              group={g}
+              key={g.id}
+              onSwitch={() => switchSelected(g)}
+            />
+          ))}
       </div>
-      <h3 className={style.subTitle}>Other Groups</h3>
+      <h3 className={style.subTitle}>
+        Other Groups{loadingGroups && " (Loading...)"}
+      </h3>
       <div className={style.groups}>
-        {otherGroups.map((g) => (
-          <Group
-            // TODO checked={selected.has(g)}
-            group={g}
-            key={g.id}
-            // TODO onSwitch={() => switchSelected(g)}
-          />
-        ))}
+        {loadingGroups &&
+          otherGroups.map((g) => (
+            <Group
+              checked={g.isSelected === true}
+              group={g}
+              key={g.id}
+              onSwitch={() => switchSelected(g)}
+            />
+          ))}
       </div>
       <div className={style.buttons}>
         <Button onClick={onCancel}>Cancel</Button>
         <Button
-          className={style.doneButton}
+          disabled={updatingGroups}
+          className={
+            updatingGroups ? style.doneDisabledButton : style.doneButton
+          }
           onClick={async () => {
-            onCancel();
+            setUpdatingGroups(true);
             updateUser({
               ...user,
-              groups: [...selected],
+              groups: userGroups,
             });
           }}
         >
-          Done
+          {updatingGroups ? "Saving changes made..." : "Done"}
         </Button>
       </div>
     </Modal>

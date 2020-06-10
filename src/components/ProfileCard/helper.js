@@ -1,4 +1,5 @@
 import config from "../../config";
+import * as groupLib from "../../lib/groups";
 
 /**
  * Checks if the skill exists by using its provider id and external id
@@ -140,10 +141,10 @@ export function getUserNameInitial(userName) {
 
 /**
  * Saves changes to a user's skill in the database
- * @param {Object} api The api client
+ * @param {Object} apiClient The api client
  * @param {Object} param1 The details of the skill and user
  */
-export async function updateUserSkills(api, { id, skills }) {
+export async function updateUserSkills(apiClient, { id, skills }) {
   let url;
 
   for (let i = 0; i < skills.length; i++) {
@@ -151,13 +152,13 @@ export async function updateUserSkills(api, { id, skills }) {
     if (skills[i].isDeleted) {
       url = `${config.API_URL}/users/${id}/skills/${skill.id}`;
 
-      await api.delete(url);
+      await apiClient.delete(url);
     } else if (skills[i].isNew) {
       let userSkill;
       // We first check if the skill is already defined in the database, before we add it to the user
       // If not defined, we first define it, and then add it
       const existingSkill = await checkIfSkillExists(
-        api,
+        apiClient,
         skill.skillProviderId,
         skill.externalId
       );
@@ -174,7 +175,7 @@ export async function updateUserSkills(api, { id, skills }) {
           externalId: skill.externalId,
         };
 
-        const newCreatedSkill = await createSkill(api, newSkill);
+        const newCreatedSkill = await createSkill(apiClient, newSkill);
 
         userSkill = {
           userId: id,
@@ -182,7 +183,27 @@ export async function updateUserSkills(api, { id, skills }) {
         };
       }
 
-      await addSkillToUser(api, userSkill);
+      await addSkillToUser(apiClient, userSkill);
+    }
+  }
+}
+
+/**
+ * Adds / Removes groups to / from a user
+ * @param {Object} apiClient The api client
+ * @param {Object} user The user
+ */
+export async function updateUserGroups(apiClient, user) {
+  for (let i = 0; i < user.groups.length; i++) {
+    const group = user.groups[i];
+
+    if (group.isNew) {
+      try {
+        await groupLib.addUserToGroup(apiClient, user, group);
+      } catch (error) {
+        console.log(error);
+        // TODO - handle error
+      }
     }
   }
 }
