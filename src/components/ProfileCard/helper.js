@@ -72,6 +72,10 @@ async function createSkill(apiClient, newSkill) {
  * @param {String} attributeName The attribute for which the value is requested
  */
 export function getUserAttributeDetails(profile, attributeName) {
+  if (!profile.attributes || profile.attributes.length === 0) {
+    return {};
+  }
+
   const detail = profile.attributes.find(
     (a) => a.attribute.name === attributeName
   );

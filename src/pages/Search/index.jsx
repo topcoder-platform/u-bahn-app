@@ -20,7 +20,7 @@ import { useSearch, FILTERS } from "../../lib/search";
 import { makeColorIterator, avatarColors } from "../../lib/colors";
 import config from "../../config";
 import { useAuth0 } from "../../react-auth0-spa";
-import helper from "./helper";
+import { getGroups, getSearchUsersRequestDetails } from "./helper";
 
 const colorIterator = makeColorIterator(avatarColors);
 
@@ -38,7 +38,7 @@ function getOrderByText(orderBy) {
 
 export default function SearchPage() {
   const apiClient = api();
-  const { isLoading, isAuthenticated } = useAuth0();
+  const { isLoading, isAuthenticated, user: auth0User } = useAuth0();
   const [page, setPage] = React.useState(1);
   const [totalResults, setTotalResults] = React.useState(0);
   const [totalPages, setTotalPages] = React.useState(0);
@@ -51,7 +51,7 @@ export default function SearchPage() {
   const [skills, setSkills] = React.useState([]);
   const [achievements, setAchievements] = React.useState([]);
   const [myGroups, setMyGroups] = React.useState([]);
-  const [allGroups, setAllGroups] = React.useState([]);
+  const [otherGroups, setOtherGroups] = React.useState([]);
 
   const [orderBy, setOrderBy] = React.useState(config.DEFAULT_SORT_ORDER);
   const [sortByDropdownShown, setSortByDropdownShown] = React.useState(false);
@@ -82,12 +82,10 @@ export default function SearchPage() {
       const locations = await staticData.getLocations();
       const skills = await staticData.getSkills();
       const achievements = await staticData.getAchievements();
-      const allGroups = await staticData.getOtherGroups();
 
       setLocations(locations);
       setSkills(skills);
       setAchievements(achievements);
-      setAllGroups(allGroups);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated]);
@@ -99,17 +97,13 @@ export default function SearchPage() {
     }
 
     (async () => {
-      const response = await apiClient.get(config.GROUPS_API_URL);
-      const groups = response.data
-        .filter((g) => g.status === "active")
-        .map((g) => ({
-          ...g,
-          count: 0,
-        }));
-      setMyGroups(groups);
+      const groups = await getGroups(apiClient, auth0User.nickname);
+
+      setMyGroups(groups.myGroups);
+      setOtherGroups(groups.otherGroups);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, isAuthenticated]);
+  }, [isLoading, isAuthenticated, auth0User]);
 
   // Only user related data (search)
   React.useEffect(() => {
@@ -165,7 +159,7 @@ export default function SearchPage() {
       setIsSearching(true);
       setUsers([]);
 
-      const { url, options } = helper.getSearchUsersRequestDetails({
+      const { url, options } = getSearchUsersRequestDetails({
         search: search,
         criteria,
         page: searchContext.pagination.page,
@@ -222,7 +216,7 @@ export default function SearchPage() {
                 achievements={achievements}
               />
             ) : (
-              <GroupsSideMenu userGroups={myGroups} allGroups={allGroups} />
+              <GroupsSideMenu userGroups={myGroups} otherGroups={otherGroups} />
             )}
           </div>
           {!isSearching && users.length > 0 && (
