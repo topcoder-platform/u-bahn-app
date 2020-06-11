@@ -12,34 +12,28 @@ export function getSearchUsersRequestDetails({
   criteria,
   orderBy,
 } = {}) {
-  const url = `${config.API_URL}/users`;
+  const url = `${config.API_URL}/search/users`;
   const params = new URLSearchParams();
-
-  // We need to get all details about the user
-  params.append("enrich", "true");
+  const searchPayload = {};
 
   // Pagination params
   params.append("page", page.toString());
-  params.append("limit", limit.toString());
+  params.append("perPage", limit.toString());
 
   if (criteria.locations) {
-    criteria.locations.forEach((location) =>
-      params.append("location", location)
-    );
+    searchPayload.locations = criteria.locations;
   }
 
   if (criteria.skills) {
-    criteria.skills.forEach((location) => params.append("skill", location));
+    searchPayload.skills = criteria.skills;
   }
 
   if (criteria.achievements) {
-    criteria.achievements.forEach((location) =>
-      params.append("achievement", location)
-    );
+    searchPayload.achievements = criteria.achievements;
   }
 
   if (criteria.hasOwnProperty("isAvailable")) {
-    params.append("isAvailable", criteria.isAvailable.toString());
+    searchPayload.isAvailable = criteria.isAvailable.toString();
   }
 
   if (orderBy) {
@@ -48,5 +42,5 @@ export function getSearchUsersRequestDetails({
     params.append("orderBy", config.DEFAULT_SORT_ORDER);
   }
 
-  return { url, options: { params } };
+  return { url, options: { params }, body: searchPayload };
 }

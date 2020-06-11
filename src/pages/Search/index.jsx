@@ -114,6 +114,8 @@ export default function SearchPage() {
 
     (async () => {
       const criteria = {};
+      let headers;
+      let data;
 
       if (
         searchContext.filters[FILTERS.LOCATIONS].active &&
@@ -160,7 +162,7 @@ export default function SearchPage() {
       setIsSearching(true);
       setUsers([]);
 
-      const { url, options } = helper.getSearchUsersRequestDetails({
+      const { url, options, body } = helper.getSearchUsersRequestDetails({
         search: search,
         criteria,
         page: searchContext.pagination.page,
@@ -168,7 +170,16 @@ export default function SearchPage() {
         orderBy,
       });
 
-      let { headers, data } = await apiClient.get(url, options);
+      try {
+        let response = await apiClient.post(url, body, options);
+
+        headers = response.headers;
+        data = response.data;
+      } catch (error) {
+        headers = {};
+        data = [];
+        // TODO handle error
+      }
 
       setIsSearching(false);
 
