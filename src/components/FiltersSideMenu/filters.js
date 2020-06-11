@@ -136,7 +136,7 @@ export default function SearchTabFilters({ locations, achievements }) {
         <div className={utilityStyles.mt32}>
           <Collapsible title="Location" collapsed={false}>
             <SearchBox
-              placeholder="Search by location"
+              placeholder="Search for a location"
               name={"location search"}
               onChange={(q) =>
                 filterData(q, locations, "name", setLocationsData)
@@ -195,7 +195,7 @@ export default function SearchTabFilters({ locations, achievements }) {
         <div className={utilityStyles.mt32}>
           <Collapsible title="Achievements">
             <SearchBox
-              placeholder="Search by achievement"
+              placeholder="Search for an achievement"
               name={"achievements search"}
               onChange={(q) =>
                 filterData(q, achievements, "name", setAchievementsData)
