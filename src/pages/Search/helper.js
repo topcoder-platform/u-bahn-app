@@ -25,7 +25,7 @@ export function getSearchUsersRequestDetails({
   }
 
   if (criteria.skills) {
-    searchPayload.skills = criteria.skills;
+    searchPayload.skills = criteria.skills.map((s) => s.name);
   }
 
   if (criteria.achievements) {

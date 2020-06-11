@@ -49,7 +49,6 @@ export default function SearchPage() {
   const [users, setUsers] = React.useState([]);
 
   const [locations, setLocations] = React.useState([]);
-  const [skills, setSkills] = React.useState([]);
   const [achievements, setAchievements] = React.useState([]);
   const [myGroups, setMyGroups] = React.useState([]);
   const [otherGroups, setOtherGroups] = React.useState([]);
@@ -81,11 +80,9 @@ export default function SearchPage() {
 
     (async () => {
       const locations = await staticData.getLocations();
-      const skills = await staticData.getSkills();
       const achievements = await staticData.getAchievements();
 
       setLocations(locations);
-      setSkills(skills);
       setAchievements(achievements);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -224,7 +221,6 @@ export default function SearchPage() {
             {tab === TABS.SEARCH ? (
               <FiltersSideMenu
                 locations={locations}
-                skills={skills}
                 achievements={achievements}
               />
             ) : (

@@ -9,21 +9,16 @@
 }
 
 .input {
-  background: $lightGray2;
+  order: 2;
+  flex: 1;
+  background-color: $lightGray2;
   border: none;
-  border-radius: 4px;
-  color: $textColor;
-  font: 400 12pt/1.25 Inter;
-  height: 40px;
-  margin: 0 4px 10px;
-  outline: none;
-  padding: 0 10px;
+  border-radius: 5px;
+  font-family: Helvetica;
+  font-size: 16px;
+  margin-left: 12px;
+  margin-top: 1px;
   width: 100%;
-  box-sizing: border-box;
-
-  &::placeholder {
-    opacity: 0.5;
-  }
 }
 
 .inputOpen {
@@ -42,10 +37,10 @@
 .suggestionsContainerOpen {
   display: block;
   position: absolute;
-  top: 51px;
-  left: 4px;
-  width: 524px;
-  border: 2px solid $lightGray2;
+  top: 40px;
+  left: 0;
+  width: auto;
+  border: 2px solid $lightGray5;
   background-color: $white;
   font-family: Helvetica, sans-serif;
   font-size: 16px;
@@ -70,4 +65,29 @@
 
 .suggestionHighlighted {
   background-color: $lightGray2;
+}
+
+/* Searchbox */
+.searchbox {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  overflow: hidden;
+
+  background-color: $lightGray2;
+  border: 0;
+  border-radius: 5px;
+
+  height: 20px;
+  padding-left: 12px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 12px;
+}
+
+.searchboxIcon {
+  order: 1;
+  background: url("/sprites.png") no-repeat -1px -1px;
+  width: 20px;
+  height: 20px;
 }

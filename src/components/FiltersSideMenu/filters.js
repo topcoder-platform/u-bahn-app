@@ -7,6 +7,8 @@ import SearchBox from "../searchBox";
 import Availability from "../availability";
 import TagList from "../tagList";
 import EditFiltersPopup from "../editFiltersPopup";
+import SuggestionBox from "../SuggestionBox";
+import Pill from "../Pill";
 
 import { useSearch, FILTERS } from "../../lib/search";
 import { useModal } from "../../lib/modal";
@@ -17,20 +19,18 @@ import utilityStyles from "../../styles/utility.module.css";
 /**
  * SearchTabFilters - component containing all the filters on the search tab page
  * locations: the values for the location filter options
- * skills: the values for the skills filter options
  * achievements: the values for the achievements filter options
  */
-export default function SearchTabFilters({ locations, skills, achievements }) {
+export default function SearchTabFilters({ locations, achievements }) {
   const search = useSearch();
   const [locationsData, setLocationsData] = useState(locations);
-  const [skillsData, setSkillsData] = useState(skills);
+  const [skillsData, setSkillsData] = useState([]);
   const [achievementsData, setAchievementsData] = useState(achievements);
 
   useEffect(() => {
     setLocationsData(locations);
-    setSkillsData(skills);
     setAchievementsData(achievements);
-  }, [locations, skills, achievements]);
+  }, [locations, achievements]);
 
   const filterData = (query, initialValues, property, setState) => {
     const q = query.toLowerCase();
@@ -104,6 +104,31 @@ export default function SearchTabFilters({ locations, skills, achievements }) {
     }
   };
 
+  const addSkillToFilter = (skill) => {
+    const skillFilters = JSON.parse(JSON.stringify(skillsData));
+
+    if (skillFilters.findIndex((s) => s.id === skill.id) !== -1) {
+      return;
+    }
+
+    skillFilters.push(skill);
+    setSkillsData(skillFilters);
+    search["selectSkills"](skillFilters);
+  };
+
+  const removeSkillFromFilter = (skill) => {
+    const skillFilters = JSON.parse(JSON.stringify(skillsData));
+    const index = skillFilters.findIndex((s) => s.id === skill.id);
+
+    if (index === -1) {
+      return;
+    }
+
+    skillFilters.splice(index, 1);
+    setSkillsData(skillFilters);
+    search["selectSkills"](skillFilters);
+  };
+
   return (
     <div className={styles.searchTabFilters}>
       <Summary filtersApplied={numberOfFiltersApplied} />
@@ -145,17 +170,24 @@ export default function SearchTabFilters({ locations, skills, achievements }) {
       {search.isFilterActive(FILTERS.SKILLS) && (
         <div className={utilityStyles.mt32}>
           <Collapsible title="Skills">
-            <SearchBox
-              placeholder="Search by skill"
-              name={"skills search"}
-              onChange={(q) => filterData(q, skills, "name", setSkillsData)}
+            <SuggestionBox
+              placeholder={"Search skill to filter with"}
+              onSelect={addSkillToFilter}
             />
-            <TagList
-              tags={skillsData}
-              selected={search.selectedSkills}
-              selector={"selectSkills"}
-              noResultsText={"No skill found"}
-            />
+            {skillsData.length > 0 && (
+              <div className={utilityStyles.mt16}>
+                {skillsData.map((skill) => {
+                  return (
+                    <Pill
+                      key={skill.id}
+                      name={skill.name}
+                      removable={true}
+                      onRemove={() => removeSkillFromFilter(skill)}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </Collapsible>
         </div>
       )}
@@ -194,7 +226,6 @@ export default function SearchTabFilters({ locations, skills, achievements }) {
 
 SearchTabFilters.propTypes = {
   locations: PT.array,
-  skills: PT.array,
   achievements: PT.array,
 };
 

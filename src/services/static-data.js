@@ -59,31 +59,6 @@ async function getLocations() {
   return mockLocationTags;
 }
 
-async function getSkills() {
-  const mockSkillsTags = [
-    { name: ".Net" },
-    { name: "API" },
-    { name: "C++" },
-    { name: "React" },
-    { name: "Jekyll" },
-    { name: "Python" },
-    { name: "PHP" },
-    { name: "Rust" },
-    { name: "Angular" },
-    { name: "Java" },
-    { name: "Vue" },
-    { name: "Gatsby" },
-    { name: "Swift" },
-    { name: "C#" },
-    { name: "Javascript" },
-    { name: "Node" },
-    { name: "AWS" },
-    { name: "Unity" },
-  ];
-
-  return mockSkillsTags;
-}
-
 async function getAchievements() {
   const mockAchievementsTags = [
     { name: "Informatika" },
@@ -98,6 +73,5 @@ export default {
   createGroup,
   getOrganization,
   getLocations,
-  getSkills,
   getAchievements,
 };

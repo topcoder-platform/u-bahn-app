@@ -17,6 +17,17 @@ const getSuggestionValue = (suggestion) => suggestion.name;
 const renderSuggestion = (suggestion) => <span>{suggestion.name}</span>;
 
 /**
+ * Styles the input field for the suggestion input
+ * @param {Object} inputProps The input props
+ */
+const renderInputComponent = (inputProps) => (
+  <div className={style.searchbox}>
+    <i className={style.searchboxIcon}></i>
+    <input {...inputProps} />
+  </div>
+);
+
+/**
  * Returns the suggestions
  * @param {Object} apiClient The api client to make the query
  * @param {String} inputValue The search query
@@ -72,6 +83,7 @@ export default function SuggestionBox({ placeholder, onSelect }) {
       renderSuggestion={renderSuggestion}
       inputProps={inputProps}
       theme={style}
+      renderInputComponent={renderInputComponent}
     />
   );
 }

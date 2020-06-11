@@ -143,12 +143,20 @@ class ProfileCard extends React.Component {
       }
     }
 
-    this.setState(
-      {
-        user: Object.assign(this.state.user, updatedUser),
-      },
-      () => this.updateUser(updatedKeys)
-    );
+    if (updatedKeys.length > 0) {
+      this.setState(
+        {
+          user: Object.assign(this.state.user, updatedUser),
+        },
+        () => this.updateUser(updatedKeys)
+      );
+    } else {
+      if (this.state.showEditUserModal) {
+        this.toggleEditUserModal();
+      } else if (this.state.showManageGroupsModal) {
+        this.toggleManageGroupsModal();
+      }
+    }
   }
 
   /**
