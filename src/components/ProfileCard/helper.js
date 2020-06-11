@@ -72,7 +72,7 @@ async function createSkill(apiClient, newSkill) {
  * @param {Object} profile The user profile
  * @param {String} attributeName The attribute for which the value is requested
  */
-export function getUserAttributeDetails(profile, attributeName) {
+export function getUserPrimaryAttributeDetails(profile, attributeName) {
   if (!profile.attributes || profile.attributes.length === 0) {
     return {};
   }
@@ -97,6 +97,37 @@ export function getUserAttributeDetails(profile, attributeName) {
     default:
       throw Error(`Unknown attribute ${attributeName}`);
   }
+}
+
+/**
+ * Returns the company attributes of the user
+ * @param {Object} profile The user profile
+ */
+export function getUserCompanyAttributeDetails(profile) {
+  let attributes = [];
+  // These are also attributes, but they have a dedicated UI element to display them
+  // Thus we omit them from the list of attributes we will be returning, which are
+  // refered to as company attributes
+  let primaryAttributeIds = [
+    config.COMPANY_ATTRIBUTES.location,
+    config.COMPANY_ATTRIBUTES.isAvailable,
+    config.COMPANY_ATTRIBUTES.title,
+    config.COMPANY_ATTRIBUTES.company,
+  ];
+
+  if (!profile.attributes || profile.attributes.length === 0) {
+    return attributes;
+  }
+
+  attributes = profile.attributes
+    .filter((attribute) => !primaryAttributeIds.includes(attribute.attributeId))
+    .map((attribute) => ({
+      id: attribute.attributeId,
+      name: attribute.attribute.name,
+      value: attribute.value,
+    }));
+
+  return attributes;
 }
 
 /**
@@ -210,6 +241,30 @@ export async function updateUserGroups(apiClient, user) {
         console.log(error);
         // TODO - handle error
       }
+    }
+  }
+}
+
+/**
+ * Updates the user attributes (the ones that are the company attributes)
+ * @param {Object} apiClient The api client
+ * @param {String} userId The user id
+ * @param {Array} changedCompanyAttributes Array of attributes to update
+ */
+export async function updateUserCompanyAttributes(
+  apiClient,
+  userId,
+  changedCompanyAttributes
+) {
+  for (let i = 0; i < changedCompanyAttributes.length; i++) {
+    const attribute = changedCompanyAttributes[i];
+    const url = `${config.API_URL}/users/${userId}/attributes/${attribute.id}`;
+
+    try {
+      await apiClient.patch(url, { value: attribute.value });
+    } catch (error) {
+      console.log(error);
+      // TODO - handle error
     }
   }
 }

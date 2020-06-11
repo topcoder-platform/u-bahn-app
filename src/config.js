@@ -22,6 +22,14 @@ export default {
     title: "title",
     skills: "skills",
     groups: "groups",
+    companyAttributes: "companyAttributes",
+  },
+
+  COMPANY_ATTRIBUTES: {
+    location: process.env.REACT_APP_ATTRIBUTE_ID_LOCATION,
+    company: process.env.REACT_APP_ATTRIBUTE_ID_COMPANY,
+    title: process.env.REACT_APP_ATTRIBUTE_ID_TITLE,
+    isAvailable: process.env.REACT_APP_ATTRIBUTE_ID_ISAVAILABLE,
   },
 
   AUTH0: {

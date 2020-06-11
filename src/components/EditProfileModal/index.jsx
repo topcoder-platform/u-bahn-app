@@ -11,10 +11,6 @@ import SuggestionBox from "../SuggestionBox";
 import style from "./style.module.scss";
 import config from "../../config";
 
-// TODO - Role is not an attribute but a nested property on user
-// TODO - Remove it from Common Attribute and use it like other nested attributes (like skill / achievements)
-const COMMON_ATTRIBUTES = ["role", "company", "location", "isAvailable"];
-
 export default function EditProfileModal({
   onCancel,
   updateUser,
@@ -215,27 +211,23 @@ export default function EditProfileModal({
           )}
         </div>
         <h3>Custom attributes</h3>
-        <div className={style.inputs}>
-          {localUser.customAttributes
-            .filter((attr) => !COMMON_ATTRIBUTES.includes(attr.attributeName))
-            .map((attr, key) => (
-              <Input
-                key={key}
-                label={attr.attributeName}
-                onChange={({ target }) => {
-                  setLocalUser({
-                    ...localUser,
-                    attributes: localUser.customAttributes.map((el) =>
-                      el.attributeName === attr.attributeName
-                        ? { ...el, value: target.value }
-                        : el
-                    ),
-                  });
-                  setImmediate(() => target.focus());
-                }}
-                value={localUser.customAttributes[key].value}
-              />
-            ))}
+        <div className={style.companyAttributes}>
+          {localUser.companyAttributes.map((attr, key) => (
+            <Input
+              key={key}
+              label={attr.name}
+              onChange={({ target }) => {
+                setLocalUser({
+                  ...localUser,
+                  companyAttributes: localUser.companyAttributes.map((el) =>
+                    el.id === attr.id ? { ...el, value: target.value } : el
+                  ),
+                });
+                setImmediate(() => target.focus());
+              }}
+              value={localUser.companyAttributes[key].value}
+            />
+          ))}
         </div>
         <Button
           className={

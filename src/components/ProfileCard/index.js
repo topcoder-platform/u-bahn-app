@@ -35,23 +35,23 @@ class ProfileCard extends React.Component {
         groups: cardHelper.getUserGroups(profile),
         skills: cardHelper.getUserSkills(profile),
         achievements: cardHelper.getUserAchievements(profile),
-        title: cardHelper.getUserAttributeDetails(
+        title: cardHelper.getUserPrimaryAttributeDetails(
           profile,
           config.PRIMARY_ATTRIBUTES.title
         ),
-        isAvailable: cardHelper.getUserAttributeDetails(
+        isAvailable: cardHelper.getUserPrimaryAttributeDetails(
           profile,
           config.PRIMARY_ATTRIBUTES.availability
         ),
-        company: cardHelper.getUserAttributeDetails(
+        company: cardHelper.getUserPrimaryAttributeDetails(
           profile,
           config.PRIMARY_ATTRIBUTES.company
         ),
-        location: cardHelper.getUserAttributeDetails(
+        location: cardHelper.getUserPrimaryAttributeDetails(
           profile,
           config.PRIMARY_ATTRIBUTES.location
         ),
-        customAttributes: [], // TODO
+        companyAttributes: cardHelper.getUserCompanyAttributeDetails(profile),
         avatarColor,
         // Indicates if the user has been deleted. The user is still shown in this case, but with a
         // clear indicator about its deleted status.
@@ -128,6 +128,7 @@ class ProfileCard extends React.Component {
   updateUserFromChild(newUser) {
     let updatedUser = {};
     let updatedKeys = [];
+    let changedCompanyAttributes = [];
     const { user: oldUser } = JSON.parse(JSON.stringify(this.state));
 
     delete oldUser.id;
@@ -139,6 +140,18 @@ class ProfileCard extends React.Component {
         if (!_.isEqual(oldUser[userKeys[i]], newUser[userKeys[i]])) {
           updatedUser[userKeys[i]] = newUser[userKeys[i]];
           updatedKeys.push(userKeys[i]);
+
+          if (userKeys[i] === config.PRIMARY_ATTRIBUTES.companyAttributes) {
+            // We need to know which attributes changed under company attributes
+            for (let j = 0; j < oldUser[userKeys[i]].length; j++) {
+              const oldAttribute = oldUser[userKeys[i]][j];
+              const newAttribute = newUser[userKeys[i]][j];
+
+              if (oldAttribute.value !== newAttribute.value) {
+                changedCompanyAttributes.push(newAttribute);
+              }
+            }
+          }
         }
       }
     }
@@ -148,7 +161,7 @@ class ProfileCard extends React.Component {
         {
           user: Object.assign(this.state.user, updatedUser),
         },
-        () => this.updateUser(updatedKeys)
+        () => this.updateUser(updatedKeys, changedCompanyAttributes)
       );
     } else {
       if (this.state.showEditUserModal) {
@@ -162,8 +175,10 @@ class ProfileCard extends React.Component {
   /**
    * Will call individual apis to update the user data in the database
    * @param {Array} changedKeys The properties on the user object that have changed
+   * @param {Array} changedCompanyAttributes In case one of the changed keys is company attributes,
+   * this will return the attributes that changed under it
    */
-  async updateUser(changedKeys) {
+  async updateUser(changedKeys, changedCompanyAttributes) {
     const { user } = this.state;
     const url = `${config.API_URL}/users/${user.id}`;
     let updatedName = false;
@@ -267,6 +282,20 @@ class ProfileCard extends React.Component {
               console.log(error);
               // TODO - handle errors
             }
+          }
+
+          this.toggleEditUserModal();
+          break;
+        case config.PRIMARY_ATTRIBUTES.companyAttributes:
+          try {
+            await cardHelper.updateUserCompanyAttributes(
+              this.props.api,
+              user.id,
+              changedCompanyAttributes
+            );
+          } catch (error) {
+            console.log(error);
+            // TODO - Handle errors
           }
 
           this.toggleEditUserModal();

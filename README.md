@@ -15,6 +15,12 @@ REACT_BULK_UPLOAD_TEMPLATE_ID => The id of the database record which is associat
 
 REACT_APP_EMSI_SKILLPROVIDER_ID => The skill provider id with name 'EMSI'. Denotes that the skills with an externalId are using EMSI as the skill provider.
 
+REACT_APP_ATTRIBUTE_ID_LOCATION
+REACT_APP_ATTRIBUTE_ID_COMPANY
+REACT_APP_ATTRIBUTE_ID_TITLE
+REACT_APP_ATTRIBUTE_ID_ISAVAILABLE
+  => All 4 of the above are the ids of the attributes with name "location", "company", "title" and "isAvailable" respectively. These are used to filter attributes for display under a dedicated section named company attributes. Since these already have UI elements of their own, they are filtered from the list of company attributes
+
 REACT_APP_AUTH0_DOMAIN => The Auth0 login domain
 
 REACT_APP_AUTH0_CLIENTID => The Auth0 clientId
