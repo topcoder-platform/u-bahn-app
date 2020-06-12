@@ -6,7 +6,7 @@
 /* Profile Card */
 .profileCard {
   width: 370px;
-  height: 326px;
+  min-height: 326px;
   margin: 10px;
 
   border: 1px solid gray1_025;
@@ -72,6 +72,7 @@
 .profileCardMainContainer {
   height: 100px;
   width: 100%;
+  margin-bottom: 44px;
 }
 
 .profileCardMain {
@@ -136,11 +137,9 @@
 }
 
 .profileCardFooterContainer {
-  margin-top: auto;
   align-self: flex-end;
-
   border-top: 1px solid gray1_025;
-  height: 97px;
+  min-height: 97px;
   width: 100%;
 }
 
@@ -193,59 +192,7 @@
   opacity: 0.25;
 }
 
-.groupHeading {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
 .editButton {
   cursor: pointer;
   margin-left: 12px;
-}
-
-.groupTitle {
-  margin-left: 8px;
-  text-transform: uppercase;
-
-  font-family: Helvetica;
-  font-size: 12px;
-  color: gray1;
-}
-
-.groupContent {
-  margin-top: 12px;
-  display: flex;
-  flex-direction: row;
-  flex-flow: wrap;
-}
-
-div.groupContent > button {
-  margin-left: 8px;
-}
-
-div.groupContent > button:first-child {
-  margin-left: 0px;
-}
-
-.plusButton {
-  height: 30px;
-  width: 34px;
-  border-radius: 5px;
-  border: 2px solid blue;
-  margin-left: 8px;
-
-  display: flex;
-  flex-direction: column;
-  justify-self: center;
-  align-items: center;
-  cursor: pointer;
-}
-
-.plusButtonIcon {
-  display: flex;
-  flex-direction: row;
-  justify-self: center;
-  align-items: center;
-  height: 30px;
 }

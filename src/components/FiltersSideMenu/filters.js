@@ -52,7 +52,7 @@ export default function SearchTabFilters({ locations, achievements }) {
 
   const handlePopupDone = (filtersSelected) => {
     modal.hideModal();
-    search.desactivateAllFilters();
+    search.deactivateAllFilters();
     filtersSelected.forEach((id) => {
       search.activateFilter(id);
     });

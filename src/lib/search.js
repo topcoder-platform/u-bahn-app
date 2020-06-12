@@ -86,12 +86,12 @@ function useProvideSearch() {
     setFilters(filters);
   };
 
-  const desactivateFilter = (id) => {
+  const deactivateFilter = (id) => {
     filters[id].active = false;
     setFilters(filters);
   };
 
-  const desactivateAllFilters = () => {
+  const deactivateAllFilters = () => {
     for (let [, filter] of Object.entries(filters)) {
       filter.active = false;
     }
@@ -122,8 +122,8 @@ function useProvideSearch() {
     setFilters,
     isFilterActive,
     activateFilter,
-    desactivateFilter,
-    desactivateAllFilters,
+    deactivateFilter,
+    deactivateAllFilters,
     pagination,
     changePageNumber,
   };

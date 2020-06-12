@@ -74,6 +74,22 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
     (async () => {
       const groups = await groupLib.getGroups(apiClient, auth0User.nickname);
 
+      groups.myGroups.forEach((g, i, a) => {
+        userGroups.forEach((ug, iug, aug) => {
+          if (g.id === ug.id && !ug.isDeleted) {
+            a[i] = { ...g, isSelected: true };
+          }
+        });
+      });
+
+      groups.otherGroups.forEach((g, i, a) => {
+        userGroups.forEach((ug, iug, aug) => {
+          if (g.id === ug.id && !ug.isDeleted) {
+            a[i] = { ...g, isSelected: true };
+          }
+        });
+      });
+
       setMyGroups(groups.myGroups);
       setOtherGroups(groups.otherGroups);
       setIsLoadingGroups(false);

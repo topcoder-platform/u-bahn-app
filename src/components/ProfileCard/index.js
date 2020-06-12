@@ -3,8 +3,7 @@ import PT from "prop-types";
 import _ from "lodash";
 
 import Switch from "../Switch";
-import Tag, { TAG_ICONS } from "../tag";
-
+import UserGroup from "../UserGroup";
 import AddToGroupModal from "../AddToGroupModal";
 import EditProfileModal from "../EditProfileModal";
 
@@ -12,6 +11,7 @@ import styles from "./profileCard.module.css";
 import iconStyles from "../../styles/icons.module.css";
 
 import config from "../../config";
+import * as groupLib from "../../lib/groups";
 
 import * as cardHelper from "./helper";
 
@@ -56,6 +56,8 @@ class ProfileCard extends React.Component {
         // Indicates if the user has been deleted. The user is still shown in this case, but with a
         // clear indicator about its deleted status.
         isDeleted: false,
+        loadingGroups: true,
+        loadingGroupsFailed: false,
       };
     } else {
       // Data is already in the format seen above. No further processing needed
@@ -71,24 +73,90 @@ class ProfileCard extends React.Component {
 
     this.updateUserFromChild = this.updateUserFromChild.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
+    this.removeGroup = this.removeGroup.bind(this);
+  }
+
+  componentDidMount() {
+    this.mounted = true;
+    this.getUserGroups();
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
+  async getUserGroups() {
+    const { user } = this.state;
+    let response = { data: [] };
+    const newState = {};
+
+    try {
+      response = await this.props.api.get(
+        `${config.GROUPS_API_URL}/memberGroups?universalUID=${user.id}`
+      );
+
+      newState.loadingGroups = false;
+    } catch (error) {
+      console.log(error);
+      newState.loadingGroups = false;
+      newState.loadingGroupsFailed = true;
+      // TODO - handle error
+    }
+
+    if (this.mounted) {
+      this.setState({
+        user: { ...user, groups: response.data },
+        ...newState,
+      });
+    }
   }
 
   /**
    * Shows / hides the manage groups modal
+   * @param {Boolean} override Should toggle be overriden and instead should it be a show / hide feature only
+   * @param {Boolean} shouldNotBeShown the function ensure the modal is not shown
    */
-  toggleManageGroupsModal() {
-    this.setState((prevState) => ({
-      showManageGroupsModal: !prevState.showManageGroupsModal,
-    }));
+  toggleManageGroupsModal(override, shouldNotBeShown) {
+    const { showManageGroupsModal } = this.state;
+
+    if (override) {
+      if (
+        (shouldNotBeShown && showManageGroupsModal) ||
+        (!shouldNotBeShown && !showManageGroupsModal)
+      ) {
+        this.setState((prevState) => ({
+          showManageGroupsModal: !prevState.showManageGroupsModal,
+        }));
+      }
+    } else {
+      this.setState((prevState) => ({
+        showManageGroupsModal: !prevState.showManageGroupsModal,
+      }));
+    }
   }
 
   /**
    * Shows / hides the edit user modal
+   * @param {Boolean} override Should toggle be overriden and instead should it be a show / hide feature only
+   * @param {Boolean} shouldNotBeShown the function ensure the modal is not shown
    */
-  toggleEditUserModal() {
-    this.setState((prevState) => ({
-      showEditUserModal: !prevState.showEditUserModal,
-    }));
+  toggleEditUserModal(override, shouldNotBeShown) {
+    const { showEditUserModal } = this.state;
+
+    if (override) {
+      if (
+        (shouldNotBeShown && showEditUserModal) ||
+        (!shouldNotBeShown && !showEditUserModal)
+      ) {
+        this.setState((prevState) => ({
+          showEditUserModal: !prevState.showEditUserModal,
+        }));
+      }
+    } else {
+      this.setState((prevState) => ({
+        showEditUserModal: !prevState.showEditUserModal,
+      }));
+    }
   }
 
   /**
@@ -180,6 +248,16 @@ class ProfileCard extends React.Component {
    */
   async updateUser(changedKeys, changedCompanyAttributes) {
     const { user } = this.state;
+
+    // For the edit user modal - changes are not saved by the card, but by the modal itself
+    if (!this.props.saveChanges) {
+      this.props.updateUser(user);
+
+      this.toggleManageGroupsModal(true, true);
+
+      return;
+    }
+
     const url = `${config.API_URL}/users/${user.id}`;
     let updatedName = false;
     let payload;
@@ -196,14 +274,22 @@ class ProfileCard extends React.Component {
           }
 
           // Remove the removed groups from the user state
+          // and unmark the new groups (as no longer being new)
           userCopy = JSON.parse(JSON.stringify(this.state.user));
-          userCopy.groups = userCopy.groups.filter(
-            (item) => item.isDeleted !== true
-          );
+          userCopy.groups = userCopy.groups
+            .filter((item) => item.isDeleted !== true)
+            .map((item) => {
+              if (item.isNew) {
+                delete item.isNew;
+              }
+
+              return item;
+            });
 
           this.setState({ user: userCopy });
 
-          this.toggleManageGroupsModal();
+          this.toggleManageGroupsModal(true, true);
+          this.toggleEditUserModal(true, true);
           break;
         case config.PRIMARY_ATTRIBUTES.skills:
           try {
@@ -367,6 +453,40 @@ class ProfileCard extends React.Component {
     });
   }
 
+  async removeGroup(groupToRemove) {
+    const user = JSON.parse(JSON.stringify(this.state.user));
+
+    user.groups = user.groups.map((group) => {
+      if (group.id === groupToRemove.id) {
+        group.isDeleted = true;
+      }
+
+      return group;
+    });
+
+    // For the edit user modal - changes are not saved by the card, but by the modal itself
+    if (this.props.saveChanges) {
+      try {
+        await groupLib.removeUserFromGroup(
+          this.props.api,
+          user.id,
+          groupToRemove
+        );
+      } catch (error) {
+        console.log(error);
+        alert("Could not remove the user from the group");
+        // TODO - handle error
+        return;
+      }
+    } else {
+      this.props.updateUser(user);
+    }
+
+    this.setState({
+      user,
+    });
+  }
+
   render() {
     const { stripped, avatarColor } = this.props;
     const {
@@ -374,6 +494,8 @@ class ProfileCard extends React.Component {
       showManageGroupsModal,
       showEditUserModal,
       updatingAvailability,
+      loadingGroups,
+      loadingGroupsFailed,
     } = this.state;
 
     let containerStyle = styles.profileCard;
@@ -449,34 +571,13 @@ class ProfileCard extends React.Component {
         </div>
         <div className={styles.profileCardFooterContainer}>
           <div className={styles.profileCardFooter}>
-            <div className={styles.groupHeading}>
-              <div className={iconStyles.bookmark}></div>
-              <div className={styles.groupTitle}>Group</div>
-            </div>
-            <div className={styles.groupContent}>
-              {user.groups &&
-                user.groups.map((group, index) => {
-                  return (
-                    <Tag
-                      key={group.id}
-                      text={group.name}
-                      showRemoveButton={true}
-                      icon={TAG_ICONS.CROSS}
-                      selectable={false}
-                      // TODO action={() => removeGroupFromProfile(group)}
-                    />
-                  );
-                })}
-
-              <div
-                className={styles.plusButton}
-                onClick={() => this.toggleManageGroupsModal()}
-              >
-                <div className={styles.plusButtonIcon}>
-                  <div className={iconStyles.plus} />
-                </div>
-              </div>
-            </div>
+            <UserGroup
+              user={user}
+              loadingGroups={loadingGroups}
+              loadingGroupsFailed={loadingGroupsFailed}
+              removeGroup={this.removeGroup}
+              toggleManageGroupsModal={() => this.toggleManageGroupsModal()}
+            />
           </div>
         </div>
         {user.isDeleted && (

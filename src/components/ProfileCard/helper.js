@@ -241,6 +241,13 @@ export async function updateUserGroups(apiClient, user) {
         console.log(error);
         // TODO - handle error
       }
+    } else if (group.isDeleted) {
+      try {
+        await groupLib.removeUserFromGroup(apiClient, user.id, group);
+      } catch (error) {
+        console.log(error);
+        // TODO - handle error
+      }
     }
   }
 }

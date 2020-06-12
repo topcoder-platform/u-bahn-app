@@ -1,7 +1,7 @@
 import config from "../config";
 
 /**
- * Returns the groups for the user
+ * Returns the groups for the logged in user
  * @param {Object} apiClient The api client
  * @param {Object} handle The logged in user's handle
  */
@@ -116,4 +116,16 @@ export async function addUserToGroup(apiClient, user, group) {
   await apiClient.post(url, payload);
 
   alert(`Added user to group ${group.name}`);
+}
+
+/**
+ * Removes the user from the group
+ * @param {Object} apiClient The api client
+ * @param {String} userId The user id
+ * @param {Object} group The group to remove from
+ */
+export async function removeUserFromGroup(apiClient, userId, group) {
+  const url = `${config.GROUPS_API_URL}/${group.id}/members?universalUID=${userId}`;
+
+  await apiClient.delete(url);
 }

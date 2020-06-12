@@ -1,0 +1,53 @@
+@import "../../styles/mixins";
+
+.groupHeading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.groupTitle {
+  margin-left: 8px;
+  text-transform: uppercase;
+
+  font-family: Helvetica;
+  font-size: 12px;
+  color: $gray;
+}
+
+.groupContent {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: row;
+  flex-flow: wrap;
+}
+
+div.groupContent > button {
+  margin-left: 8px;
+}
+
+div.groupContent > button:first-child {
+  margin-left: 0px;
+}
+
+.plusButton {
+  height: 30px;
+  width: 34px;
+  border-radius: 5px;
+  border: 2px solid $blue4;
+  margin: 4px;
+
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.plusButtonIcon {
+  display: flex;
+  flex-direction: row;
+  justify-self: center;
+  align-items: center;
+  height: 30px;
+}
