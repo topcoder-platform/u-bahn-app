@@ -109,10 +109,10 @@ export function getUserCompanyAttributeDetails(profile) {
   // Thus we omit them from the list of attributes we will be returning, which are
   // refered to as company attributes
   let primaryAttributeIds = [
-    config.COMPANY_ATTRIBUTES.location,
-    config.COMPANY_ATTRIBUTES.isAvailable,
-    config.COMPANY_ATTRIBUTES.title,
-    config.COMPANY_ATTRIBUTES.company,
+    config.STANDARD_USER_ATTRIBUTES.location,
+    config.STANDARD_USER_ATTRIBUTES.isAvailable,
+    config.STANDARD_USER_ATTRIBUTES.title,
+    config.STANDARD_USER_ATTRIBUTES.company,
   ];
 
   if (!profile.attributes || profile.attributes.length === 0) {

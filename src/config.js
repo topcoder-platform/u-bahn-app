@@ -25,7 +25,7 @@ export default {
     companyAttributes: "companyAttributes",
   },
 
-  COMPANY_ATTRIBUTES: {
+  STANDARD_USER_ATTRIBUTES: {
     location: process.env.REACT_APP_ATTRIBUTE_ID_LOCATION,
     company: process.env.REACT_APP_ATTRIBUTE_ID_COMPANY,
     title: process.env.REACT_APP_ATTRIBUTE_ID_TITLE,
