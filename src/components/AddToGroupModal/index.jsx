@@ -141,9 +141,9 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
         Other Groups{loadingGroups && " (Loading...)"}
       </h3>
       <div className={style.groups}>
-        {loadingGroups &&
+        {!loadingGroups &&
           otherGroups
-            .filter((g) => g.name.includes(filter))
+            .filter((g) => g.name.toLowerCase().includes(filter.toLowerCase()))
             .map((g) => (
               <Group
                 checked={g.isSelected === true}
