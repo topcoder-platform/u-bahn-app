@@ -24,7 +24,6 @@ import utilityStyles from "../../styles/utility.module.css";
 export default function SearchTabFilters({ locations, achievements }) {
   const search = useSearch();
   const [locationsData, setLocationsData] = useState(locations);
-  const [skillsData, setSkillsData] = useState([]);
   const [achievementsData, setAchievementsData] = useState(achievements);
 
   useEffect(() => {
@@ -89,6 +88,15 @@ export default function SearchTabFilters({ locations, achievements }) {
       }
     }
 
+    search.getCompanyAttrActiveFilter().forEach((filter) => {
+      if (
+        search.selectedCompanyAttributes[filter.id] &&
+        search.selectedCompanyAttributes[filter.id].length > 0
+      ) {
+        appliedFilters += 1;
+      }
+    });
+
     return appliedFilters;
   }, [search]);
 
@@ -105,19 +113,18 @@ export default function SearchTabFilters({ locations, achievements }) {
   };
 
   const addSkillToFilter = (skill) => {
-    const skillFilters = JSON.parse(JSON.stringify(skillsData));
+    const skillFilters = JSON.parse(JSON.stringify(search.selectedSkills));
 
     if (skillFilters.findIndex((s) => s.id === skill.id) !== -1) {
       return;
     }
 
     skillFilters.push(skill);
-    setSkillsData(skillFilters);
     search["selectSkills"](skillFilters);
   };
 
   const removeSkillFromFilter = (skill) => {
-    const skillFilters = JSON.parse(JSON.stringify(skillsData));
+    const skillFilters = JSON.parse(JSON.stringify(search.selectedSkills));
     const index = skillFilters.findIndex((s) => s.id === skill.id);
 
     if (index === -1) {
@@ -125,9 +132,73 @@ export default function SearchTabFilters({ locations, achievements }) {
     }
 
     skillFilters.splice(index, 1);
-    setSkillsData(skillFilters);
     search["selectSkills"](skillFilters);
   };
+
+  const addCompanyAttributeToFilter = (attrId, data) => {
+    const companyAttrFilters = JSON.parse(
+      JSON.stringify(search.selectedCompanyAttributes)
+    );
+
+    if (attrId in companyAttrFilters) {
+      if (
+        companyAttrFilters[attrId].findIndex((s) => s.id === data.id) !== -1
+      ) {
+        return;
+      }
+    } else {
+      companyAttrFilters[attrId] = [];
+    }
+
+    companyAttrFilters[attrId].push(data);
+    search["selectCompanyAttributes"](companyAttrFilters);
+  };
+
+  const removeCompanyAttributeFromFilter = (attrId, data) => {
+    const companyAttrFilters = JSON.parse(
+      JSON.stringify(search.selectedCompanyAttributes)
+    );
+    const index = companyAttrFilters[attrId].findIndex((s) => s.id === data.id);
+
+    if (index === -1) {
+      return;
+    }
+
+    companyAttrFilters[attrId].splice(index, 1);
+    search["selectCompanyAttributes"](companyAttrFilters);
+  };
+
+  const companyAttrFiltersComponent = search
+    .getCompanyAttrActiveFilter()
+    .map((filter) => (
+      <div className={utilityStyles.mt32} key={filter.id}>
+        <Collapsible title={filter.text}>
+          <SuggestionBox
+            placeholder="Search values to filter with"
+            purpose="companyAttributes"
+            companyAttrId={filter.id}
+            onSelect={addCompanyAttributeToFilter}
+          />
+          {filter.id in search.selectedCompanyAttributes &&
+            search.selectedCompanyAttributes[filter.id].length > 0 && (
+              <div className={utilityStyles.mt16}>
+                {search.selectedCompanyAttributes[filter.id].map((data) => {
+                  return (
+                    <Pill
+                      key={data.id}
+                      name={data.value}
+                      removable={true}
+                      onRemove={() =>
+                        removeCompanyAttributeFromFilter(filter.id, data)
+                      }
+                    />
+                  );
+                })}
+              </div>
+            )}
+        </Collapsible>
+      </div>
+    ));
 
   return (
     <div className={styles.searchTabFilters}>
@@ -173,10 +244,11 @@ export default function SearchTabFilters({ locations, achievements }) {
             <SuggestionBox
               placeholder={"Search skill to filter with"}
               onSelect={addSkillToFilter}
+              purpose="skills"
             />
-            {skillsData.length > 0 && (
+            {search.selectedSkills.length > 0 && (
               <div className={utilityStyles.mt16}>
-                {skillsData.map((skill) => {
+                {search.selectedSkills.map((skill) => {
                   return (
                     <Pill
                       key={skill.id}
@@ -210,6 +282,7 @@ export default function SearchTabFilters({ locations, achievements }) {
           </Collapsible>
         </div>
       )}
+      {companyAttrFiltersComponent}
 
       <div className={utilityStyles.mt32}>
         <WideButton text="+ Add filter" action={handleAddFilter} />
@@ -240,6 +313,7 @@ function Summary({ filtersApplied }) {
       isAvailableSelected: false,
       isUnavailableSelected: false,
     });
+    search.selectCompanyAttributes({});
     search.changePageNumber(1);
   };
 

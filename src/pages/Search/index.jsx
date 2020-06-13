@@ -22,6 +22,7 @@ import config from "../../config";
 import { useAuth0 } from "../../react-auth0-spa";
 import * as helper from "./helper";
 import * as groupLib from "../../lib/groups";
+import { getCompanyAttributes } from "../../lib/company-attributes";
 
 const colorIterator = makeColorIterator(avatarColors);
 
@@ -38,6 +39,7 @@ function getOrderByText(orderBy) {
 }
 
 export default function SearchPage() {
+  const isCompanyAttrFilterFirstLoad = React.useRef(false);
   const apiClient = api();
   const { isLoading, isAuthenticated, user: auth0User } = useAuth0();
   const [page, setPage] = React.useState(1);
@@ -96,7 +98,18 @@ export default function SearchPage() {
 
     (async () => {
       const groups = await groupLib.getGroups(apiClient, auth0User.nickname);
+      const companyAttrs = await getCompanyAttributes(apiClient, auth0User);
+      const filtersWithCompanyAttrs = { ...searchContext.filters };
+      companyAttrs.forEach((companyAttr) => {
+        filtersWithCompanyAttrs[companyAttr.id] = {
+          text: companyAttr.name,
+          group: "Company attributes",
+          active: false,
+        };
+      });
+      isCompanyAttrFilterFirstLoad.current = true;
 
+      searchContext.setFilters(filtersWithCompanyAttrs);
       setMyGroups(groups.myGroups);
       setOtherGroups(groups.otherGroups);
     })();
@@ -110,85 +123,106 @@ export default function SearchPage() {
     }
 
     (async () => {
-      const criteria = {};
-      let headers;
-      let data;
+      // The if is to prevent another user load after company attributes are loaded
+      if (!isCompanyAttrFilterFirstLoad.current) {
+        const criteria = {};
+        let headers;
+        let data;
 
-      if (
-        searchContext.filters[FILTERS.LOCATIONS].active &&
-        searchContext.selectedLocations.length > 0
-      ) {
-        criteria.locations = searchContext.selectedLocations;
-      }
-      if (
-        searchContext.filters[FILTERS.SKILLS].active &&
-        searchContext.selectedSkills.length > 0
-      ) {
-        criteria.skills = searchContext.selectedSkills;
-      }
-      if (
-        searchContext.filters[FILTERS.ACHIEVEMENTS].active &&
-        searchContext.selectedAchievements.length > 0
-      ) {
-        criteria.achievements = searchContext.selectedAchievements;
-      }
-      if (searchContext.filters[FILTERS.AVAILABILITY].active) {
         if (
-          searchContext.selectedAvailability &&
-          ("isAvailableSelected" in searchContext.selectedAvailability ||
-            "isUnavailableSelected" in searchContext.selectedAvailability)
+          searchContext.filters[FILTERS.LOCATIONS].active &&
+          searchContext.selectedLocations.length > 0
         ) {
-          const availabilityFilter = searchContext.selectedAvailability;
+          criteria.locations = searchContext.selectedLocations;
+        }
+        if (
+          searchContext.filters[FILTERS.SKILLS].active &&
+          searchContext.selectedSkills.length > 0
+        ) {
+          criteria.skills = searchContext.selectedSkills;
+        }
+        if (
+          searchContext.filters[FILTERS.ACHIEVEMENTS].active &&
+          searchContext.selectedAchievements.length > 0
+        ) {
+          criteria.achievements = searchContext.selectedAchievements;
+        }
+        if (searchContext.filters[FILTERS.AVAILABILITY].active) {
           if (
-            availabilityFilter.isAvailableSelected &&
-            !availabilityFilter.isUnavailableSelected
+            searchContext.selectedAvailability &&
+            ("isAvailableSelected" in searchContext.selectedAvailability ||
+              "isUnavailableSelected" in searchContext.selectedAvailability)
           ) {
-            criteria.isAvailable = true;
-          } else if (
-            !availabilityFilter.isAvailableSelected &&
-            availabilityFilter.isUnavailableSelected
-          ) {
-            criteria.isAvailable = false;
+            const availabilityFilter = searchContext.selectedAvailability;
+            if (
+              availabilityFilter.isAvailableSelected &&
+              !availabilityFilter.isUnavailableSelected
+            ) {
+              criteria.isAvailable = true;
+            } else if (
+              !availabilityFilter.isAvailableSelected &&
+              availabilityFilter.isUnavailableSelected
+            ) {
+              criteria.isAvailable = false;
+            }
           }
         }
+
+        criteria.attributes = [];
+        searchContext.getCompanyAttrActiveFilter().forEach((filter) => {
+          if (
+            searchContext.selectedCompanyAttributes[filter.id] &&
+            searchContext.selectedCompanyAttributes[filter.id].length > 0
+          ) {
+            criteria.attributes.push({
+              id: filter.id,
+              value: searchContext.selectedCompanyAttributes[filter.id].map(
+                (data) => data.value
+              ),
+            });
+          }
+        });
+
+        if (searchContext.pagination.page !== page) {
+          setPage(page);
+        }
+
+        setIsSearching(true);
+        setUsers([]);
+
+        const { url, options, body } = helper.getSearchUsersRequestDetails({
+          search: search,
+          criteria,
+          page: searchContext.pagination.page,
+          limit: searchContext.pagination.perPage,
+          orderBy,
+        });
+
+        try {
+          let response = await apiClient.post(url, body, options);
+
+          headers = response.headers;
+          data = response.data;
+        } catch (error) {
+          headers = {};
+          data = [];
+          // TODO handle error
+        }
+
+        setIsSearching(false);
+
+        // Set the profile background color for each user
+        data.forEach((u) => {
+          const nextColor = colorIterator.next();
+          u.avatarColor = nextColor.value;
+        });
+
+        setUsers(data);
+        setTotalResults(Number(headers["x-total"]));
+        setTotalPages(Number(headers["x-total-pages"]));
+      } else {
+        isCompanyAttrFilterFirstLoad.current = false;
       }
-      if (searchContext.pagination.page !== page) {
-        setPage(page);
-      }
-
-      setIsSearching(true);
-      setUsers([]);
-
-      const { url, options, body } = helper.getSearchUsersRequestDetails({
-        search: search,
-        criteria,
-        page: searchContext.pagination.page,
-        limit: searchContext.pagination.perPage,
-        orderBy,
-      });
-
-      try {
-        let response = await apiClient.post(url, body, options);
-
-        headers = response.headers;
-        data = response.data;
-      } catch (error) {
-        headers = {};
-        data = [];
-        // TODO handle error
-      }
-
-      setIsSearching(false);
-
-      // Set the profile background color for each user
-      data.forEach((u) => {
-        const nextColor = colorIterator.next();
-        u.avatarColor = nextColor.value;
-      });
-
-      setUsers(data);
-      setTotalResults(Number(headers["x-total"]));
-      setTotalPages(Number(headers["x-total-pages"]));
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, search, orderBy, searchContext]);

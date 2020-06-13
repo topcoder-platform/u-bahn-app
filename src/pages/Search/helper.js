@@ -36,6 +36,10 @@ export function getSearchUsersRequestDetails({
     searchPayload.isAvailable = criteria.isAvailable.toString();
   }
 
+  if (criteria.attributes && criteria.attributes.length > 0) {
+    searchPayload.attributes = criteria.attributes;
+  }
+
   if (orderBy) {
     params.append("orderBy", orderBy);
   } else {

@@ -7,8 +7,6 @@ export const FILTERS = {
   SKILLS: 1,
   ACHIEVEMENTS: 2,
   AVAILABILITY: 3,
-  HOME_OFFICE: 4,
-  CUSTOM: 5,
 };
 
 const defaultFilters = {
@@ -31,16 +29,6 @@ const defaultFilters = {
     text: "Availability",
     group: "General attributes",
     active: true,
-  },
-  [FILTERS.HOME_OFFICE]: {
-    text: "Home office",
-    group: "Company attributes",
-    active: false,
-  },
-  [FILTERS.CUSTOM]: {
-    text: "Custom attribute",
-    group: "Company attributes",
-    active: false,
   },
 };
 
@@ -66,6 +54,9 @@ function useProvideSearch() {
     isAvailableSelected: false,
     isUnavailableSelected: false,
   });
+  const [selectedCompanyAttributes, setSelectedCompanyAttributes] = useState(
+    {}
+  );
   const [popupShown, setPopupShown] = useState(false);
   const [filters, setFilters] = useState(defaultFilters);
   const [pagination, setPagination] = useState({
@@ -105,6 +96,19 @@ function useProvideSearch() {
     });
   };
 
+  const getCompanyAttrActiveFilter = () => {
+    const companyAttrActiveFilters = [];
+    for (const filter in filters) {
+      if (
+        isFilterActive(filter) &&
+        filters[filter].group === "Company attributes"
+      ) {
+        companyAttrActiveFilters.push({ ...filters[filter], id: filter });
+      }
+    }
+    return companyAttrActiveFilters;
+  };
+
   return {
     query,
     setQuery,
@@ -116,6 +120,8 @@ function useProvideSearch() {
     selectAchievements: setSelectedAchievements,
     selectedAvailability,
     selectAvailability: setSelectedAvailability,
+    selectedCompanyAttributes,
+    selectCompanyAttributes: setSelectedCompanyAttributes,
     popupShown,
     showPopup,
     filters,
@@ -126,5 +132,6 @@ function useProvideSearch() {
     desactivateAllFilters,
     pagination,
     changePageNumber,
+    getCompanyAttrActiveFilter,
   };
 }

@@ -33,14 +33,14 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
 
       if (filterFn(filter)) {
         initialFiltersTemp[filter.group].push({
-          id: parseInt(filterId),
+          id: filterId,
           name: filter.text,
           isActive: filter.active,
         });
       }
 
       if (filter.active) {
-        initialSelection.push(parseInt(filterId));
+        initialSelection.push(filterId);
       }
     }
 
@@ -184,7 +184,7 @@ function PopupSectionRow({ id, text, filterActivated = false, onChange }) {
 }
 
 PopupSectionRow.propTypes = {
-  id: PT.number.isRequired,
+  id: PT.string.isRequired,
   text: PT.string.isRequired,
   filterActivated: PT.bool,
   onChange: PT.func,
