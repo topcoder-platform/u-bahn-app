@@ -159,6 +159,10 @@ export function getUserSkills(profile) {
   return skills;
 }
 
+/**
+ * Returns the user's groups
+ * @param {Object} profile The user profile
+ */
 export function getUserGroups(profile) {
   const groups = profile.groups ? profile.groups : [];
 
@@ -236,7 +240,14 @@ export async function updateUserGroups(apiClient, user) {
 
     if (group.isNew) {
       try {
-        await groupLib.addUserToGroup(apiClient, user, group);
+        await groupLib.addUserToGroup(apiClient, user.id, group);
+      } catch (error) {
+        console.log(error);
+        // TODO - handle error
+      }
+    } else if (group.isDeleted) {
+      try {
+        await groupLib.removeUserFromGroup(apiClient, user.id, group);
       } catch (error) {
         console.log(error);
         // TODO - handle error
@@ -265,6 +276,146 @@ export async function updateUserCompanyAttributes(
     } catch (error) {
       console.log(error);
       // TODO - handle error
+    }
+  }
+}
+
+/**
+ * Updates the attribute of the user in the database
+ * @param {Object} apiClient The api client
+ * @param {Object} user The updated user
+ * @param {String} attributeName The updated attribute
+ */
+export async function updateUserAttribute(apiClient, user, attributeName) {
+  let payload = {};
+
+  switch (attributeName) {
+    case config.PRIMARY_ATTRIBUTES.availability:
+      payload.userId = user.id;
+      payload.attributeId = user.isAvailable.id;
+      payload.value = user.isAvailable.value ? "true" : "false";
+      break;
+    case config.PRIMARY_ATTRIBUTES.title:
+    case config.PRIMARY_ATTRIBUTES.company:
+    case config.PRIMARY_ATTRIBUTES.location:
+      payload.userId = user.id;
+      payload.attributeId = user[attributeName].id;
+      payload.value = user[attributeName].value;
+      break;
+    default:
+      throw Error(`Unknown attribute name ${attributeName}`);
+  }
+
+  const url = `${config.API_URL}/users/${payload.userId}/attributes/${payload.attributeId}`;
+
+  await apiClient.patch(url, { value: payload.value });
+}
+
+export async function updateUserInDb(
+  apiClient,
+  user,
+  changedKeys,
+  changedCompanyAttributes = []
+) {
+  const url = `${config.API_URL}/users/${user.id}`;
+  let updatedName = false;
+  let payload;
+
+  for (let i = 0; i < changedKeys.length; i++) {
+    switch (changedKeys[i]) {
+      case config.PRIMARY_ATTRIBUTES.groups:
+        try {
+          await updateUserGroups(apiClient, user);
+        } catch (error) {
+          console.log(error);
+          // TODO - Handle errors
+        }
+
+        break;
+      case config.PRIMARY_ATTRIBUTES.skills:
+        try {
+          await updateUserSkills(apiClient, user);
+        } catch (error) {
+          console.log(error);
+          // TODO - Handle errors
+        }
+
+        break;
+      case config.PRIMARY_ATTRIBUTES.title:
+      case config.PRIMARY_ATTRIBUTES.availability:
+      case config.PRIMARY_ATTRIBUTES.company:
+      case config.PRIMARY_ATTRIBUTES.location:
+        try {
+          await updateUserAttribute(apiClient, user, changedKeys[i]);
+        } catch (error) {
+          console.log(error);
+          // TODO - Handle errors
+        }
+
+        break;
+      case config.PRIMARY_ATTRIBUTES.firstName:
+        // Combine updates to first and last name (since they are on the same model)
+        if (!updatedName) {
+          if (changedKeys.includes(config.PRIMARY_ATTRIBUTES.lastName)) {
+            payload = {
+              firstName: user.firstName,
+              lastName: user.lastName,
+            };
+            updatedName = true;
+          } else {
+            payload = {
+              firstName: user.firstName,
+            };
+          }
+
+          try {
+            await apiClient.patch(url, payload);
+          } catch (error) {
+            console.log(error);
+            // TODO - handle errors
+          }
+        }
+
+        break;
+      case config.PRIMARY_ATTRIBUTES.lastName:
+        // Combine updates to first and last name (since they are on the same model)
+        if (!updatedName) {
+          if (changedKeys.includes(config.PRIMARY_ATTRIBUTES.firstName)) {
+            payload = {
+              firstName: user.firstName,
+              lastName: user.lastName,
+            };
+            updatedName = true;
+          } else {
+            payload = {
+              lastName: user.lastName,
+            };
+          }
+
+          try {
+            await apiClient.patch(url, payload);
+          } catch (error) {
+            console.log(error);
+            // TODO - handle errors
+          }
+        }
+
+        break;
+      case config.PRIMARY_ATTRIBUTES.companyAttributes:
+        try {
+          await updateUserCompanyAttributes(
+            apiClient,
+            user.id,
+            changedCompanyAttributes
+          );
+        } catch (error) {
+          console.log(error);
+          // TODO - Handle errors
+        }
+
+        break;
+      default:
+        throw Error(`Unknown attribute ${changedKeys[i]}`);
     }
   }
 }

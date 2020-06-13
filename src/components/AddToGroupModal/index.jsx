@@ -74,6 +74,22 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
     (async () => {
       const groups = await groupLib.getGroups(apiClient, auth0User.nickname);
 
+      groups.myGroups.forEach((g, i, a) => {
+        userGroups.forEach((ug, iug, aug) => {
+          if (g.id === ug.id && !ug.isDeleted) {
+            a[i] = { ...g, isSelected: true };
+          }
+        });
+      });
+
+      groups.otherGroups.forEach((g, i, a) => {
+        userGroups.forEach((ug, iug, aug) => {
+          if (g.id === ug.id && !ug.isDeleted) {
+            a[i] = { ...g, isSelected: true };
+          }
+        });
+      });
+
       setMyGroups(groups.myGroups);
       setOtherGroups(groups.otherGroups);
       setIsLoadingGroups(false);
@@ -125,9 +141,9 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
         Other Groups{loadingGroups && " (Loading...)"}
       </h3>
       <div className={style.groups}>
-        {loadingGroups &&
+        {!loadingGroups &&
           otherGroups
-            .filter((g) => g.name.includes(filter))
+            .filter((g) => g.name.toLowerCase().includes(filter.toLowerCase()))
             .map((g) => (
               <Group
                 checked={g.isSelected === true}

@@ -29,6 +29,7 @@ export default function EditProfileModal({
         id: localUser.isAvailable.id,
         value: userDataFromChild.isAvailable.value,
       },
+      groups: userDataFromChild.groups,
     });
   };
 

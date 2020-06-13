@@ -1,7 +1,7 @@
 import config from "../config";
 
 /**
- * Returns the groups for the user
+ * Returns the groups for the logged in user
  * @param {Object} apiClient The api client
  * @param {Object} handle The logged in user's handle
  */
@@ -9,25 +9,6 @@ export async function getGroups(apiClient, handle) {
   let myGroups = [];
   let otherGroups = [];
   let response;
-  // Get my groups first
-  try {
-    response = await apiClient.get(config.GROUPS_API_URL);
-  } catch (error) {
-    console.log(error);
-    // TODO - handle error
-    return { myGroups, otherGroups };
-  }
-
-  myGroups = response.data
-    .filter((g) => g.status === "active")
-    .map((g) => ({
-      ...g,
-      count: 0,
-    }));
-
-  // Get other groups next
-  // These are groups that belong to the org of the logged in user
-  // but the user is not a part of them
 
   // First, we get the userId of the current user
   try {
@@ -47,6 +28,28 @@ export async function getGroups(apiClient, handle) {
   }
 
   const userId = response.data[0].id;
+
+  // Now, get my groups first
+  try {
+    response = await apiClient.get(
+      `${config.GROUPS_API_URL}?universalUID=${userId}&membershipType=user`
+    );
+  } catch (error) {
+    console.log(error);
+    // TODO - handle error
+    return { myGroups, otherGroups };
+  }
+
+  myGroups = response.data
+    .filter((g) => g.status === "active")
+    .map((g) => ({
+      ...g,
+      count: 0,
+    }));
+
+  // Get other groups next
+  // These are groups that belong to the org of the logged in user
+  // but the user is not a part of them
 
   // Get the org of the user
   try {
@@ -78,7 +81,7 @@ export async function getGroups(apiClient, handle) {
     return { myGroups, otherGroups };
   }
 
-  if (!response.data || response.data.length !== 1) {
+  if (!response.data || response.data.length === 0) {
     return { myGroups, otherGroups };
   }
 
@@ -103,17 +106,27 @@ export async function getGroups(apiClient, handle) {
 /**
  * Adds the user to the group
  * @param {apiClient} apiClient The api client
- * @param {Object} user The user to add
+ * @param {String} userId The user id
  * @param {Object} group The group to add to
  */
-export async function addUserToGroup(apiClient, user, group) {
+export async function addUserToGroup(apiClient, userId, group) {
   const url = `${config.GROUPS_API_URL}/${group.id}/members`;
   const payload = {
-    universalUID: user.id,
+    universalUID: userId,
     membershipType: "user",
   };
 
   await apiClient.post(url, payload);
+}
 
-  alert(`Added user to group ${group.name}`);
+/**
+ * Removes the user from the group
+ * @param {Object} apiClient The api client
+ * @param {String} userId The user id
+ * @param {Object} group The group to remove from
+ */
+export async function removeUserFromGroup(apiClient, userId, group) {
+  const url = `${config.GROUPS_API_URL}/${group.id}/members?universalUID=${userId}`;
+
+  await apiClient.delete(url);
 }

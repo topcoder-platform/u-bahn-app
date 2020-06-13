@@ -227,15 +227,6 @@ export default function SearchPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, search, orderBy, searchContext]);
 
-  // if (tab === TABS.GROUPS) {
-  //   const currentGroup = (groups.find(g => g.current) || {}).name;
-  //   if (currentGroup) {
-  //     filteredUsers = filteredUsers.filter(
-  //       user => user.groups && user.groups.includes(currentGroup)
-  //     );
-  //   }
-  // }
-
   const handleSort = (attr) => {
     setOrderBy(attr);
   };
