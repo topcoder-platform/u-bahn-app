@@ -1,4 +1,5 @@
 import React from "react";
+import PT from "prop-types";
 import FiltersSideMenu from "../../components/FiltersSideMenu";
 import { ReactComponent as DownArrowIcon } from "../../assets/images/down-arrow.svg";
 import ProfileCard from "../../components/ProfileCard";
@@ -33,7 +34,7 @@ function getOrderByText(orderBy) {
   }
 }
 
-export default function SearchGlobal({ globalSearch }) {
+export default function SearchGlobal({ keyword }) {
   const isCompanyAttrFilterFirstLoad = React.useRef(false);
   const { isLoading, isAuthenticated, user: auth0User } = useAuth0();
   const apiClient = api();
@@ -48,7 +49,6 @@ export default function SearchGlobal({ globalSearch }) {
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
   const [orderBy, setOrderBy] = React.useState(config.DEFAULT_SORT_ORDER);
   const [totalPages, setTotalPages] = React.useState(0);
-  const [search, setSearch] = React.useState(null);
 
   const usersPerPage = config.ITEMS_PER_PAGE;
 
@@ -58,10 +58,6 @@ export default function SearchGlobal({ globalSearch }) {
       window.removeEventListener("resize", updateWindowDimensions);
     };
   });
-
-  React.useEffect(() => {
-    setSearch(globalSearch);
-  }, [globalSearch]);
 
   // Static data only
   React.useEffect(() => {
@@ -177,7 +173,7 @@ export default function SearchGlobal({ globalSearch }) {
         }
 
         const { url, options, body } = helper.getSearchUsersRequestDetails({
-          search: search,
+          keyword,
           criteria,
           page: searchContext.pagination.page,
           limit: config.ITEMS_PER_PAGE,
@@ -212,7 +208,7 @@ export default function SearchGlobal({ globalSearch }) {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, isAuthenticated, search, orderBy, searchContext]);
+  }, [isLoading, isAuthenticated, keyword, orderBy, searchContext]);
 
   /**
    * Update's the style for the sort order element, based on the current width of the page
@@ -320,3 +316,7 @@ export default function SearchGlobal({ globalSearch }) {
     </>
   );
 }
+
+SearchGlobal.propTypes = {
+  keyword: PT.string,
+};

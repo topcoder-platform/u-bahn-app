@@ -17,7 +17,12 @@ import { useAuth0 } from "../../react-auth0-spa";
 export default function SearchPage() {
   const { isLoading, isAuthenticated } = useAuth0();
   const [tab, setTab] = React.useState(TABS.SEARCH);
-  const [search, setSearch] = React.useState(null);
+  const [keyword, setKeyword] = React.useState(null);
+
+  React.useEffect(() => {
+    // Ensure that we are in the Global Search tab
+    setTab(TABS.SEARCH);
+  }, [keyword]);
 
   let mainContent;
 
@@ -27,7 +32,7 @@ export default function SearchPage() {
 
   switch (tab) {
     case TABS.SEARCH:
-      mainContent = <SearchGlobal globalSearch={search} />;
+      mainContent = <SearchGlobal keyword={keyword} />;
       break;
     case TABS.GROUPS:
       mainContent = <SearchGroups />;
@@ -44,7 +49,7 @@ export default function SearchPage() {
       <Header
         currentTab={tab}
         onTabChange={setTab}
-        onSearch={setSearch}
+        onSearch={setKeyword}
         organizationId="DummyOrg"
       />
       <div className={style.mainArea}>{mainContent}</div>

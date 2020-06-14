@@ -5,8 +5,7 @@ import config from "../../config";
  * @param {Object} param0 The search parameters
  */
 export function getSearchUsersRequestDetails({
-  search,
-  groupId,
+  keyword,
   page,
   limit,
   criteria,
@@ -19,6 +18,10 @@ export function getSearchUsersRequestDetails({
   // Pagination params
   params.append("page", page.toString());
   params.append("perPage", limit.toString());
+
+  if (keyword) {
+    searchPayload.keyword = keyword;
+  }
 
   if (criteria.locations) {
     searchPayload.locations = criteria.locations;
