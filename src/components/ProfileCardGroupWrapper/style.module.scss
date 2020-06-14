@@ -1,0 +1,26 @@
+@import "../../styles/mixins";
+
+/* Profile Card */
+.containerStyle {
+  width: 370px;
+  height: 326px;
+  margin: 10px;
+
+  border: 1px solid $textColor5;
+  background-color: $lightGray1;
+  border-radius: 9.5px;
+
+  display: inline-flex;
+  flex-direction: column;
+
+  position: relative;
+}
+
+.card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 326px;
+  font-family: Helvetica;
+  font-size: 16px;
+}

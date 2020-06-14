@@ -14,7 +14,12 @@ import iconStyles from "../../styles/icons.module.css";
  * groups: all groups
  * onGroupSelected: function to be called when a group is clicked
  */
-export default function GroupTabFilters({ myGroups, groups, onGroupSelected }) {
+export default function GroupTabFilters({
+  myGroups,
+  groups,
+  onGroupSelected,
+  loadingGroups,
+}) {
   const handleGroupItemClicked = (group, item, index) => {
     setSelectedGroup(group);
     setSelectedIndex(index);
@@ -59,7 +64,7 @@ export default function GroupTabFilters({ myGroups, groups, onGroupSelected }) {
         </div>
         <div className={styles.groupTabGroupsContainer}>
           <GroupsSection
-            title={"My Groups"}
+            title={loadingGroups ? "My Groups (Loading...)" : "My Groups"}
             items={myGroupsData.filter((group) =>
               group.name.toLowerCase().includes(searchText.toLowerCase())
             )}
@@ -67,7 +72,7 @@ export default function GroupTabFilters({ myGroups, groups, onGroupSelected }) {
             selectedIndex={selectedGroup === "My Groups" ? selectedIndex : -1}
           />
           <GroupsSection
-            title={"Other Groups"}
+            title={loadingGroups ? "Other Groups (Loading...)" : "Other Groups"}
             items={groupsData.filter((group) =>
               group.name.toLowerCase().includes(searchText.toLowerCase())
             )}
@@ -86,6 +91,7 @@ GroupTabFilters.propTypes = {
   myGroups: PT.array,
   groups: PT.any,
   onGroupSelected: PT.func,
+  loadingGroups: PT.bool,
 };
 
 function GroupsSection({ title, items, onItemClicked, selectedIndex }) {

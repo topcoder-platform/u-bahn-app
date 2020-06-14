@@ -1,6 +1,5 @@
 import React from "react";
 import { createContext, useContext, useState } from "react";
-import config from "../config";
 
 export const FILTERS = {
   LOCATIONS: 0,
@@ -61,7 +60,6 @@ function useProvideSearch() {
   const [filters, setFilters] = useState(defaultFilters);
   const [pagination, setPagination] = useState({
     page: 1,
-    perPage: config.ITEMS_PER_PAGE,
   });
 
   const showPopup = () => {

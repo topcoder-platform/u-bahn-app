@@ -63,7 +63,7 @@ export async function getGroups(apiClient, handle) {
   }
 
   if (!response.data || response.data.length !== 1) {
-    alert("No organization associated with your user");
+    alert("No organization (or multiple orgs) associated with your user");
 
     return { myGroups, otherGroups };
   }
@@ -129,4 +129,15 @@ export async function removeUserFromGroup(apiClient, userId, group) {
   const url = `${config.GROUPS_API_URL}/${group.id}/members?universalUID=${userId}`;
 
   await apiClient.delete(url);
+}
+
+/**
+ * Returns the members in the group
+ * @param {Object} apiClient The api client
+ * @param {String} groupId The group id under which we fetch the members
+ */
+export async function getMembersInGroup(apiClient, groupId) {
+  const url = `${config.GROUPS_API_URL}/${groupId}/members`;
+
+  return apiClient.get(url);
 }

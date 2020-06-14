@@ -4,7 +4,12 @@ import PT from "prop-types";
 import style from "./style.module.scss";
 import GroupTabFilters from "./filters";
 
-export default function GroupsSideMenu({ userGroups, otherGroups }) {
+export default function GroupsSideMenu({
+  userGroups,
+  otherGroups,
+  loadingGroups,
+  onGroupSelected,
+}) {
   const [userGroupsData, setUserGroupsData] = useState(userGroups);
   const [otherGroupsData, setOtherGroupsData] = useState(otherGroups);
 
@@ -13,16 +18,13 @@ export default function GroupsSideMenu({ userGroups, otherGroups }) {
     setOtherGroupsData(otherGroups);
   }, [userGroups, otherGroups]);
 
-  const handleGroupSelected = (group) => {
-    // TODO - When a group is selected, make the search request again
-  };
-
   return (
     <div className={style.container}>
       <GroupTabFilters
         myGroups={userGroupsData}
         groups={otherGroupsData}
-        onGroupSelected={handleGroupSelected}
+        onGroupSelected={onGroupSelected}
+        loadingGroups={loadingGroups}
       />
     </div>
   );
@@ -31,4 +33,10 @@ export default function GroupsSideMenu({ userGroups, otherGroups }) {
 GroupsSideMenu.propTypes = {
   userGroups: PT.array.isRequired,
   otherGroups: PT.array.isRequired,
+  loadingGroups: PT.bool,
+  onGroupSelected: PT.func.isRequired,
+};
+
+GroupsSideMenu.defaultProps = {
+  loadingGroups: false,
 };

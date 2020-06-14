@@ -9,6 +9,7 @@ import Message from "./Message";
 import Progress from "./Progress";
 
 import config from "../../config";
+import api from "../../services/api";
 
 const STATES = {
   INITIAL: "INITIAL",
@@ -17,7 +18,8 @@ const STATES = {
   UPLOADING: "UPLOADING",
 };
 
-export default function Upload({ templateId, api }) {
+export default function Upload({ templateId }) {
+  const apiClient = api();
   const [state, setState] = React.useState({
     type: STATES.INITIAL,
     data: null,
@@ -46,7 +48,7 @@ export default function Upload({ templateId, api }) {
     });
 
     try {
-      await api.post(url, data, {
+      await apiClient.post(url, data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -104,5 +106,4 @@ export default function Upload({ templateId, api }) {
 
 Upload.propTypes = {
   templateId: PT.string.isRequired,
-  api: PT.shape().isRequired,
 };
