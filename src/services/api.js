@@ -26,7 +26,6 @@ export default () => {
         token = await getTokenSilently();
       }
       config.headers.authorization = `Bearer ${token}`;
-      config.cancelToken = axios.CancelToken.source().token;
       return config;
     });
     currentAPI.interceptors.response.use(null, async (error) => {
