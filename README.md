@@ -28,7 +28,7 @@ REACT_APP_AUTH0_CLIENTID => The Auth0 clientId
 
 You can create a `.env.local` file and provide the above configuration. Note that there's more configuration that you can change and you can find this under `src/config.js`. The above configurations are the minimum ones, that you need to launch the app successfully.
 
-Once the configuration is set, you can proceed to deploy.
+Once the configuration is set, you can proceed to deploy
 
 The code base has been setup using [Create React App](https://github.com/facebook/create-react-app). Thus, to start the application locally, you need to first (and only once) run the following command:
 
