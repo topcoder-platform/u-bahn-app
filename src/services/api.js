@@ -18,35 +18,26 @@ export default () => {
   );
   useEffect(() => {
     const currentAPI = api.current;
-    const requestInterceptorId = currentAPI.interceptors.request.use(
-      async (config) => {
-        let token;
-        if (process.env.REACT_APP_DEV_TOKEN) {
-          token = process.env.REACT_APP_DEV_TOKEN;
-        } else {
-          token = await getTokenSilently();
-        }
-        config.headers.authorization = `Bearer ${token}`;
-        config.cancelToken = axios.CancelToken.source().token;
-        return config;
+    currentAPI.interceptors.request.use(async (config) => {
+      let token;
+      if (process.env.REACT_APP_DEV_TOKEN) {
+        token = process.env.REACT_APP_DEV_TOKEN;
+      } else {
+        token = await getTokenSilently();
       }
-    );
-    const responseInterceptorId = currentAPI.interceptors.response.use(
-      null,
-      async (error) => {
-        if (error.config && error.response && error.response.status === 403) {
-          await loginWithRedirect({
-            redirect_uri: window.location.origin,
-          });
-        }
+      config.headers.authorization = `Bearer ${token}`;
+      config.cancelToken = axios.CancelToken.source().token;
+      return config;
+    });
+    currentAPI.interceptors.response.use(null, async (error) => {
+      if (error.config && error.response && error.response.status === 403) {
+        await loginWithRedirect({
+          redirect_uri: window.location.origin,
+        });
+      }
 
-        return Promise.reject(error);
-      }
-    );
-    return () => {
-      currentAPI.interceptors.request.eject(requestInterceptorId);
-      currentAPI.interceptors.response.eject(responseInterceptorId);
-    };
+      return Promise.reject(error);
+    });
   });
   return api.current;
 };

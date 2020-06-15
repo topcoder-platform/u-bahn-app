@@ -30,15 +30,20 @@ export default function SearchGroups() {
   const usersPerPage = config.ITEMS_PER_PAGE;
 
   React.useEffect(() => {
+    let isSubscribed = true;
     setLoadingGroups(true);
 
     (async () => {
       const groups = await groupLib.getGroups(apiClient, auth0User.nickname);
 
-      setMyGroups(groups.myGroups);
-      setOtherGroups(groups.otherGroups);
-      setLoadingGroups(false);
+      if (isSubscribed) {
+        setMyGroups(groups.myGroups);
+        setOtherGroups(groups.otherGroups);
+        setLoadingGroups(false);
+      }
     })();
+
+    return () => (isSubscribed = false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

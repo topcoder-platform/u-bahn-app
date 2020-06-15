@@ -65,13 +65,19 @@ export default function SearchGlobal({ keyword }) {
       return;
     }
 
+    let isSubscribed = true;
+
     (async () => {
       const locations = await staticData.getLocations();
       const achievements = await staticData.getAchievements();
 
-      setLocations(locations);
-      setAchievements(achievements);
+      if (isSubscribed) {
+        setLocations(locations);
+        setAchievements(achievements);
+      }
     })();
+
+    return () => (isSubscribed = false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated]);
 
@@ -80,6 +86,8 @@ export default function SearchGlobal({ keyword }) {
     if (isLoading || !isAuthenticated) {
       return;
     }
+
+    let isSubscribed = true;
 
     (async () => {
       const companyAttrs = await getCompanyAttributes(apiClient, auth0User);
@@ -93,8 +101,12 @@ export default function SearchGlobal({ keyword }) {
       });
       isCompanyAttrFilterFirstLoad.current = true;
 
-      searchContext.setFilters(filtersWithCompanyAttrs);
+      if (isSubscribed) {
+        searchContext.setFilters(filtersWithCompanyAttrs);
+      }
     })();
+
+    return () => (isSubscribed = false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, auth0User]);
 
@@ -103,6 +115,8 @@ export default function SearchGlobal({ keyword }) {
     if (isLoading || !isAuthenticated) {
       return;
     }
+
+    let isSubscribed = true;
 
     (async () => {
       // The if is to prevent another user load after company attributes are loaded
@@ -192,21 +206,25 @@ export default function SearchGlobal({ keyword }) {
           // TODO handle error
         }
 
-        setIsSearching(false);
+        if (isSubscribed) {
+          setIsSearching(false);
 
-        // Set the profile background color for each user
-        data.forEach((u) => {
-          const nextColor = colorIterator.next();
-          u.avatarColor = nextColor.value;
-        });
+          // Set the profile background color for each user
+          data.forEach((u) => {
+            const nextColor = colorIterator.next();
+            u.avatarColor = nextColor.value;
+          });
 
-        setUsers(data);
-        setTotalResults(Number(headers["x-total"]));
-        setTotalPages(Number(headers["x-total-pages"]));
+          setUsers(data);
+          setTotalResults(Number(headers["x-total"]));
+          setTotalPages(Number(headers["x-total-pages"]));
+        }
       } else {
         isCompanyAttrFilterFirstLoad.current = false;
       }
     })();
+
+    return () => (isSubscribed = false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, keyword, orderBy, searchContext]);
 
