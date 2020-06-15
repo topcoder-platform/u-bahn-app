@@ -1,33 +1,5 @@
 import defaultOrgLogoUrl from "../assets/images/u-bahn-logo.svg";
 
-const mocks = {
-  groups: [
-    "C++ Developers",
-    "Java Developers",
-    "AWS Experts",
-    "South East Regios",
-    "Topcoder Members",
-    "Adrenaline junkies",
-    "Midninght programmers",
-    "Work hard & play hard group",
-  ],
-};
-
-mocks.groups.sort();
-
-/**
- * Creates a new group.
- * @param {string} group
- * @return {Promise}
- */
-function createGroup(group) {
-  // TODO: Not supported by the mock API at the moment.
-  if (group && !this.mocks.groups.includes(group)) {
-    this.mocks.groups.push(group);
-    this.mocks.groups.sort();
-  }
-}
-
 /**
  * Gets organization meta data.
  * @param {string} organizationId
@@ -70,7 +42,6 @@ async function getAchievements() {
 }
 
 export default {
-  createGroup,
   getOrganization,
   getLocations,
   getAchievements,

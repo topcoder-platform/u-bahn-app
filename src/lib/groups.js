@@ -141,3 +141,67 @@ export async function getMembersInGroup(apiClient, groupId) {
 
   return apiClient.get(url);
 }
+
+/**
+ * Creates a group under the user's org
+ * @param {Object} apiClient The api client
+ * @param {String} handle The logged in user's handle
+ * @param {String} groupName The name (and description) of the group
+ */
+export async function createGroup(apiClient, handle, groupName) {
+  let response;
+
+  // First, we get the userId of the current user
+  try {
+    response = await apiClient.get(`${config.API_URL}/users?handle=${handle}`);
+  } catch (error) {
+    console.log(error);
+    // TODO - handle error
+  }
+
+  if (!response.data || response.data.length !== 1) {
+    alert(
+      "Your user is not present in Ubahn. Cannot get your organization details, and thus cannot create the group"
+    );
+
+    return;
+  }
+
+  const userId = response.data[0].id;
+
+  // Get the org of the user
+  try {
+    response = await apiClient.get(
+      `${config.API_URL}/users/${userId}/externalProfiles`
+    );
+  } catch (error) {
+    console.log(error);
+    // TODO - handle error
+  }
+
+  if (!response.data || response.data.length !== 1) {
+    alert("No organization (or multiple orgs) associated with your user");
+
+    return;
+  }
+
+  const organizationId = response.data[0].organizationId;
+
+  const payload = {
+    name: groupName,
+    description: groupName,
+    privateGroup: true,
+    selfRegister: false,
+    domain: "topcoder",
+    organizationId,
+  };
+
+  try {
+    response = await apiClient.post(`${config.GROUPS_API_URL}`, payload);
+  } catch (error) {
+    console.log(error);
+    // TODO - Handle error
+  }
+
+  return response.data;
+}

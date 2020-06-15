@@ -25,6 +25,7 @@ export default function SearchGroups() {
   const [page, setPage] = React.useState(1);
   const [totalResults, setTotalResults] = React.useState(0);
   const [totalPages, setTotalPages] = React.useState(0);
+  const [creatingGroup, setCreatingGroup] = React.useState(false);
 
   const usersPerPage = config.ITEMS_PER_PAGE;
 
@@ -81,6 +82,37 @@ export default function SearchGroups() {
     setIsSearching(false);
   };
 
+  /**
+   * Creates a new group
+   * @param {String} groupName The name of the group to create
+   */
+  const createGroup = async (groupName) => {
+    if (!groupName || groupName.length === 0) {
+      return;
+    }
+
+    setCreatingGroup(true);
+
+    const newGroup = await groupLib.createGroup(
+      apiClient,
+      auth0User.nickname,
+      groupName
+    );
+
+    if (newGroup.id) {
+      const newOtherGroups = JSON.parse(JSON.stringify(otherGroups));
+
+      newOtherGroups.push({ ...newGroup, count: 0 });
+
+      setOtherGroups(newOtherGroups);
+      alert(`Group with name ${groupName} created successfully`);
+    } else {
+      alert("Group creation failed");
+    }
+
+    setCreatingGroup(false);
+  };
+
   return (
     <>
       <div className={style.sideMenu}>
@@ -89,6 +121,8 @@ export default function SearchGroups() {
           otherGroups={otherGroups}
           loadingGroups={loadingGroups}
           onGroupSelected={onGroupSelected}
+          creatingGroup={creatingGroup}
+          onCreateNewGroup={createGroup}
         />
       </div>
       {!isSearching && users.length > 0 && (

@@ -1,7 +1,6 @@
 import React from "react";
 import PT from "prop-types";
 
-import staticData from "../../services/static-data";
 import Button from "../Button";
 import Group from "./Group";
 import Modal from "../Modal";
@@ -21,6 +20,38 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
   const [filter, setFilter] = React.useState("");
   const [updatingGroups, setUpdatingGroups] = React.useState(false);
   const [userGroups, setUserGroups] = React.useState(user.groups);
+  const [creatingGroup, setCreatingGroup] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isLoading || !isAuthenticated) {
+      return;
+    }
+
+    (async () => {
+      const groups = await groupLib.getGroups(apiClient, auth0User.nickname);
+
+      groups.myGroups.forEach((g, i, a) => {
+        userGroups.forEach((ug, iug, aug) => {
+          if (g.id === ug.id && !ug.isDeleted) {
+            a[i] = { ...g, isSelected: true };
+          }
+        });
+      });
+
+      groups.otherGroups.forEach((g, i, a) => {
+        userGroups.forEach((ug, iug, aug) => {
+          if (g.id === ug.id && !ug.isDeleted) {
+            a[i] = { ...g, isSelected: true };
+          }
+        });
+      });
+
+      setMyGroups(groups.myGroups);
+      setOtherGroups(groups.otherGroups);
+      setIsLoadingGroups(false);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, isAuthenticated, auth0User]);
 
   const switchSelected = async (toggledGroup) => {
     let updatedGroup;
@@ -66,36 +97,38 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
     setUserGroups(updatedGroup);
   };
 
-  React.useEffect(() => {
-    if (isLoading || !isAuthenticated) {
+  /**
+   * Creates a new group
+   */
+  const createGroup = async () => {
+    if (filter.length === 0) {
       return;
     }
 
-    (async () => {
-      const groups = await groupLib.getGroups(apiClient, auth0User.nickname);
+    setCreatingGroup(true);
 
-      groups.myGroups.forEach((g, i, a) => {
-        userGroups.forEach((ug, iug, aug) => {
-          if (g.id === ug.id && !ug.isDeleted) {
-            a[i] = { ...g, isSelected: true };
-          }
-        });
-      });
+    const newGroup = await groupLib.createGroup(
+      apiClient,
+      auth0User.nickname,
+      filter
+    );
 
-      groups.otherGroups.forEach((g, i, a) => {
-        userGroups.forEach((ug, iug, aug) => {
-          if (g.id === ug.id && !ug.isDeleted) {
-            a[i] = { ...g, isSelected: true };
-          }
-        });
-      });
+    if (newGroup.id) {
+      const newOtherGroups = JSON.parse(JSON.stringify(otherGroups));
 
-      setMyGroups(groups.myGroups);
-      setOtherGroups(groups.otherGroups);
-      setIsLoadingGroups(false);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, isAuthenticated, auth0User]);
+      newOtherGroups.push(newGroup);
+
+      setOtherGroups(newOtherGroups);
+
+      alert(`Group with name ${filter} created successfully`);
+
+      setFilter("");
+    } else {
+      alert("Group creation failed");
+    }
+
+    setCreatingGroup(false);
+  };
 
   return (
     <Modal onCancel={onCancel}>
@@ -110,15 +143,14 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
           }}
           placeholder="Search or create group"
           value={filter}
+          disabled={loadingGroups}
         />
         <Button
           className={style.createButton}
-          onClick={async () => {
-            await staticData.createGroup(filter);
-            // TODO - await updateOtherGroups();
-          }}
+          onClick={createGroup}
+          disabled={creatingGroup}
         >
-          + Create
+          {creatingGroup ? "Creating..." : "+ Create"}
         </Button>
       </div>
       <h3 className={style.subTitle}>
@@ -154,9 +186,11 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
             ))}
       </div>
       <div className={style.buttons}>
-        <Button onClick={onCancel}>Cancel</Button>
+        <Button onClick={onCancel} disabled={updatingGroups || creatingGroup}>
+          Cancel
+        </Button>
         <Button
-          disabled={updatingGroups}
+          disabled={updatingGroups || creatingGroup}
           className={
             updatingGroups ? style.doneDisabledButton : style.doneButton
           }

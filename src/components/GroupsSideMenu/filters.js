@@ -19,6 +19,8 @@ export default function GroupTabFilters({
   groups,
   onGroupSelected,
   loadingGroups,
+  creatingGroup,
+  onCreateNewGroup,
 }) {
   const handleGroupItemClicked = (group, item, index) => {
     setSelectedGroup(group);
@@ -37,10 +39,19 @@ export default function GroupTabFilters({
   useEffect(() => {
     setMyGroupsData(myGroups);
     setGroupsData(groups);
+    setSearchText("");
   }, [myGroups, groups]);
 
   const filterGroups = (query) => {
     setSearchText(query);
+  };
+
+  const createGroup = () => {
+    if (searchText.length === 0) {
+      return;
+    }
+
+    onCreateNewGroup(searchText);
   };
 
   return (
@@ -56,10 +67,17 @@ export default function GroupTabFilters({
               placeholder="Search or create group"
               name={"groups search"}
               onChange={filterGroups}
+              disabled={loadingGroups}
             />
           </div>
           <div className={styles.groupTabFiltersContentSearchCreate}>
-            <Button className={style.createButton}>+ Create</Button>
+            <Button
+              className={style.createButton}
+              disabled={creatingGroup}
+              onClick={createGroup}
+            >
+              {creatingGroup ? "Creating..." : "+ Create"}
+            </Button>
           </div>
         </div>
         <div className={styles.groupTabGroupsContainer}>
@@ -92,6 +110,8 @@ GroupTabFilters.propTypes = {
   groups: PT.any,
   onGroupSelected: PT.func,
   loadingGroups: PT.bool,
+  creatingGroup: PT.bool,
+  onCreateNewGroup: PT.func,
 };
 
 function GroupsSection({ title, items, onItemClicked, selectedIndex }) {

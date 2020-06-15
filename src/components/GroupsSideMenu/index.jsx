@@ -9,6 +9,8 @@ export default function GroupsSideMenu({
   otherGroups,
   loadingGroups,
   onGroupSelected,
+  creatingGroup,
+  onCreateNewGroup,
 }) {
   const [userGroupsData, setUserGroupsData] = useState(userGroups);
   const [otherGroupsData, setOtherGroupsData] = useState(otherGroups);
@@ -25,6 +27,8 @@ export default function GroupsSideMenu({
         groups={otherGroupsData}
         onGroupSelected={onGroupSelected}
         loadingGroups={loadingGroups}
+        creatingGroup={creatingGroup}
+        onCreateNewGroup={onCreateNewGroup}
       />
     </div>
   );
@@ -35,8 +39,11 @@ GroupsSideMenu.propTypes = {
   otherGroups: PT.array.isRequired,
   loadingGroups: PT.bool,
   onGroupSelected: PT.func.isRequired,
+  creatingGroup: PT.bool,
+  onCreateNewGroup: PT.func,
 };
 
 GroupsSideMenu.defaultProps = {
   loadingGroups: false,
+  creatingGroup: false,
 };

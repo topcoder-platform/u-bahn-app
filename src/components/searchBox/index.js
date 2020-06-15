@@ -5,8 +5,18 @@ import styles from "./searchBox.module.css";
 /**
  * Searchbox
  */
-export default function SearchBox({ name, value, placeholder, onChange }) {
+export default function SearchBox({
+  name,
+  value,
+  placeholder,
+  onChange,
+  disabled,
+}) {
   const [query, setQuery] = useState(value ? value : "");
+
+  React.useEffect(() => {
+    setQuery(value ? value : "");
+  }, [value]);
 
   const handleChange = (event) => {
     const val = event.target.value;
@@ -26,6 +36,7 @@ export default function SearchBox({ name, value, placeholder, onChange }) {
           value={query}
           placeholder={placeholder}
           onChange={handleChange}
+          disabled={disabled}
         />
       </div>
     </div>
@@ -37,4 +48,9 @@ SearchBox.propTypes = {
   value: PT.string,
   placeholder: PT.string,
   onChange: PT.func,
+  disabled: PT.bool,
+};
+
+SearchBox.defaultProps = {
+  disabled: false,
 };
