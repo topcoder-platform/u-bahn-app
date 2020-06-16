@@ -310,11 +310,7 @@ export default function SearchGlobal({ keyword }) {
             })}
           </div>
           <div>
-            <Pagination
-              currentPage={page}
-              itemsPerPage={usersPerPage}
-              numPages={totalPages}
-            />
+            <Pagination currentPage={page} numPages={totalPages} />
           </div>
         </div>
       )}

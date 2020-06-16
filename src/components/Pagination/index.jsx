@@ -4,14 +4,23 @@ import PT from "prop-types";
 import style from "./style.module.scss";
 import { useSearch } from "../../lib/search";
 
-export default function Pagination({ currentPage, itemsPerPage, numPages }) {
+export default function Pagination({ currentPage, numPages, onChangePage }) {
   const search = useSearch();
+
+  const changePage = (newPageNumber) => {
+    if (onChangePage) {
+      onChangePage(newPageNumber);
+      return;
+    }
+
+    search.changePageNumber(newPageNumber);
+  };
 
   const buttons = [
     <button
       className={`${style.button} ${currentPage === 1 ? style.disabled : ""}`}
       disabled={currentPage === 1}
-      onClick={() => search.changePageNumber(currentPage - 1)}
+      onClick={() => changePage(currentPage - 1)}
       key="previous"
     >
       &larr;
@@ -42,7 +51,7 @@ export default function Pagination({ currentPage, itemsPerPage, numPages }) {
         className={buttonStyle}
         disabled={p === currentPage}
         key={p}
-        onClick={() => search.changePageNumber(p)}
+        onClick={() => changePage(p)}
       >
         {p}
       </button>
@@ -61,7 +70,7 @@ export default function Pagination({ currentPage, itemsPerPage, numPages }) {
         currentPage === numPages ? style.disabled : ""
       }`}
       disabled={currentPage === numPages}
-      onClick={() => search.changePageNumber(currentPage + 1)}
+      onClick={() => changePage(currentPage + 1)}
       key="next"
     >
       &rarr;
@@ -73,6 +82,6 @@ export default function Pagination({ currentPage, itemsPerPage, numPages }) {
 
 Pagination.propTypes = {
   currentPage: PT.number.isRequired,
-  itemsPerPage: PT.number.isRequired,
   numPages: PT.number.isRequired,
+  onChangePage: PT.func,
 };

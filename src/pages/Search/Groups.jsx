@@ -47,24 +47,20 @@ export default function SearchGroups() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /**
-   * Retrieves the members of the group on selection
-   * @param {Object} group The selected group
-   */
-  const onGroupSelected = async (group) => {
+  const getMembersInGroup = async (groupId, page) => {
     let headers;
     let data;
 
-    setSelectedGroup(group);
     setIsSearching(true);
     setUsers([]);
 
-    // Reset pagination
-    setPage(1);
-
     try {
-      const url = `${config.GROUPS_API_URL}/groups/${group.id}/members`;
-      const response = await apiClient.get(url);
+      const response = await groupLib.getMembersInGroup(
+        apiClient,
+        groupId,
+        page,
+        usersPerPage
+      );
 
       headers = response.headers;
       data = response.data;
@@ -85,6 +81,18 @@ export default function SearchGroups() {
     setTotalResults(Number(headers["x-total"]));
     setTotalPages(Number(headers["x-total-pages"]));
     setIsSearching(false);
+  };
+
+  /**
+   * Retrieves the members of the group on selection
+   * @param {Object} group The selected group
+   */
+  const onGroupSelected = async (group) => {
+    setSelectedGroup(group);
+    // Reset pagination
+    setPage(1);
+
+    await getMembersInGroup(group.id, 1);
   };
 
   /**
@@ -118,6 +126,15 @@ export default function SearchGroups() {
     setCreatingGroup(false);
   };
 
+  /**
+   * Sets the new page number and gets the new set of users
+   * @param {Number} newPageNumber The new page number
+   */
+  const onChangePage = async (newPageNumber) => {
+    setPage(newPageNumber);
+    await getMembersInGroup(selectedGroup.id, newPageNumber);
+  };
+
   return (
     <>
       <div className={style.sideMenu}>
@@ -149,8 +166,8 @@ export default function SearchGroups() {
           <div>
             <Pagination
               currentPage={page}
-              itemsPerPage={usersPerPage}
               numPages={totalPages}
+              onChangePage={onChangePage}
             />
           </div>
         </div>

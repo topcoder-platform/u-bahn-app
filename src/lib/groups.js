@@ -73,7 +73,7 @@ export async function getGroups(apiClient, handle) {
   // Fetch all groups in the org
   try {
     response = await apiClient.get(
-      `${config.GROUPS_API_URL}/groups?organizationId=${organizationId}`
+      `${config.GROUPS_API_URL}?organizationId=${organizationId}`
     );
   } catch (error) {
     console.log(error);
@@ -100,6 +100,44 @@ export async function getGroups(apiClient, handle) {
       count: 0,
     }));
 
+  // Now, get member counts
+  try {
+    response = await apiClient.get(
+      `${config.GROUPS_API_URL}/memberGroups/groupMembersCount?universalUID=${userId}`
+    );
+  } catch (error) {
+    console.log(error);
+    // TODO - handle error
+    return { myGroups, otherGroups };
+  }
+
+  myGroups.forEach((m, i, arr) => {
+    response.data.forEach((c) => {
+      if (c.id === m.id) {
+        arr[i].count = c.count;
+      }
+    });
+  });
+
+  // Fetch all groups in the org
+  try {
+    response = await apiClient.get(
+      `${config.GROUPS_API_URL}/memberGroups/groupMembersCount?organizationId=${organizationId}`
+    );
+  } catch (error) {
+    console.log(error);
+    // TODO - handle error
+    return { myGroups, otherGroups };
+  }
+
+  otherGroups.forEach((o, i, arr) => {
+    response.data.forEach((c) => {
+      if (c.id === o.id) {
+        arr[i].count = c.count;
+      }
+    });
+  });
+
   return { myGroups, otherGroups };
 }
 
@@ -110,7 +148,7 @@ export async function getGroups(apiClient, handle) {
  * @param {Object} group The group to add to
  */
 export async function addUserToGroup(apiClient, userId, group) {
-  const url = `${config.GROUPS_API_URL}/groups/${group.id}/members`;
+  const url = `${config.GROUPS_API_URL}/${group.id}/members`;
   const payload = {
     universalUID: userId,
     membershipType: "user",
@@ -126,7 +164,7 @@ export async function addUserToGroup(apiClient, userId, group) {
  * @param {Object} group The group to remove from
  */
 export async function removeUserFromGroup(apiClient, userId, group) {
-  const url = `${config.GROUPS_API_URL}/groups/${group.id}/members?universalUID=${userId}`;
+  const url = `${config.GROUPS_API_URL}/${group.id}/members?universalUID=${userId}`;
 
   await apiClient.delete(url);
 }
@@ -136,10 +174,15 @@ export async function removeUserFromGroup(apiClient, userId, group) {
  * @param {Object} apiClient The api client
  * @param {String} groupId The group id under which we fetch the members
  */
-export async function getMembersInGroup(apiClient, groupId) {
-  const url = `${config.GROUPS_API_URL}/groups/${groupId}/members`;
+export async function getMembersInGroup(apiClient, groupId, page, perPage) {
+  const url = `${config.GROUPS_API_URL}/${groupId}/members`;
 
-  return apiClient.get(url);
+  return apiClient.get(url, {
+    params: {
+      page,
+      perPage,
+    },
+  });
 }
 
 /**
