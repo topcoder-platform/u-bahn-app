@@ -32,7 +32,7 @@ export async function getGroups(apiClient, handle) {
   // Now, get my groups first
   try {
     response = await apiClient.get(
-      `${config.GROUPS_API_URL}/groups?universalUID=${userId}&membershipType=user`
+      `${config.GROUPS_API_URL}?universalUID=${userId}&membershipType=user`
     );
   } catch (error) {
     console.log(error);
