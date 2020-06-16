@@ -181,7 +181,7 @@ export default function SearchGlobal({ keyword }) {
       });
 
       if (searchContext.pagination.page !== page) {
-        setPage(page);
+        setPage(searchContext.pagination.page);
       }
 
       const { url, options, body } = helper.getSearchUsersRequestDetails({

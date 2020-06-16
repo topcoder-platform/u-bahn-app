@@ -32,7 +32,7 @@ export async function getGroups(apiClient, handle) {
   // Now, get my groups first
   try {
     response = await apiClient.get(
-      `${config.GROUPS_API_URL}?universalUID=${userId}&membershipType=user`
+      `${config.GROUPS_API_URL}/groups?universalUID=${userId}&membershipType=user`
     );
   } catch (error) {
     console.log(error);
@@ -73,7 +73,7 @@ export async function getGroups(apiClient, handle) {
   // Fetch all groups in the org
   try {
     response = await apiClient.get(
-      `${config.GROUPS_API_URL}?organizationId=${organizationId}`
+      `${config.GROUPS_API_URL}/groups?organizationId=${organizationId}`
     );
   } catch (error) {
     console.log(error);
@@ -110,7 +110,7 @@ export async function getGroups(apiClient, handle) {
  * @param {Object} group The group to add to
  */
 export async function addUserToGroup(apiClient, userId, group) {
-  const url = `${config.GROUPS_API_URL}/${group.id}/members`;
+  const url = `${config.GROUPS_API_URL}/groups/${group.id}/members`;
   const payload = {
     universalUID: userId,
     membershipType: "user",
@@ -126,7 +126,7 @@ export async function addUserToGroup(apiClient, userId, group) {
  * @param {Object} group The group to remove from
  */
 export async function removeUserFromGroup(apiClient, userId, group) {
-  const url = `${config.GROUPS_API_URL}/${group.id}/members?universalUID=${userId}`;
+  const url = `${config.GROUPS_API_URL}/groups/${group.id}/members?universalUID=${userId}`;
 
   await apiClient.delete(url);
 }
@@ -137,7 +137,7 @@ export async function removeUserFromGroup(apiClient, userId, group) {
  * @param {String} groupId The group id under which we fetch the members
  */
 export async function getMembersInGroup(apiClient, groupId) {
-  const url = `${config.GROUPS_API_URL}/${groupId}/members`;
+  const url = `${config.GROUPS_API_URL}/groups/${groupId}/members`;
 
   return apiClient.get(url);
 }

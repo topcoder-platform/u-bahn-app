@@ -32,7 +32,7 @@ export default function Pagination({ currentPage, itemsPerPage, numPages }) {
           : currentPage > 1
           ? currentPage - 1
           : currentPage;
-    i < 6 && p < numPages / itemsPerPage + 1;
+    i < 6 && p < numPages + 1;
     ++i, ++p
   ) {
     let buttonStyle = style.button;
@@ -48,7 +48,7 @@ export default function Pagination({ currentPage, itemsPerPage, numPages }) {
       </button>
     );
   }
-  if (currentPage < numPages / itemsPerPage - 2) {
+  if (currentPage < numPages - 2) {
     buttons.push(
       <span className={style.disabled} disabled={true} key="pre-next">
         ...

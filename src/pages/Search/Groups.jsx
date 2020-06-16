@@ -63,7 +63,7 @@ export default function SearchGroups() {
     setPage(1);
 
     try {
-      const url = `${config.GROUPS_API_URL}/${group.id}/members`;
+      const url = `${config.GROUPS_API_URL}/groups/${group.id}/members`;
       const response = await apiClient.get(url);
 
       headers = response.headers;
