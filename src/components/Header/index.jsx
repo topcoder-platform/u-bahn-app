@@ -26,7 +26,7 @@ export default function Header({
   organizationId,
 }) {
   const [org, setOrg] = React.useState({});
-  const [searchText, setSearchText] = React.useState();
+  const [searchText, setSearchText] = React.useState("");
   const [showAccountDropdown, setShowAccountDropdown] = React.useState(false);
 
   React.useEffect(() => {
@@ -54,6 +54,11 @@ export default function Header({
     return null;
   }
 
+  const reset = () => {
+    setSearchText("");
+    onSearch && onSearch("");
+  };
+
   return (
     <div className={style.container}>
       <div className={style.top}>
@@ -65,14 +70,17 @@ export default function Header({
           <input
             className={style.searchInput}
             onKeyDown={(e) => {
-              const value = e.target.value;
-              setSearchText(value);
               if (e.key === "Enter") {
-                handleSearch(value);
+                handleSearch(e.target.value);
               }
             }}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
             placeholder="Search talent or keyword"
           />
+          <span className={style.resetKeyword} onClick={() => reset()}>
+            &times;
+          </span>
         </div>
         <div
           className={style.accountMenu}

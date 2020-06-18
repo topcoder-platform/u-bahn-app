@@ -135,3 +135,16 @@
   justify-content: space-between;
   padding: 25px 60px;
 }
+
+.resetKeyword {
+  appearance: none;
+  border: none;
+  color: $textColor;
+  cursor: pointer;
+  font-size: 24px;
+  outline: none;
+
+  &:hover {
+    color: $red;
+  }
+}
