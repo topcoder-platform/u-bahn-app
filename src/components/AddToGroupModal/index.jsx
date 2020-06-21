@@ -107,11 +107,7 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
 
     setCreatingGroup(true);
 
-    const newGroup = await groupLib.createGroup(
-      apiClient,
-      auth0User.nickname,
-      filter
-    );
+    const newGroup = await groupLib.createGroup(apiClient, filter);
 
     if (newGroup.id) {
       const newOtherGroups = JSON.parse(JSON.stringify(otherGroups));

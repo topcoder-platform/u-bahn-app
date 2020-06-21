@@ -139,3 +139,36 @@
   box-sizing: border-box;
   text-align: center;
 }
+
+.orgSelectorContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+
+  p {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .org {
+    align-items: center;
+    background: $white;
+    border: 2px solid $lightGray2;
+    border-radius: 4px;
+    color: $textColor;
+    display: inline-flex;
+    font: 400 12pt/1 Inter;
+    height: 30px;
+    margin: 4px;
+    padding: 0 10px;
+
+    &:hover {
+      border: 2px solid $blue4;
+      color: $blue4;
+      background-color: $white;
+      cursor: pointer;
+    }
+  }
+}

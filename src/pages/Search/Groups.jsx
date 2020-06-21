@@ -106,11 +106,7 @@ export default function SearchGroups() {
 
     setCreatingGroup(true);
 
-    const newGroup = await groupLib.createGroup(
-      apiClient,
-      auth0User.nickname,
-      groupName
-    );
+    const newGroup = await groupLib.createGroup(apiClient, groupName);
 
     if (newGroup.id) {
       const newOtherGroups = JSON.parse(JSON.stringify(otherGroups));

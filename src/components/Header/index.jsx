@@ -1,8 +1,6 @@
 import React from "react";
 import PT from "prop-types";
 
-import staticData from "../../services/static-data";
-
 import { ReactComponent as DownArrow } from "../../assets/images/down-arrow.svg";
 import { ReactComponent as SearchTabIcon } from "../../assets/images/search-tab-icon.svg";
 import { ReactComponent as GroupsTabIcon } from "../../assets/images/groups-tab-icon.svg";
@@ -12,6 +10,7 @@ import { ReactComponent as ZoomIcon } from "../../assets/images/zoom-icon.svg";
 import { useAuth0 } from "../../react-auth0-spa";
 
 import style from "./style.module.scss";
+import logo from "../../assets/images/u-bahn-logo.svg";
 
 export const TABS = {
   GROUPS: "GROUPS",
@@ -23,17 +22,10 @@ export default function Header({
   currentTab,
   onSearch,
   onTabChange,
-  organizationId,
+  organization,
 }) {
-  const [org, setOrg] = React.useState({});
   const [searchText, setSearchText] = React.useState("");
   const [showAccountDropdown, setShowAccountDropdown] = React.useState(false);
-
-  React.useEffect(() => {
-    (async () => {
-      setOrg(await staticData.getOrganization(organizationId));
-    })();
-  }, [organizationId]);
 
   const handleSearch = (value) => {
     value = value || searchText;
@@ -63,7 +55,7 @@ export default function Header({
     <div className={style.container}>
       <div className={style.top}>
         <div className={style.logo}>
-          <img alt="Organization Logo" src={org.logoUrl} />
+          <img alt="Organization Logo" src={logo} />
         </div>
         <div className={style.search}>
           <ZoomIcon className={style.zoomIcon} onClick={() => handleSearch()} />
@@ -87,6 +79,7 @@ export default function Header({
           onClick={() => setShowAccountDropdown(!showAccountDropdown)}
         >
           {user.nickname}
+          {organization ? <>&nbsp;({organization.name})</> : ""}
           <DownArrow className={style.downArrow} />
           {showAccountDropdown && (
             <ul className={style.dropdown}>
@@ -135,5 +128,5 @@ Header.propTypes = {
   currentTab: PT.oneOf(Object.values(TABS)),
   onSearch: PT.func.isRequired,
   onTabChange: PT.func.isRequired,
-  organizationId: PT.string.isRequired,
+  organization: PT.shape(),
 };

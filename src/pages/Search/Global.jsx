@@ -90,7 +90,7 @@ export default function SearchGlobal({ keyword }) {
     let isSubscribed = true;
 
     (async () => {
-      const companyAttrs = await getCompanyAttributes(apiClient, auth0User);
+      const companyAttrs = await getCompanyAttributes(apiClient);
       const filtersWithCompanyAttrs = { ...searchContext.filters };
       companyAttrs.forEach((companyAttr) => {
         filtersWithCompanyAttrs[companyAttr.id] = {

@@ -1,4 +1,5 @@
 import config from "../config";
+import * as OrgService from "../services/user-org";
 
 /**
  * Returns the groups for the logged in user
@@ -50,25 +51,7 @@ export async function getGroups(apiClient, handle) {
   // Get other groups next
   // These are groups that belong to the org of the logged in user
   // but the user is not a part of them
-
-  // Get the org of the user
-  try {
-    response = await apiClient.get(
-      `${config.API_URL}/users/${userId}/externalProfiles`
-    );
-  } catch (error) {
-    console.log(error);
-    // TODO - handle error
-    return { myGroups, otherGroups };
-  }
-
-  if (!response.data || response.data.length !== 1) {
-    alert("No organization (or multiple orgs) associated with your user");
-
-    return { myGroups, otherGroups };
-  }
-
-  const organizationId = response.data[0].organizationId;
+  const organizationId = OrgService.getSingleOrg();
 
   // Fetch all groups in the org
   try {
@@ -188,47 +171,11 @@ export async function getMembersInGroup(apiClient, groupId, page, perPage) {
 /**
  * Creates a group under the user's org
  * @param {Object} apiClient The api client
- * @param {String} handle The logged in user's handle
  * @param {String} groupName The name (and description) of the group
  */
-export async function createGroup(apiClient, handle, groupName) {
+export async function createGroup(apiClient, groupName) {
   let response;
-
-  // First, we get the userId of the current user
-  try {
-    response = await apiClient.get(`${config.API_URL}/users?handle=${handle}`);
-  } catch (error) {
-    console.log(error);
-    // TODO - handle error
-  }
-
-  if (!response.data || response.data.length !== 1) {
-    alert(
-      "Your user is not present in Ubahn. Cannot get your organization details, and thus cannot create the group"
-    );
-
-    return;
-  }
-
-  const userId = response.data[0].id;
-
-  // Get the org of the user
-  try {
-    response = await apiClient.get(
-      `${config.API_URL}/users/${userId}/externalProfiles`
-    );
-  } catch (error) {
-    console.log(error);
-    // TODO - handle error
-  }
-
-  if (!response.data || response.data.length !== 1) {
-    alert("No organization (or multiple orgs) associated with your user");
-
-    return;
-  }
-
-  const organizationId = response.data[0].organizationId;
+  const organizationId = OrgService.getSingleOrg();
 
   const payload = {
     name: groupName,

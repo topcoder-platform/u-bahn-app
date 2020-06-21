@@ -1,5 +1,6 @@
 // FIRST - import config from the file under src/config
 import config from "../config";
+import * as OrgService from "../services/user-org";
 
 let primaryAttributeIds = [
   config.STANDARD_USER_ATTRIBUTES.location,
@@ -11,56 +12,17 @@ let primaryAttributeIds = [
 /**
  * Get the attributes associated with the company (organization)
  * @param {Object} apiClient The api client (you can get this from src/services/api and then call api() to get the apiClient)
- * @param {Object} user The user associated with the company (You can use the user that is returned by src/react-auth0-spa)
  */
-export async function getCompanyAttributes(apiClient, user) {
+export async function getCompanyAttributes(apiClient) {
   let response;
-  let userId;
-  let organizationId;
   let attributeGroups;
   let attributes = [];
   let errorMessage =
     "An error occurred when getting company attributes for the custom filter";
-  // First get the user id in ubahn
-  let url = `${config.API_URL}/users?handle=${user.nickname}`;
+  const organizationId = OrgService.getSingleOrg();
 
-  try {
-    response = await apiClient.get(url);
-  } catch (error) {
-    console.log(error);
-    alert(errorMessage);
-    // TODO - handle error
-    return attributes;
-  }
-
-  if (!response.data || response.data.length !== 1) {
-    alert(errorMessage);
-    return attributes;
-  }
-
-  userId = response.data[0].id;
-
-  // Now get the org associated with the user
-  url = `${config.API_URL}/users/${userId}/externalProfiles`;
-
-  try {
-    response = await apiClient.get(url);
-  } catch (error) {
-    console.log(error);
-    alert(errorMessage);
-    // TODO - handle error
-    return attributes;
-  }
-
-  if (!response.data || response.data.length !== 1) {
-    alert(errorMessage);
-    return attributes;
-  }
-
-  organizationId = response.data[0].organizationId;
-
-  // Now we get the attribute groups under the org
-  url = `${config.API_URL}/attributeGroups?organizationId=${organizationId}`;
+  // Get the attribute groups under the org
+  let url = `${config.API_URL}/attributeGroups?organizationId=${organizationId}`;
 
   try {
     response = await apiClient.get(url);

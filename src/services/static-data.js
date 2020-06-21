@@ -1,17 +1,3 @@
-import defaultOrgLogoUrl from "../assets/images/u-bahn-logo.svg";
-
-/**
- * Gets organization meta data.
- * @param {string} organizationId
- * @return {Promise<object>}
- */
-async function getOrganization(organizationId) {
-  // TODO: The API call should happen here. Mock for now.
-  return {
-    logoUrl: defaultOrgLogoUrl,
-  };
-}
-
 async function getLocations() {
   const mockLocationTags = [
     { name: "London" },
@@ -56,7 +42,6 @@ async function getAchievements() {
 }
 
 export default {
-  getOrganization,
   getLocations,
   getAchievements,
 };
