@@ -1,4 +1,5 @@
 import config from "../../config";
+import { getSingleOrg } from "../../services/user-org";
 
 /**
  * Prepares the search query and url
@@ -42,6 +43,9 @@ export function getSearchUsersRequestDetails({
   if (criteria.attributes && criteria.attributes.length > 0) {
     searchPayload.attributes = criteria.attributes;
   }
+
+  // Restrict by org
+  searchPayload.organizationId = getSingleOrg();
 
   if (orderBy) {
     params.append("orderBy", orderBy);
