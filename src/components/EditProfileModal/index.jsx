@@ -186,6 +186,7 @@ export default function EditProfileModal({
           <SuggestionBox
             placeholder={"Enter skill to add"}
             onSelect={addSkill}
+            purpose="skills"
           />
           {localUser.skills
             .filter((item) => !item.isDeleted)
