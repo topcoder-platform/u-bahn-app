@@ -8,6 +8,7 @@ import { ReactComponent as UploadsTabIcon } from "../../assets/images/uploads-ta
 import { ReactComponent as ZoomIcon } from "../../assets/images/zoom-icon.svg";
 
 import { useAuth0 } from "../../react-auth0-spa";
+import { clearOrg } from "../../services/user-org";
 
 import style from "./style.module.scss";
 import logo from "../../assets/images/u-bahn-logo.svg";
@@ -35,6 +36,7 @@ export default function Header({
   const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
   const logoutWithRedirect = () => {
+    clearOrg();
     logout({
       redirect: window.location.origin,
     });

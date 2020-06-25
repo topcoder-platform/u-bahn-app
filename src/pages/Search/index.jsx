@@ -25,6 +25,7 @@ export default function SearchPage() {
   const [selectedOrg, setSelectedOrg] = React.useState(null);
   const [userOrgs, setUserOrgs] = React.useState([]);
   const [shouldSelectOrg, setShouldSelectOrg] = React.useState(true);
+  const [loadingOrgs, setLoadingOrgs] = React.useState(true);
 
   React.useEffect(() => {
     (async () => {
@@ -32,6 +33,8 @@ export default function SearchPage() {
         apiClient,
         auth0User.nickname
       );
+
+      setLoadingOrgs(false);
 
       if (!organizations) {
         return;
@@ -65,7 +68,13 @@ export default function SearchPage() {
   if (isLoading || !isAuthenticated) {
     mainContent = null;
   } else if (shouldSelectOrg) {
-    mainContent = <OrgSelector userOrgs={userOrgs} onSelectOrg={onSelectOrg} />;
+    mainContent = (
+      <OrgSelector
+        userOrgs={userOrgs}
+        onSelectOrg={onSelectOrg}
+        loadingOrgs={loadingOrgs}
+      />
+    );
   } else {
     switch (tab) {
       case TABS.SEARCH:

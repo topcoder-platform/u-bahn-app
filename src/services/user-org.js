@@ -95,6 +95,10 @@ export function getSingleOrg() {
  * Sets one organization id into session storage
  * @param {String} organization The organization
  */
-export async function setSingleOrg(organization) {
+export function setSingleOrg(organization) {
   sessionStorage.setItem(ORGANIZATIONID_KEY, JSON.stringify(organization));
+}
+
+export function clearOrg(organization) {
+  sessionStorage.removeItem(ORGANIZATIONID_KEY);
 }

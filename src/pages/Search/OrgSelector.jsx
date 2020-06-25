@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./style.module.scss";
 
-export default function OrgSelector({ userOrgs, onSelectOrg }) {
+export default function OrgSelector({ userOrgs, onSelectOrg, loadingOrgs }) {
   return (
     <div className={styles.orgSelectorContainer}>
       <p className={styles.visibleCardsInfo}>
@@ -11,6 +11,8 @@ export default function OrgSelector({ userOrgs, onSelectOrg }) {
             <br />
             Which one would you like to search under ?
           </>
+        ) : loadingOrgs ? (
+          "Loading organization details..."
         ) : userOrgs.length === 0 ? (
           "No organizations found for your user"
         ) : (
