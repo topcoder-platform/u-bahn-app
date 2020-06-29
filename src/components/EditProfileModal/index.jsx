@@ -15,11 +15,11 @@ export default function EditProfileModal({
   onCancel,
   updateUser,
   user,
-  deleteUser,
+  deactivateUser,
 }) {
   const [localUser, setLocalUser] = React.useState(user);
   const [isSavingChanges, setIsSavingChanges] = React.useState(false);
-  const [isDeletingUser, setIsDeletingUser] = React.useState(false);
+  const [isDeactivatingUser, setisDeactivatingUser] = React.useState(false);
 
   const updateUserFromChild = (userDataFromChild) => {
     // Only availability can be updated
@@ -33,10 +33,10 @@ export default function EditProfileModal({
     });
   };
 
-  const confirmDeleteUser = () => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      setIsDeletingUser(true);
-      deleteUser();
+  const confirmDeactivateUser = () => {
+    if (window.confirm("Are you sure you want to deactivate this user?")) {
+      setisDeactivatingUser(true);
+      deactivateUser();
     }
   };
 
@@ -97,7 +97,7 @@ export default function EditProfileModal({
           <h1>Edit Profile</h1>
           <Button
             onClick={onCancel}
-            disabled={isSavingChanges || isDeletingUser}
+            disabled={isSavingChanges || isDeactivatingUser}
           >
             Cancel
           </Button>
@@ -109,7 +109,7 @@ export default function EditProfileModal({
               setIsSavingChanges(true);
               updateUser(localUser);
             }}
-            disabled={isSavingChanges || isDeletingUser}
+            disabled={isSavingChanges || isDeactivatingUser}
           >
             {isSavingChanges ? "Saving changes, please wait..." : "Save"}
           </Button>
@@ -233,12 +233,12 @@ export default function EditProfileModal({
         </div>
         <Button
           className={
-            isDeletingUser ? style.disabledDangerButton : style.dangerButton
+            isDeactivatingUser ? style.disabledDangerButton : style.dangerButton
           }
-          onClick={confirmDeleteUser}
-          disabled={isDeletingUser || isSavingChanges}
+          onClick={confirmDeactivateUser}
+          disabled={isDeactivatingUser || isSavingChanges}
         >
-          {isDeletingUser ? "Deleting" : "Delete this user"}
+          {isDeactivatingUser ? "Deactivating" : "Deactivate this user"}
         </Button>
       </div>
     </Modal>
@@ -248,6 +248,6 @@ export default function EditProfileModal({
 EditProfileModal.propTypes = {
   onCancel: PT.func.isRequired,
   updateUser: PT.func.isRequired,
-  deleteUser: PT.func.isRequired,
+  deactivateUser: PT.func.isRequired,
   user: PT.shape().isRequired,
 };

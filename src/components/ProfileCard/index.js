@@ -11,6 +11,7 @@ import config from "../../config";
 import * as groupLib from "../../lib/groups";
 import api from "../../services/api";
 import * as cardHelper from "./helper";
+import { getSingleOrg } from "../../services/user-org";
 
 import styles from "./profileCard.module.css";
 import iconStyles from "../../styles/icons.module.css";
@@ -55,9 +56,9 @@ function ProfileCard({
       ),
       companyAttributes: cardHelper.getUserCompanyAttributeDetails(profile),
       avatarColor,
-      // Indicates if the user has been deleted. The user is still shown in this case, but with a
-      // clear indicator about its deleted status.
-      isDeleted: false,
+      // Indicates if the user has been deactivated. The user is still shown in this case, but with a
+      // clear indicator about its deactivated status.
+      isDeactivated: false,
     };
   } else {
     // Data is already in the format seen above. No further processing needed
@@ -194,14 +195,15 @@ function ProfileCard({
   };
 
   /**
-   * Deletes the user
+   * Deactivates the user
    * ! Will call api to update value in database
    */
-  const deleteUser = async () => {
-    const url = `${config.API_URL}/users/${user.id}`;
+  const deactivateUser = async () => {
+    const organizationId = getSingleOrg();
+    const url = `${config.API_URL}/users/${user.id}/externalProfiles/${organizationId}`;
 
     try {
-      await apiClient.delete(url);
+      await apiClient.patch(url, { isInactive: true });
     } catch (error) {
       console.log(error);
       // TODO - Handle error
@@ -209,7 +211,7 @@ function ProfileCard({
     }
 
     setShowEditUserModal(false);
-    setUser({ ...user, isDeleted: true });
+    setUser({ ...user, isDeactivated: true });
   };
 
   /**
@@ -269,7 +271,7 @@ function ProfileCard({
           onCancel={() => setShowEditUserModal(false)}
           updateUser={updateUserFromChild}
           user={user}
-          deleteUser={deleteUser}
+          deactivateUser={deactivateUser}
         />
       ) : null}
       <div className={styles.profileCardHeaderContainer}>
@@ -329,9 +331,9 @@ function ProfileCard({
           />
         </div>
       </div>
-      {user.isDeleted && (
-        <div className={styles.deletedCard}>
-          <span>This user has been deleted</span>
+      {user.isDeactivated && (
+        <div className={styles.deactivatedCard}>
+          <span>This user has been deactivated</span>
         </div>
       )}
     </div>
