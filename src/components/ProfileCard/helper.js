@@ -207,7 +207,7 @@ export async function updateUserSkills(apiClient, { id, skills }) {
       if (existingSkill && existingSkill.length > 0) {
         userSkill = {
           userId: id,
-          skillId: existingSkill.id,
+          skillId: existingSkill[0].id,
         };
       } else {
         const newSkill = {
