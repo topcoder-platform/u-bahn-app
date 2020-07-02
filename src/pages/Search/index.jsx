@@ -28,6 +28,10 @@ export default function SearchPage() {
   const [loadingOrgs, setLoadingOrgs] = React.useState(true);
 
   React.useEffect(() => {
+    if (isLoading || !isAuthenticated) {
+      return;
+    }
+
     (async () => {
       const organizations = await OrgService.getOrg(
         apiClient,
@@ -50,7 +54,7 @@ export default function SearchPage() {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isLoading, isAuthenticated]);
 
   React.useEffect(() => {
     // Ensure that we are in the Global Search tab
