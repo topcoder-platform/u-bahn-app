@@ -81,6 +81,12 @@ export function getUserPrimaryAttributeDetails(profile, attributeName) {
     (a) => a.attribute.name === attributeName
   );
 
+  if (!detail) {
+    throw Error(
+      `Attribute ${attributeName} missing on user with handle ${profile.handle}`
+    );
+  }
+
   switch (attributeName) {
     case config.PRIMARY_ATTRIBUTES.availability:
       return {
