@@ -1,6 +1,7 @@
 /**
  * Configure all routes for express app
  */
+const express = require('express')
 const _ = require('lodash')
 const config = require('config')
 const HttpStatus = require('http-status-codes')
@@ -114,6 +115,17 @@ module.exports = (app) => {
   const swaggerDoc = jsyaml.safeLoad(spec)
 
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc))
+
+  // Static file server
+  if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
+    // Serve any static files
+    app.use(express.static(path.join(__dirname, 'client/build')))
+
+    // Handle React routing, return all requests to React app
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
+    })
+  }
 
   // Check if the route is not found or HTTP method is not supported
   app.use('*', (req, res) => {

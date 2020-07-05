@@ -86,17 +86,6 @@ app.use((err, req, res, next) => {
   res.status(status).json(errorResponse)
 })
 
-// Static file server
-if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
-  // Serve any static files
-  app.use(express.static(path.join(__dirname, 'client/build')))
-
-  // Handle React routing, return all requests to React app
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
-  })
-}
-
 app.listen(app.get('port'), () => {
   logger.info(`Express server listening on port ${app.get('port')}`)
 })
