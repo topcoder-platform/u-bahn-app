@@ -1,0 +1,371 @@
+---
+swagger: "2.0"
+info:
+  description: "This is the API specification for the User Interface server that will\
+    \ host the front end for the Project UBahn application"
+  version: "1.0.0"
+  title: "UBahn user interface server"
+host: "ubahn-dev-ui.com"
+basePath: "/api"
+tags:
+- name: "templates"
+  description: "Template files to serve as reference for multitude of tasks"
+- name: "uploads"
+  description: "Upload files for batch processing"
+- name: "skills"
+  description: "Skills endpoints"
+  externalDocs:
+    description: "Proxy to EMSI skills"
+    url: "https://api.emsidata.com/apis/skills-classification#get-search-for-skills"
+schemes:
+- "https"
+- "http"
+paths:
+  /templates:
+    post:
+      tags:
+      - "templates"
+      summary: "Create a new template"
+      description: "Accepts a file as input and responds with an id to identify the\
+        \ file later. Uploads the file to Amazon S3 and stores the url against the\
+        \ template id in the database. Before upload to S3, the file type needs to\
+        \ be detected and passed as content-type during S3 upload. Needs to restrict\
+        \ file size to 2 MB"
+      operationId: "createTemplate"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "template"
+        in: "formData"
+        description: "The template file that needs to be created. Supports any format."
+        required: true
+        type: "file"
+      - name: "name"
+        in: "formData"
+        description: "The name of the template. Should be unique"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Ok - the request was successful"
+          schema:
+            $ref: "#/definitions/Template"
+        "400":
+          $ref: "#/definitions/BadRequest"
+        "401":
+          $ref: "#/definitions/Unauthorized"
+        "409":
+          $ref: "#/definitions/Conflict"
+        "500":
+          $ref: "#/definitions/ServerError"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Templates"
+  /templates/:id:
+    get:
+      tags:
+      - "templates"
+      summary: "Get template identified by id"
+      description: "Responds with the details of a template"
+      operationId: "getTemplateById"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Template"
+        "401":
+          $ref: "#/definitions/Unauthorized"
+        "403":
+          $ref: "#/definitions/Forbidden"
+        "404":
+          $ref: "#/definitions/NotFound"
+        "500":
+          $ref: "#/definitions/ServerError"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Templates"
+  /uploads:
+    post:
+      tags:
+      - "uploads"
+      summary: "Upload an excel file for batch processing"
+      description: "Accepts only an excel file as input and responds with an id to\
+        \ identify the upload later. Uploads the file to Amazon S3 and stores the\
+        \ url against the upload id in the database. No restriction on file size for\
+        \ now. On upload, the status against the upload id is set to `pending` in\
+        \ the database and the entire upload object (the upload database item) is\
+        \ posted to the Bus API"
+      operationId: "createUpload"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "upload"
+        in: "formData"
+        description: "The excel file that needs to be processed"
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Upload"
+        "400":
+          $ref: "#/definitions/BadRequest"
+        "401":
+          $ref: "#/definitions/Unauthorized"
+        "404":
+          $ref: "#/definitions/BadRequest"
+        "500":
+          $ref: "#/definitions/ServerError"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Uploads"
+  /uploads/:id:
+    get:
+      tags:
+      - "uploads"
+      summary: "Get the details of an upload"
+      description: "Responds with the details of an upload"
+      operationId: "getUploadById"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Upload"
+        "401":
+          $ref: "#/definitions/Unauthorized"
+        "403":
+          $ref: "#/definitions/Forbidden"
+        "404":
+          $ref: "#/definitions/NotFound"
+        "500":
+          $ref: "#/definitions/ServerError"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Uploads"
+    patch:
+      tags:
+      - "uploads"
+      summary: "Update the upload attributes"
+      description: "For now, only support an update on the `status` attribute of the\
+        \ upload associated with the id with either `completed` or `failed` value.\
+        \ Optionally accept an update on the `info` attribute as well."
+      operationId: "updateUploadById"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "The request body"
+        required: true
+        schema:
+          $ref: "#/definitions/body"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Upload"
+        "400":
+          $ref: "#/definitions/BadRequest"
+        "401":
+          $ref: "#/definitions/Unauthorized"
+        "403":
+          $ref: "#/definitions/Forbidden"
+        "404":
+          $ref: "#/definitions/NotFound"
+        "500":
+          $ref: "#/definitions/ServerError"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Uploads"
+  /skills:
+    get:
+      tags:
+      - "skills"
+      summary: "Search for skills by name using the q query parameter"
+      description: "Responds with the skills search result. Proxy api to EMSI"
+      operationId: "getSkills"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "q"
+        in: "query"
+        description: "The skill to search for. All special characters must be URL encoded, eg. \"C++ Progr\" should be encoded \"C%2B%2B%20Progr\""
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Skill"
+        "401":
+          $ref: "#/definitions/Unauthorized"
+        "403":
+          $ref: "#/definitions/Forbidden"
+        "404":
+          $ref: "#/definitions/NotFound"
+        "500":
+          $ref: "#/definitions/ServerError"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Skills"
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  Template:
+    allOf:
+    - type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        name:
+          type: "string"
+          description: "The name of the template. Should be unique."
+        url:
+          type: "string"
+          format: "uri"
+          description: "S3 signed url"
+    - $ref: "#/definitions/AuditFields"
+  Upload:
+    allOf:
+    - type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        url:
+          type: "string"
+          format: "uri"
+          description: "S3 signed url"
+        status:
+          type: "string"
+          enum:
+          - "pending"
+          - "completed"
+          - "failed"
+        info:
+          type: "string"
+          description: "If status is `failed`, then this field will contain information\
+            \ on why the processing failed"
+    - $ref: "#/definitions/AuditFields"
+  Skill:
+    allOf:
+    - type: "object"
+      properties:
+        skills:
+          type: "array"
+          items:
+            properties:
+              type:
+                type: string
+                description: The skill type
+                example: 'Hard Skill'
+              id:
+                type: string
+                description: The skill id
+                example: 'KS1200364C9C1LK3V5Q1'
+              name:
+                type: string
+                description: The skill name
+                example: 'C (Programming Language)'
+  AuditFields:
+    type: "object"
+    required:
+    - "created"
+    - "createdBy"
+    - "updated"
+    - "updatedBy"
+    properties:
+      created:
+        type: "string"
+        format: "date-time"
+        description: "When the entity was created."
+      updated:
+        type: "string"
+        format: "date-time"
+        description: "When the entity was updated."
+      createdBy:
+        type: "integer"
+        description: "Creator of the entity."
+      updatedBy:
+        type: "integer"
+        description: "User that last updated the entity."
+    description: "Describes the audit fields that are present in all the models in\
+      \ this API."
+  Unauthorized:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        example: "Unable to authenticate the user."
+        description: "The unauthorized error message."
+    description: "The unauthorized error entity."
+  NotFound:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        example: "A resource with the name could not be found."
+        description: "The not found error message."
+    description: "The not found error entity."
+  ServerError:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        example: "Something went wrong while processing your request. We're sorry\
+          \ for the trouble. We've been notified of the error and will correct it\
+          \ as soon as possible. Please try your request again in a moment."
+        description: "The server error message."
+    description: "The server error entity."
+  BadRequest:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        example: "Invalid input."
+        description: "The bad request error message."
+    description: "The bad request error entity."
+  Forbidden:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        example: "You are not allowed to access the request."
+        description: "The forbidden error message."
+    description: "The permission error entity."
+  Conflict:
+    type: "object"
+    required:
+    - "message"
+    properties:
+      message:
+        type: "string"
+        example: "Creating a resource with a name already exists."
+        description: "The conflict error message."
+    description: "The conflict error entity."
+  body:
+    type: "object"
+    required:
+    - "status"
+    properties:
+      status:
+        type: "string"
+      info:
+        type: "string"

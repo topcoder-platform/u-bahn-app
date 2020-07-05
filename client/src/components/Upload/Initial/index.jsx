@@ -27,7 +27,7 @@ export default function Initial({ onError, onUpload, templateId }) {
   const [invalidFileExtension, setInvalidFileExtension] = React.useState(false);
 
   const downloadTemplate = async () => {
-    const url = `${config.SEARCH_UI_API_URL}/templates/${templateId}`;
+    const url = `${config.API_PREFIX}/templates/${templateId}`;
     try {
       const { data } = await apiClient.get(url);
       window.location = data.url;

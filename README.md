@@ -1,43 +1,70 @@
-# U-Bahn user interface
+# UBahn App
 
-This code base represents the user interface for the U-Bahn project.
+## Install software
 
-## Local Deployment
+- node 12.x
+- npm 6.x
+- docker
+- S3
 
-Before you deploy, you need to configure the following in the application:
+## Deployment
 
-```text
-REACT_APP_API_URL => The endpoint from which the application retrieves the users (and groups and most of the data) as well as to which the updates are pushed to
+There are two apps involved - a front end build using create react app and a backend which is a nodejs api
 
-REACT_APP_SEARCH_UI_API_URL => The endpoint from which the user can download the bulk upload template files as well as upload the bulk user upload file to
+When working locally, you will run the following commands (after setting the necessary environment variables):
 
-REACT_BULK_UPLOAD_TEMPLATE_ID => The id of the database record which is associated with the bulk upload template file. You would need to query the endpoint under REACT_APP_SEARCH_UI_API_URL to get the id and then set it against this variable
+- npm install
+- cd client && npm install
+- cd .. && npm run dev
 
-REACT_APP_EMSI_SKILLPROVIDER_ID => The skill provider id with name 'EMSI'. Denotes that the skills with an externalId are using EMSI as the skill provider.
+The front end proxies request (some of them) to localhost:3001, which is the backend api code base. This configuration is located in `client/package.json` file itself
 
-REACT_APP_ATTRIBUTE_ID_LOCATION
-REACT_APP_ATTRIBUTE_ID_COMPANY
-REACT_APP_ATTRIBUTE_ID_TITLE
-REACT_APP_ATTRIBUTE_ID_ISAVAILABLE
-  => All 4 of the above are the ids of the attributes with name "location", "company", "title" and "isAvailable" respectively. These are used to filter attributes for display under a dedicated section named company attributes. Since these already have UI elements of their own, they are filtered from the list of company attributes
-REACT_APP_AUTH0_DOMAIN => The Auth0 login domain
-REACT_APP_AUTH0_CLIENTID => The Auth0 clientId
-```
+## Local database deployment
 
-You can create a `.env.local` file and provide the above configuration. Note that there's more configuration that you can change and you can find this under `src/config.js`. The above configurations are the minimum ones, that you need to launch the app successfully.
+1. Navigate to docker-db run `docker-compose up -d`
+2. Follow *Configuration* section to update config values
+3. Run `npm i` and `npm run lint`
+4. Create table, `npm run create-tables`, this will create tables (if you need this)
+5. Startup server `npm run start`
 
-Once the configuration is set, you can proceed to deploy
+## Configuration
 
-The code base has been setup using [Create React App](https://github.com/facebook/create-react-app). Thus, to start the application locally, you need to first (and only once) run the following command:
+Configuration for the application is at `config/default.js` and `config/production.js`. The following parameters can be set in config files or in env variables:
 
-```bash
-$ npm install
-// Will install the dependenceis
-```
+- LOG_LEVEL: the log level
+- PORT: the server port
+- API_VERSION: the API version
+- AUTH_SECRET: TC Authentication secret
+- VALID_ISSUERS: valid issuers for TC authentication
+- AMAZON.AWS_ACCESS_KEY_ID: The AWS access key
+- AMAZON.AWS_SECRET_ACCESS_KEY: The AWS secret key
+- AMAZON.AWS_REGION: The Amazon region to use when connecting. For local dynamodb you can set fake value.
+- AMAZON.IS_LOCAL_DB: Use local or AWS Amazon DynamoDB
+- AMAZON.DYNAMODB_URL: The local url, if using local Amazon DynamoDB
+- AMAZON.DYNAMODB_READ_CAPACITY_UNITS: the AWS DynamoDB read capacity units, if using local Amazon DynamoDB
+- AMAZON.DYNAMODB_WRITE_CAPACITY_UNITS: the AWS DynamoDB write capacity units, if using local Amazon DynamoDB
+- AMAZON.DYNAMODB_UPLOAD_TABLE: DynamoDB table name for upload
+- AMAZON.DYNAMODB_TEMPLATE_TABLE: DynamoDB table name for template
+- AUTH0_URL: Auth0 URL, used to get TC M2M token
+- AUTH0_AUDIENCE: Auth0 audience, used to get TC M2M token
+- TOKEN_CACHE_TIME: Auth0 token cache time, used to get TC M2M token
+- AUTH0_CLIENT_ID: Auth0 client id, used to get TC M2M token
+- AUTH0_CLIENT_SECRET: Auth0 client secret, used to get TC M2M token
+- AUTH0_PROXY_SERVER_URL: Proxy Auth0 URL, used to get TC M2M token
+- BUSAPI_URL: the bus api, default value is `https://api.topcoder-dev.com/v5`
+- KAFKA_ERROR_TOPIC: Kafka error topic, default value is 'common.error.reporting'
+- KAFKA_MESSAGE_ORIGINATOR: the Kafka message originator, default value is 'ubahn-search-ui-api'
+- UPLOAD_CREATE_TOPIC: the upload create Kafka topic, default value is 'ubahn.action.create'
+- TEMPLATE_FILE_MAX_SIZE: the template file restrict size, default value is '2MB'
+- TEMPLATE_FILE_MIMETYPE: the template file accept type, default value is 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+- TEMPLATE_S3_BUCKET: the template s3 bucket name, default value is 'ubahn'
+- UPLOAD_S3_BUCKET: the upload s3 bucket name, default value is 'ubahn'
+- S3_OBJECT_URL_EXPIRY_TIME: the s3 url expiry time, default value is '1 hour'
+- EMSI_CLIENT_ID: emsi oAuth 2.0 client id, used to get emis oAuth 2.0 token
+- EMSI_CLIENT_SECRET: emsi oAuth 2.0 client secret, used to get emsi oAuth 2.0 token
+- EMSI_GRANT_TYPE: emsi oAuth 2.0 grant_type, used to get emsi oAuth 2.0 token, should always be the string 'client_credentials'
+- EMSI_SCOPE: emsi oAuth 2.0 scope, used to get emsi oAuth 2.0 token, default value is 'emsi_open'
+- EMSI_AUTH_URL: emsi oAuth 2.0 auth url, used to get emsi oAuth 2.0 token, default value is 'https://auth.emsicloud.com/connect/token'
+- EMSI_BASE_URL: emsi base url, used to get emsi skills, default value is 'https://skills.emsicloud.com/versions/latest'
 
-followed by:
-
-```bash
-$ npm start
-// Will start the application at http://localhost:3000
-```
+Also check out the client folder's README file for additional configurations to set for the front end

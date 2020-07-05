@@ -37,7 +37,7 @@ export default function Upload({ templateId }) {
   };
 
   const upload = async (file) => {
-    const url = `${config.SEARCH_UI_API_URL}/uploads`;
+    const url = `${config.API_PREFIX}/uploads`;
     const data = new FormData();
 
     data.append("upload", file);

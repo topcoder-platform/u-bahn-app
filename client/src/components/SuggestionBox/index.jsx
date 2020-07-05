@@ -43,7 +43,7 @@ const getSkillsSuggestions = async (apiClient, inputValue) => {
 
   term = encodeURIComponent(term);
 
-  const url = `${config.SEARCH_UI_API_URL}/skills?q=${term}`;
+  const url = `${config.API_PREFIX}/skills?q=${term}`;
 
   const { data } = await apiClient.get(url);
 
