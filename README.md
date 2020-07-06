@@ -17,7 +17,7 @@ When working locally, you will run the following commands (after setting the nec
 - cd client && npm install
 - cd .. && npm run dev
 
-The front end proxies request (some of them) to localhost:3001, which is the backend api code base. This configuration is located in `client/package.json` file itself.
+The front end proxies request (some of them) to localhost:3001, which is the backend api code base. This configuration is located in `client/package.json` file itself
 
 Note that the environment variables for the React App start with REACT_APP_
 
