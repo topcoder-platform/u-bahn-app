@@ -4,7 +4,7 @@
   "description": "UBahn search ui api",
   "main": "app.js",
   "scripts": {
-    "install-client": "cd client && npm install && cd ..",
+    "install-client": "cd client && npm install && npm run build && cd ..",
     "client": "cd client && npm start",
     "start": "node app.js",
     "dev": "concurrently --kill-others-on-fail \"npm start\" \"cd client && npm start\"",
