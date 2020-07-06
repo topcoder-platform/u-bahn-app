@@ -1,9 +1,10 @@
 {
-  "name": "ubahn-search-ui-api",
+  "name": "ubahn-app",
   "version": "1.0.0",
   "description": "UBahn search ui api",
   "main": "app.js",
   "scripts": {
+    "install-client": "cd client && npm install && cd ..",
     "client": "cd client && npm start",
     "start": "node app.js",
     "dev": "concurrently --kill-others-on-fail \"npm start\" \"cd client && npm start\"",

@@ -2,11 +2,12 @@
 FROM node:12
 
 # Copy the current directory into the Docker image
-COPY . /ubahn_search_ui_api
+COPY . /ubahn_app
 
 # Set working directory for future use
-WORKDIR /ubahn_search_ui_api
+WORKDIR /ubahn_app
 
 # Install the dependencies from package.json
 RUN npm install
+RUN npm run install-client
 CMD npm start

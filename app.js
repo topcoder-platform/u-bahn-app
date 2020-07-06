@@ -14,9 +14,21 @@ const cors = require('cors')
 const logger = require('./src/common/logger')
 const HttpStatus = require('http-status-codes')
 
+const buildEnvironments = ['production', 'staging']
+
 // setup express app
 const app = express()
 
+app.enable('trust proxy')
+
+function forceSSL (req, res, next) {
+  if (!req.secure && req.get('x-forwarded-proto') !== 'https' && buildEnvironments.includes(process.env.NODE_ENV)) {
+    return res.redirect('https://' + req.get('host') + req.url)
+  }
+  next()
+}
+
+app.use(forceSSL)
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
