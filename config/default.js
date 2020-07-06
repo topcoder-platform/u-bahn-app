@@ -5,7 +5,7 @@
 module.exports = {
   LOG_LEVEL: process.env.LOG_LEVEL || 'debug',
   PORT: process.env.PORT || 3001,
-  API_VERSION: process.env.API_VERSION || '/v1',
+  API_VERSION: process.env.API_VERSION || '/api',
 
   AUTH_SECRET: process.env.AUTH_SECRET || 'mysecret',
   VALID_ISSUERS: process.env.VALID_ISSUERS ? process.env.VALID_ISSUERS.replace(/\\"/g, '')

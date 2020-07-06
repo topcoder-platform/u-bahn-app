@@ -69,4 +69,4 @@ Configuration for the application is at `config/default.js` and `config/producti
 - EMSI_AUTH_URL: emsi oAuth 2.0 auth url, used to get emsi oAuth 2.0 token, default value is 'https://auth.emsicloud.com/connect/token'
 - EMSI_BASE_URL: emsi base url, used to get emsi skills, default value is 'https://skills.emsicloud.com/versions/latest'
 
-Also check out the client folder's README file for additional configurations to set for the front end
+Also check out the client folder's README file for additional configurations to set for the front end. You can find the required configurations under client/src/config.js
