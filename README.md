@@ -12,7 +12,7 @@
 There are two apps involved - a front end build using create react app and a backend which is a nodejs api
 
 When working locally, you will run the following commands (after setting the necessary environment variables):
-
+ 
 - npm install
 - cd client && npm install
 - cd .. && npm run dev
