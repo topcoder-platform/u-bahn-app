@@ -9,5 +9,6 @@ WORKDIR /ubahn_app
 
 # Install the dependencies from package.json
 RUN npm install
-RUN npm run install-client
+# RUN npm run install-client
+RUN ["/bin/bash", "-c", "source buildenvvar ;npm run install-client"]
 CMD npm start
