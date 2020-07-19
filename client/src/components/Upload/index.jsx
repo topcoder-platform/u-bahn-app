@@ -10,6 +10,7 @@ import Progress from "./Progress";
 
 import config from "../../config";
 import api from "../../services/api";
+import { getSingleOrg } from "../../services/user-org";
 
 const STATES = {
   INITIAL: "INITIAL",
@@ -41,6 +42,7 @@ export default function Upload({ templateId }) {
     const data = new FormData();
 
     data.append("upload", file);
+    data.append("organizationId", getSingleOrg());
 
     setState({
       type: STATES.UPLOADING,

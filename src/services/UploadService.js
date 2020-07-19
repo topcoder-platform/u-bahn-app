@@ -26,10 +26,11 @@ getEntity.schema = {
 
 /**
  * Create upload.
- * @param {Object} data the data to create upload
+ * @param {Object} upload the file to upload
+ * @param {String} data the related data of the upload
  * @returns {Object} the created upload
  */
-async function create (authUser, upload) {
+async function create (authUser, upload, data) {
   const id = uuid()
   // upload file to s3 under uploads folder
   const objectKey = await helper.uploadToS3(config.UPLOAD_S3_BUCKET, upload, `uploads/${id}`)
@@ -40,6 +41,7 @@ async function create (authUser, upload) {
     objectKey,
     status: 'pending',
     info: '',
+    organizationId: data.organizationId,
     created: currDate,
     updated: currDate,
     createdBy: authUser.handle || authUser.sub,
@@ -60,7 +62,10 @@ async function create (authUser, upload) {
 
 create.schema = {
   authUser: Joi.object().required(),
-  upload: Joi.object().required()
+  upload: Joi.object().required(),
+  data: Joi.object().keys({
+    organizationId: Joi.string().required()
+  })
 }
 
 /**

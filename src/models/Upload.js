@@ -24,6 +24,10 @@ const schema = new Schema({
     type: String,
     required: true
   },
+  organizationId: {
+    type: String,
+    required: true
+  },
   created: {
     type: String,
     required: true

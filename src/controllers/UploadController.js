@@ -9,7 +9,7 @@ const service = require('../services/UploadService')
  * @param {Object} res the response
  */
 async function uploadEntity (req, res) {
-  const result = await service.create(req.authUser, req.file)
+  const result = await service.create(req.authUser, req.file, req.body)
   res.send(result)
 }
 

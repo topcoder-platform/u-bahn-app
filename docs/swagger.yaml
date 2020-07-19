@@ -111,6 +111,11 @@ paths:
         description: "The excel file that needs to be processed"
         required: true
         type: "file"
+      - name: "organizationId"
+        in: "formData"
+        description: "The organization id to associate any new users with"
+        required: true
+        type: "string"
       responses:
         "200":
           description: "Success"
@@ -263,6 +268,9 @@ definitions:
           type: "string"
           description: "If status is `failed`, then this field will contain information\
             \ on why the processing failed"
+        organizationId:
+          type: "string"
+          description: "The organization id to associate new users with"
     - $ref: "#/definitions/AuditFields"
   Skill:
     allOf:
