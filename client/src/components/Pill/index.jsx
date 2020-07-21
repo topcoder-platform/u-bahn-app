@@ -8,7 +8,9 @@ export default function Pill({ className, name, onRemove, removable }) {
   if (className) containerStyle += ` ${className}`;
   return (
     <div className={containerStyle}>
-      <div className="pillName">{name}</div>
+      <div title={name} className="pillName">
+        {name}
+      </div>
       {removable ? (
         <button className={style.close} onClick={onRemove}>
           &times;
