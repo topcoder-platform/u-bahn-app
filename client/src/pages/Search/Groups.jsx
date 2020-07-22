@@ -151,7 +151,7 @@ export default function SearchGroups() {
               {usersPerPage * page > totalResults
                 ? totalResults
                 : usersPerPage * page}{" "}
-              of {totalResults} profiles
+              of {totalResults} {totalResults === 1 ? "profile" : "profiles"}
             </div>
           </div>
           <div>

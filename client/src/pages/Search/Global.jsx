@@ -253,7 +253,7 @@ export default function SearchGlobal({ keyword }) {
               {usersPerPage * page > totalResults
                 ? totalResults
                 : usersPerPage * page}{" "}
-              of {totalResults} profiles
+              of {totalResults} {totalResults === 1 ? "profile" : "profiles"}
             </div>
             <div
               className={style.sort}
