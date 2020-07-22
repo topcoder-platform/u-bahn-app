@@ -96,7 +96,7 @@ export default function Initial({ onError, onUpload, templateId }) {
           </div>
           <div className={style.label2}>Supports XLS, XLSX or CSV file</div>
           <div className={style.label3} onClick={downloadTemplate}>
-            Download Import Template (.XLS)
+            Download Import Template (.XLSX)
           </div>
         </>
       )}
