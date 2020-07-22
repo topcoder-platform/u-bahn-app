@@ -102,6 +102,7 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
    */
   const createGroup = async () => {
     if (filter.length === 0) {
+      alert("Enter a group name");
       return;
     }
 
