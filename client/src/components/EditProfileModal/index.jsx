@@ -184,7 +184,7 @@ export default function EditProfileModal({
         <h3>Skills</h3>
         <div className={style.pillGroup}>
           <SuggestionBox
-            placeholder={"Enter skill to add"}
+            placeholder={"Search skill to add"}
             onSelect={addSkill}
             purpose="skills"
           />
