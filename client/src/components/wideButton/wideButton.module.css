@@ -1,6 +1,6 @@
 /* importing colors */
 @value colors: "../../styles/colors.module.css";
-@value gray1, gray1_05 white from colors;
+@value gray1, gray1_05, lightGray1, white from colors;
 
 /* WideButton */
 .wideButton {
@@ -14,4 +14,8 @@
   font-size: 16px;
   color: gray1;
   outline: none;
+}
+
+.wideButton:hover {
+  background: lightGray1;
 }
