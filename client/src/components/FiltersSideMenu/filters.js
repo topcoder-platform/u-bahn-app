@@ -323,7 +323,8 @@ function Summary({ filtersApplied }) {
         <div className={styles.searchTabFiltersSummaryTextContainerRow}>
           <div className={styles.searchTabFiltersSummaryTextIcon}></div>
           <div className={styles.searchTabFiltersSummaryText}>
-            {filtersApplied} filters applied
+            {filtersApplied} {filtersApplied === 1 ? "filter" : "filters"}{" "}
+            applied
           </div>
         </div>
       </div>
