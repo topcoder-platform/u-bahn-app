@@ -285,7 +285,7 @@ export default function SearchTabFilters({ locations, achievements }) {
       {companyAttrFiltersComponent}
 
       <div className={utilityStyles.mt32}>
-        <WideButton text="+ Add filter" action={handleAddFilter} />
+        <WideButton text="Manage filters" action={handleAddFilter} />
       </div>
       {modal.isModalOpen && (
         <EditFiltersPopup

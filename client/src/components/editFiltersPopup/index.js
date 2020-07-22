@@ -110,7 +110,7 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
       <div className={styles.popup}>
         <div className={styles.popupContent}>
           <div className={styles.popupHeader}>
-            <div className={styles.popupTitle}>Add Filters</div>
+            <div className={styles.popupTitle}>Manage Filters</div>
             <div className={utilityStyles.mt16}>
               <SearchBox
                 name="editFiltersSearchbox"
