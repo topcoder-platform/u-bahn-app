@@ -1,6 +1,6 @@
 /* importing colors */
 @value colors: "../../styles/colors.module.css";
-@value gray_overlay, gray1, gray2, white_75, lightGray, white from colors;
+@value gray_overlay, gray1, gray2, white_95, lightGray, white from colors;
 
 .overlay {
   position: fixed;
@@ -32,7 +32,7 @@
 }
 
 .popupContent {
-  background-color: white_75;
+  background-color: white_95;
   width: 500px;
 
   border-radius: 10px;
