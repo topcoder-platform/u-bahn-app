@@ -15,6 +15,7 @@
   &.disabled {
     background: $lightGray2;
     color: $textColor2;
+    cursor: default;
   }
 
   &.current {
