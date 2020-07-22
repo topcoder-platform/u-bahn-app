@@ -21,6 +21,16 @@ export default function Availability({
     unavailableSelected
   );
 
+  React.useEffect(() => {
+    if (availableSelected !== isAvailableSelected) {
+      setIsAvailableSelected(availableSelected);
+    }
+    if (unavailableSelected !== isUnavailableSelected) {
+      setIsUnavailableSelected(unavailableSelected);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availableSelected, unavailableSelected]);
+
   const handleAvailableClicked = () => {
     const newValue = !isAvailableSelected;
     setIsAvailableSelected(newValue);
