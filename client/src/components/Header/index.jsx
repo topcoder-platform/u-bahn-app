@@ -30,7 +30,12 @@ export default function Header({
 
   const handleSearch = (value) => {
     value = value || searchText;
-    onSearch && onSearch(value);
+
+    if (!value || value.trim().length === 0) {
+      alert("Enter talent or keyword to search");
+      return;
+    }
+    onSearch && onSearch(value.trim());
   };
 
   const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
