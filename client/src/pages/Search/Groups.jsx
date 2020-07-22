@@ -172,7 +172,7 @@ export default function SearchGroups() {
         <div className={style.rightSide}>
           <div className={style.cardsHeader}>
             <div className={style.visibleCardsInfo}>
-              Loading users. This can take some time. Please wait...
+              Updating profile list. This can take some time. Please wait...
             </div>
           </div>
         </div>
@@ -182,7 +182,7 @@ export default function SearchGroups() {
           <div className={style.cardsHeader}>
             <div className={style.visibleCardsInfo}>
               {selectedGroup
-                ? "No users found. Try selecting a different group."
+                ? "No members found. Try selecting a different group."
                 : "Select a group to get the members of that group."}
             </div>
           </div>

@@ -318,7 +318,7 @@ export default function SearchGlobal({ keyword }) {
         <div className={style.rightSide}>
           <div className={style.cardsHeader}>
             <div className={style.visibleCardsInfo}>
-              Loading users. This can take some time. Please wait...
+              Updating profile list. This can take some time. Please wait...
             </div>
           </div>
         </div>
@@ -327,7 +327,7 @@ export default function SearchGlobal({ keyword }) {
         <div className={style.rightSide}>
           <div className={style.cardsHeader}>
             <div className={style.visibleCardsInfo}>
-              No users found. Try applying a different filter.
+              No user profiles found. Try applying a different filter.
             </div>
           </div>
         </div>
