@@ -47,11 +47,13 @@ export default function GroupTabFilters({
   };
 
   const createGroup = () => {
-    if (searchText.length === 0) {
+    const groupName = searchText.trim();
+    if (groupName.length === 0) {
+      alert("Enter a group name");
       return;
     }
 
-    onCreateNewGroup(searchText);
+    onCreateNewGroup(groupName);
   };
 
   return (

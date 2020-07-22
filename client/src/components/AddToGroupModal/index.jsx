@@ -101,14 +101,15 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
    * Creates a new group
    */
   const createGroup = async () => {
-    if (filter.length === 0) {
+    const groupName = filter.trim();
+    if (groupName.length === 0) {
       alert("Enter a group name");
       return;
     }
 
     setCreatingGroup(true);
 
-    const newGroup = await groupLib.createGroup(apiClient, filter);
+    const newGroup = await groupLib.createGroup(apiClient, groupName);
 
     if (newGroup.id) {
       const newOtherGroups = JSON.parse(JSON.stringify(otherGroups));
@@ -117,7 +118,7 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
 
       setOtherGroups(newOtherGroups);
 
-      alert(`Group with name ${filter} created successfully`);
+      alert(`Group with name ${groupName} created successfully`);
 
       setFilter("");
     } else {
