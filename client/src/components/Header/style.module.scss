@@ -147,4 +147,8 @@
   &:hover {
     color: $red;
   }
+
+  &.resetKeywordHidden {
+    visibility: hidden;
+  }
 }

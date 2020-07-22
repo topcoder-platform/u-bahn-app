@@ -77,7 +77,14 @@ export default function Header({
             onChange={(e) => setSearchText(e.target.value)}
             placeholder="Search talent or keyword"
           />
-          <span className={style.resetKeyword} onClick={() => reset()}>
+          <span
+            className={
+              searchText.length > 0
+                ? `${style.resetKeyword}`
+                : `${style.resetKeyword} ${style.resetKeywordHidden}`
+            }
+            onClick={() => reset()}
+          >
             &times;
           </span>
         </div>
