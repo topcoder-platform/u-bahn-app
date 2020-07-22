@@ -119,18 +119,21 @@ export default function Header({
               currentTab === TABS.SEARCH ? style.current : ""
             }`}
             onClick={() => onTabChange(TABS.SEARCH)}
+            title="Search Profiles"
           />
           <GroupsTabIcon
             className={`${style.menuIcon} ${
               currentTab === TABS.GROUPS ? style.current : ""
             }`}
             onClick={() => onTabChange(TABS.GROUPS)}
+            title="Groups"
           />
           <UploadsTabIcon
             className={`${style.menuIcon} ${
               currentTab === TABS.UPLOADS ? style.current : ""
             }`}
             onClick={() => onTabChange(TABS.UPLOADS)}
+            title="Data Import"
           />
         </div>
       </div>
