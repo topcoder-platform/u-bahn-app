@@ -222,6 +222,7 @@ export default function SearchGlobal({ keyword }) {
         });
 
         setUsers(data);
+        setSortByDropdownShown(false);
         setTotalResults(Number(headers["x-total"]));
         setTotalPages(Number(headers["x-total-pages"]));
       }
