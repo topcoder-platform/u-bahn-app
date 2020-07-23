@@ -12,6 +12,7 @@ import { clearOrg } from "../../services/user-org";
 
 import style from "./style.module.scss";
 import logo from "../../assets/images/u-bahn-logo.svg";
+import iconStyles from "../../styles/icons.module.css";
 
 export const TABS = {
   GROUPS: "GROUPS",
@@ -94,7 +95,11 @@ export default function Header({
         >
           {user.nickname}
           {organization ? <>&nbsp;({organization.name})</> : ""}
-          <DownArrow className={style.downArrow} />
+          {showAccountDropdown ? (
+            <div className={iconStyles.chevronUpG}></div>
+          ) : (
+            <div className={iconStyles.chevronDownG}></div>
+          )}
           {showAccountDropdown && (
             <ul className={style.dropdown}>
               <li
