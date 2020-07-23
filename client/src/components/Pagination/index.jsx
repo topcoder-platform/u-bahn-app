@@ -8,6 +8,10 @@ export default function Pagination({ currentPage, numPages, onChangePage }) {
   const search = useSearch();
 
   const changePage = (newPageNumber) => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
     if (onChangePage) {
       onChangePage(newPageNumber);
       return;
