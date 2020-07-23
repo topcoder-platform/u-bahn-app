@@ -188,10 +188,11 @@ export async function createGroup(apiClient, groupName) {
 
   try {
     response = await apiClient.post(`${config.GROUPS_API_URL}`, payload);
+    return response.data;
   } catch (error) {
-    console.log(error);
+    if (error && error.message) {
+      return { message: error.message };
+    }
     // TODO - Handle error
   }
-
-  return response.data;
 }

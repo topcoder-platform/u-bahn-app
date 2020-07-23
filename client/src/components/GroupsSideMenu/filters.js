@@ -22,16 +22,16 @@ export default function GroupTabFilters({
   creatingGroup,
   onCreateNewGroup,
 }) {
-  const handleGroupItemClicked = (group, item, index) => {
+  const handleGroupItemClicked = (group, item) => {
     setSelectedGroup(group);
-    setSelectedIndex(index);
+    setSelectedItemId(item.id);
     if (onGroupSelected) {
       onGroupSelected(item);
     }
   };
 
   const [selectedGroup, setSelectedGroup] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [selectedItemId, setSelectedItemId] = useState(-1);
   const [myGroupsData, setMyGroupsData] = useState(myGroups);
   const [groupsData, setGroupsData] = useState(groups);
   const [searchText, setSearchText] = useState("");
@@ -89,7 +89,7 @@ export default function GroupTabFilters({
               group.name.toLowerCase().includes(searchText.toLowerCase())
             )}
             onItemClicked={handleGroupItemClicked}
-            selectedIndex={selectedGroup === "My Groups" ? selectedIndex : -1}
+            selectedItemId={selectedGroup === "My Groups" ? selectedItemId : -1}
           />
           <GroupsSection
             title={loadingGroups ? "Other Groups (Loading...)" : "Other Groups"}
@@ -97,8 +97,8 @@ export default function GroupTabFilters({
               group.name.toLowerCase().includes(searchText.toLowerCase())
             )}
             onItemClicked={handleGroupItemClicked}
-            selectedIndex={
-              selectedGroup === "Other Groups" ? selectedIndex : -1
+            selectedItemId={
+              selectedGroup === "Other Groups" ? selectedItemId : -1
             }
           />
         </div>
@@ -116,12 +116,7 @@ GroupTabFilters.propTypes = {
   onCreateNewGroup: PT.func,
 };
 
-function GroupsSection({ title, items, onItemClicked, selectedIndex }) {
-  const [selected, setSelected] = useState(selectedIndex);
-  useEffect(() => {
-    setSelected(selectedIndex);
-  }, [selectedIndex]);
-
+function GroupsSection({ title, items, onItemClicked, selectedItemId }) {
   return (
     <>
       <div className={styles.sectionTitle}>{title}</div>
@@ -132,8 +127,10 @@ function GroupsSection({ title, items, onItemClicked, selectedIndex }) {
               key={`${title}${index}`}
               title={item.name}
               badge={item.count + ""}
-              action={(isSelected) => !isSelected && onItemClicked && onItemClicked(title, item, index)}
-              selected={index === selected}
+              action={(isSelected) =>
+                !isSelected && onItemClicked && onItemClicked(title, item)
+              }
+              selected={item.id === selectedItemId}
             />
           );
         })}
@@ -153,7 +150,9 @@ function SectionRow({ title, badge, selected = false, action }) {
   return (
     <div
       className={selected ? styles.sectionItemSelected : styles.sectionItem}
-      onClick={() => {action(selected)}}
+      onClick={() => {
+        action(selected);
+      }}
     >
       <div
         className={

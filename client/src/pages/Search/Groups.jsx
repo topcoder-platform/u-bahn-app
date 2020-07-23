@@ -108,13 +108,15 @@ export default function SearchGroups() {
 
     const newGroup = await groupLib.createGroup(apiClient, groupName);
 
-    if (newGroup.id) {
+    if (newGroup && newGroup.id) {
       const newOtherGroups = JSON.parse(JSON.stringify(otherGroups));
 
       newOtherGroups.push({ ...newGroup, count: 0 });
 
       setOtherGroups(newOtherGroups);
       alert(`Group with name ${groupName} created successfully`);
+    } else if (newGroup.message) {
+      alert(newGroup.message);
     } else {
       alert("Group creation failed");
     }
