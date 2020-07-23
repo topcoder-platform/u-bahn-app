@@ -96,9 +96,9 @@ export default function Header({
           {user.nickname}
           {organization ? <>&nbsp;({organization.name})</> : ""}
           {showAccountDropdown ? (
-            <div className={iconStyles.chevronUpG + " " + style.arrow}></div>
+            <div className={`${iconStyles.chevronUpG} ${style.arrow}`}></div>
           ) : (
-            <div className={iconStyles.chevronDownG + " " + style.arrow}></div>
+            <div className={`${iconStyles.chevronDownG} ${style.arrow}`}></div>
           )}
           {showAccountDropdown && (
             <ul className={style.dropdown}>
