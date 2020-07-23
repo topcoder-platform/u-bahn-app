@@ -132,7 +132,7 @@ function GroupsSection({ title, items, onItemClicked, selectedIndex }) {
               key={`${title}${index}`}
               title={item.name}
               badge={item.count + ""}
-              action={() => index !== selected && onItemClicked && onItemClicked(title, item, index)}
+              action={(isSelected) => !isSelected && onItemClicked && onItemClicked(title, item, index)}
               selected={index === selected}
             />
           );
@@ -153,7 +153,7 @@ function SectionRow({ title, badge, selected = false, action }) {
   return (
     <div
       className={selected ? styles.sectionItemSelected : styles.sectionItem}
-      onClick={action}
+      onClick={() => {action(selected)}}
     >
       <div
         className={
