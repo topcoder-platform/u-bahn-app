@@ -20,17 +20,14 @@ export default function Collapsible({ title, children, collapsed = false }) {
     <div className={mainStyle}>
       <div className={styles.collapsibleHeader}>
         <div className={styles.collapsibleTitle}>{title}</div>
-        <div className={styles.collapsibleChevronContainer}>
+        <div
+          className={styles.collapsibleChevronContainer}
+          onClick={() => setIsCollapsed(!isCollapsed)}
+        >
           {isCollapsed ? (
-            <div
-              className={iconStyles.chevronDownG}
-              onClick={() => setIsCollapsed(!isCollapsed)}
-            ></div>
+            <div className={iconStyles.chevronDownG}></div>
           ) : (
-            <div
-              className={iconStyles.chevronUpG}
-              onClick={() => setIsCollapsed(!isCollapsed)}
-            ></div>
+            <div className={iconStyles.chevronUpG}></div>
           )}
         </div>
       </div>
