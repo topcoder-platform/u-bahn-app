@@ -1,7 +1,7 @@
 import React from "react";
 import PT from "prop-types";
 import axios from "axios";
-import clsx from 'clsx';
+import clsx from "clsx";
 import FiltersSideMenu from "../../components/FiltersSideMenu";
 import { ReactComponent as DownArrowIcon } from "../../assets/images/down-arrow.svg";
 import ProfileCard from "../../components/ProfileCard";
@@ -278,19 +278,28 @@ export default function SearchGlobal({ keyword }) {
               {sortByDropdownShown && (
                 <ul className={style.dropdown}>
                   <li
-                    className={clsx(style.dropdownItem, orderBy === 'name' && style.selected)}
+                    className={clsx(
+                      style.dropdownItem,
+                      orderBy === "name" && style.selected
+                    )}
                     onClick={() => setOrderBy("name")}
                   >
                     Name
                   </li>
                   <li
-                    className={clsx(style.dropdownItem, orderBy === 'location' && style.selected)}
+                    className={clsx(
+                      style.dropdownItem,
+                      orderBy === "location" && style.selected
+                    )}
                     onClick={() => setOrderBy("location")}
                   >
                     Location
                   </li>
                   <li
-                    className={clsx(style.dropdownItem, orderBy === 'isAvailable' && style.selected)}
+                    className={clsx(
+                      style.dropdownItem,
+                      orderBy === "isAvailable" && style.selected
+                    )}
                     onClick={() => setOrderBy("isAvailable")}
                   >
                     Availability
