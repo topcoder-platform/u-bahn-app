@@ -15,6 +15,10 @@
   justify-content: flex-end;
   min-width: 100px;
 
+  .arrow {
+    margin-left: 15px;
+  }
+
   .dropdown {
     position: absolute;
     top: 100%;
