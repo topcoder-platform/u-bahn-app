@@ -74,7 +74,7 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
         setSelectedFilters([filter, ...selectedFilters]);
         setSearchFilters({
           ...search.filters,
-          [filter]: { ...search.filters[filter], active: true },
+          [filter]: { ...(search.filters[filter].active = true) },
         });
       }
     } else {
@@ -82,7 +82,7 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
         setSelectedFilters(selectedFilters.filter((_, i) => i !== index));
         setSearchFilters({
           ...search.filters,
-          [filter]: { ...search.filters[filter], active: false },
+          [filter]: { ...(search.filters[filter].active = false) },
         });
       }
     }
