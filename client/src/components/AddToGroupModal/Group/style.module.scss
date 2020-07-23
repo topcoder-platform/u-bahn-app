@@ -16,6 +16,13 @@
   }
 }
 
+.groupName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 400px;
+  white-space: nowrap;
+}
+
 .switch {
   position: absolute;
   right: 30px;
