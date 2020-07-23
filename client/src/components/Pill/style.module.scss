@@ -26,11 +26,11 @@
   height: 30px;
   margin: 4px;
   padding: 0 10px;
+}
 
-  .pillName {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 270px;
-    white-space: nowrap;
-  }
+.pillName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 270px;
+  white-space: nowrap;
 }
