@@ -52,6 +52,7 @@ export default function EditProfileModal({
     const skills = JSON.parse(JSON.stringify(localUser.skills));
 
     skills[index].isDeleted = true;
+    skills.splice(index, 1);
 
     setLocalUser({ ...localUser, skills });
   };
