@@ -132,7 +132,7 @@ function GroupsSection({ title, items, onItemClicked, selectedIndex }) {
               key={`${title}${index}`}
               title={item.name}
               badge={item.count + ""}
-              action={() => onItemClicked && onItemClicked(title, item, index)}
+              action={() => index !== selected && onItemClicked && onItemClicked(title, item, index)}
               selected={index === selected}
             />
           );
