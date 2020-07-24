@@ -4,6 +4,8 @@ import config from "../../config";
 import api from "../../services/api";
 import style from "./style.module.scss";
 
+const NO_RESULTS_FOUND = "no results found";
+
 /**
  * Decides what is displayed after the user selects a suggestion
  * @param {Object} suggestion The selected suggestion
@@ -88,7 +90,8 @@ export default function SuggestionBox({
 
   const onSuggestionsFetchRequested = async ({ value }) => {
     if (purpose === "skills") {
-      const data = await getSkillsSuggestions(apiClient, value);
+      let data = await getSkillsSuggestions(apiClient, value);
+      if (data.length < 1) data = [{ name: NO_RESULTS_FOUND }];
       setSuggestions(data);
     } else {
       const data = await getCompanyAttributesSuggestions(
@@ -104,7 +107,7 @@ export default function SuggestionBox({
 
   const onSuggestionSelected = (event, { suggestion }) => {
     if (purpose === "skills") {
-      onSelect(suggestion);
+      if (suggestion.name !== NO_RESULTS_FOUND) onSelect(suggestion);
     } else {
       onSelect(companyAttrId, suggestion);
     }

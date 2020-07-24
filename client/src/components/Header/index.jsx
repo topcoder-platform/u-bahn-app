@@ -28,6 +28,13 @@ export default function Header({
   const [searchText, setSearchText] = React.useState("");
   const [showAccountDropdown, setShowAccountDropdown] = React.useState(false);
 
+  const profileDropdownEl = React.useRef(null);
+  React.useEffect(() => {
+    if (showAccountDropdown) {
+      profileDropdownEl.current.focus();
+    }
+  }, [showAccountDropdown]);
+
   const handleSearch = (value) => {
     value = value || searchText;
 
@@ -100,7 +107,12 @@ export default function Header({
             <div className={`${iconStyles.chevronDownG} ${style.arrow}`}></div>
           )}
           {showAccountDropdown && (
-            <ul className={style.dropdown}>
+            <ul
+              tabIndex="0"
+              className={style.dropdown}
+              ref={profileDropdownEl}
+              onBlur={() => setShowAccountDropdown(false)}
+            >
               <li
                 className={style.dropdownItem}
                 onClick={() => logoutWithRedirect()}
