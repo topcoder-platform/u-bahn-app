@@ -64,10 +64,10 @@ export default function Tag({
   }, [text, selected]);
 
   return (
-    <button className={mainStyle} onClick={onClickAction}>
+    <button className={mainStyle} title={text} onClick={onClickAction}>
       {text ? (
         <div className={styles.tagContent}>
-          {text && <span title={text}>{text}</span>}
+          {text && <span>{text}</span>}
           {icon && <TagButton icon={icon} />}
         </div>
       ) : (

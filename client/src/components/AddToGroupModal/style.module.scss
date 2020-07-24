@@ -1,5 +1,13 @@
 @import "../../styles/mixins";
 
+.container {
+  z-index: 1100;
+}
+
+.overlay {
+  z-index: 1010;
+}
+
 .buttons {
   display: flex;
   justify-content: flex-end;

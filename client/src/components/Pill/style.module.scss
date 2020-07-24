@@ -15,6 +15,12 @@
   }
 }
 
+@-moz-document url-prefix() {
+  .close {
+    margin-bottom: 2px;
+  }
+}
+
 .container {
   align-items: center;
   background: $white;

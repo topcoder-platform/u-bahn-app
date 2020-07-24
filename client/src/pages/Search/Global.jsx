@@ -58,6 +58,7 @@ export default function SearchGlobal({ keyword }) {
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
   const [orderBy, setOrderBy] = React.useState(config.DEFAULT_SORT_ORDER);
   const [totalPages, setTotalPages] = React.useState(0);
+  const dropdownRef = React.useRef(null);
 
   const prevOrderBy = usePrevious(orderBy);
 
@@ -65,8 +66,10 @@ export default function SearchGlobal({ keyword }) {
 
   React.useEffect(() => {
     window.addEventListener("resize", updateWindowDimensions);
+    window.addEventListener("click", onWholeContentClick);
     return () => {
       window.removeEventListener("resize", updateWindowDimensions);
+      window.removeEventListener("click", onWholeContentClick);
     };
   });
 
@@ -237,6 +240,7 @@ export default function SearchGlobal({ keyword }) {
         });
 
         setUsers(data);
+        setSortByDropdownShown(false);
         setTotalResults(Number(headers["x-total"]));
         setTotalPages(Number(headers["x-total-pages"]));
       }
@@ -269,6 +273,12 @@ export default function SearchGlobal({ keyword }) {
     searchContext.changePageNumber(newPageNumber);
   };
 
+  const onWholeContentClick = (evt) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(evt.target)) {
+      setSortByDropdownShown(false);
+    }
+  };
+
   return (
     <>
       <div className={style.sideMenu}>
@@ -286,6 +296,7 @@ export default function SearchGlobal({ keyword }) {
             </div>
             <div
               className={style.sort}
+              ref={dropdownRef}
               onClick={() => setSortByDropdownShown(!sortByDropdownShown)}
               style={{
                 marginRight:
@@ -302,7 +313,7 @@ export default function SearchGlobal({ keyword }) {
                   {getOrderByText(orderBy)}
                 </span>
               )}
-              <DownArrowIcon />
+              <DownArrowIcon className={style.downArrow} />
               {sortByDropdownShown && (
                 <ul className={style.dropdown}>
                   <li
