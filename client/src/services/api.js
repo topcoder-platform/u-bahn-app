@@ -33,10 +33,7 @@ export default () => {
         await loginWithRedirect({
           redirect_uri: window.location.origin,
         });
-      } else if (
-        error.response &&
-        error.response.data.message
-      ) {
+      } else if (error.response && error.response.data.message) {
         const modError = new Error(error.response.data.message);
         return Promise.reject(modError);
       }
