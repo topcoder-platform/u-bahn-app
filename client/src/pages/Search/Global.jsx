@@ -50,13 +50,16 @@ export default function SearchGlobal({ keyword }) {
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
   const [orderBy, setOrderBy] = React.useState(config.DEFAULT_SORT_ORDER);
   const [totalPages, setTotalPages] = React.useState(0);
+  const dropdownRef = React.useRef(null);
 
   const usersPerPage = config.ITEMS_PER_PAGE;
 
   React.useEffect(() => {
     window.addEventListener("resize", updateWindowDimensions);
+    window.addEventListener("click", onWholeContentClick);
     return () => {
       window.removeEventListener("resize", updateWindowDimensions);
+      window.removeEventListener("click", onWholeContentClick);
     };
   });
 
@@ -241,6 +244,12 @@ export default function SearchGlobal({ keyword }) {
   const updateWindowDimensions = () => {
     setWindowWidth(window.innerWidth);
   };
+  
+  const onWholeContentClick = (evt) => {
+    if(dropdownRef.current && !dropdownRef.current.contains(evt.target)) {
+      setSortByDropdownShown(false);
+    }
+  }
 
   return (
     <>
@@ -259,6 +268,7 @@ export default function SearchGlobal({ keyword }) {
             </div>
             <div
               className={style.sort}
+              ref={dropdownRef}
               onClick={() => setSortByDropdownShown(!sortByDropdownShown)}
               style={{
                 marginRight:
