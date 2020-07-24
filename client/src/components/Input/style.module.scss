@@ -21,7 +21,7 @@
   outline: none;
 
   &::-ms-clear {
-    cursor: pointer;
+    display: none;
   }
 }
 
