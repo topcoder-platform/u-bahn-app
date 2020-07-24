@@ -239,6 +239,12 @@ export default function SearchGlobal({ keyword }) {
         setUsers(data);
         setTotalResults(Number(headers["x-total"]));
         setTotalPages(Number(headers["x-total-pages"]));
+        if (window) {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        }
       }
     })();
 
