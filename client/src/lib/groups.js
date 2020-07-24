@@ -1,5 +1,6 @@
 import config from "../config";
 import * as OrgService from "../services/user-org";
+import Axios from "axios";
 
 /**
  * Returns the groups for the logged in user
@@ -18,6 +19,9 @@ export async function getGroups(apiClient, handle, cancelToken) {
     });
   } catch (error) {
     console.log(error);
+    if (Axios.isCancel(error)) {
+      return undefined;
+    }
     // TODO - handle error
     return { myGroups, otherGroups };
   }
@@ -40,6 +44,9 @@ export async function getGroups(apiClient, handle, cancelToken) {
     );
   } catch (error) {
     console.log(error);
+    if (Axios.isCancel(error)) {
+      return undefined;
+    }
     // TODO - handle error
     return { myGroups, otherGroups };
   }
@@ -64,6 +71,9 @@ export async function getGroups(apiClient, handle, cancelToken) {
     );
   } catch (error) {
     console.log(error);
+    if (Axios.isCancel(error)) {
+      return undefined;
+    }
     // TODO - handle error
     return { myGroups, otherGroups };
   }
@@ -95,6 +105,9 @@ export async function getGroups(apiClient, handle, cancelToken) {
     );
   } catch (error) {
     console.log(error);
+    if (Axios.isCancel(error)) {
+      return undefined;
+    }
     // TODO - handle error
     return { myGroups, otherGroups };
   }
@@ -115,6 +128,9 @@ export async function getGroups(apiClient, handle, cancelToken) {
     );
   } catch (error) {
     console.log(error);
+    if (Axios.isCancel(error)) {
+      return undefined;
+    }
     // TODO - handle error
     return { myGroups, otherGroups };
   }

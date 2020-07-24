@@ -45,25 +45,27 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
         cancelTokenSource.token
       );
 
-      groups.myGroups.forEach((g, i, a) => {
-        userGroups.forEach((ug, iug, aug) => {
-          if (g.id === ug.id && !ug.isDeleted) {
-            a[i] = { ...g, isSelected: true };
-          }
+      if (groups) {
+        groups.myGroups.forEach((g, i, a) => {
+          userGroups.forEach((ug, iug, aug) => {
+            if (g.id === ug.id && !ug.isDeleted) {
+              a[i] = { ...g, isSelected: true };
+            }
+          });
         });
-      });
 
-      groups.otherGroups.forEach((g, i, a) => {
-        userGroups.forEach((ug, iug, aug) => {
-          if (g.id === ug.id && !ug.isDeleted) {
-            a[i] = { ...g, isSelected: true };
-          }
+        groups.otherGroups.forEach((g, i, a) => {
+          userGroups.forEach((ug, iug, aug) => {
+            if (g.id === ug.id && !ug.isDeleted) {
+              a[i] = { ...g, isSelected: true };
+            }
+          });
         });
-      });
 
-      setMyGroups(groups.myGroups);
-      setOtherGroups(groups.otherGroups);
-      setIsLoadingGroups(false);
+        setMyGroups(groups.myGroups);
+        setOtherGroups(groups.otherGroups);
+        setIsLoadingGroups(false);
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, auth0User]);
