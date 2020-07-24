@@ -259,12 +259,12 @@ export default function SearchGlobal({ keyword }) {
   const updateWindowDimensions = () => {
     setWindowWidth(window.innerWidth);
   };
-  
+
   const onWholeContentClick = (evt) => {
-    if(dropdownRef.current && !dropdownRef.current.contains(evt.target)) {
+    if (dropdownRef.current && !dropdownRef.current.contains(evt.target)) {
       setSortByDropdownShown(false);
     }
-  }
+  };
 
   return (
     <>

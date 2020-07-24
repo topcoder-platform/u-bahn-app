@@ -83,7 +83,6 @@
 
 .sectionItem {
   cursor: pointer;
-  height: 24px;
   width: 322px;
   border-radius: 10px;
   border: 1px solid gray1_025;
@@ -103,6 +102,8 @@
 
 .sectionItemTitle {
   color: gray2;
+  word-break: break-word;
+  padding-right: 12px;
 }
 
 .sectionItemBadge {
