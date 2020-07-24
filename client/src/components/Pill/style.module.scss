@@ -25,13 +25,11 @@
   font: 400 12pt/1 Inter;
   height: auto;
   margin: 4px;
-  padding: 10px 10px;
+  padding: 0 10px;
   word-break: break-word;
 }
 
 .pillName {
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 270px;
-  white-space: nowrap;
 }
