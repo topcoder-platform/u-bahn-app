@@ -273,7 +273,7 @@ export default function SearchGlobal({ keyword }) {
                   {getOrderByText(orderBy)}
                 </span>
               )}
-              <DownArrowIcon />
+              <DownArrowIcon className={style.downArrow} />
               {sortByDropdownShown && (
                 <ul className={style.dropdown}>
                   <li
