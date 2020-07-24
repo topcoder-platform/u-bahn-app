@@ -131,7 +131,11 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
   };
 
   return (
-    <Modal onCancel={onCancel}>
+    <Modal
+      onCancel={onCancel}
+      className={style.container}
+      overlayClassName={style.overlay}
+    >
       <h1 className={style.title}>Add to Group</h1>
       <div className={style.searchRow}>
         <ZoomIcon className={style.zoomIcon} />
