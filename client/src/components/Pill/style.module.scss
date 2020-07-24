@@ -23,13 +23,14 @@
   color: $textColor;
   display: inline-flex;
   font: 400 12pt/1 Inter;
-  height: auto;
+  height: 30px;
   margin: 4px;
   padding: 0 10px;
-  word-break: break-word;
 }
 
 .pillName {
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 200px;
+  white-space: nowrap;
 }
