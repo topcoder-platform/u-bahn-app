@@ -17,6 +17,14 @@ import api from "../../services/api";
 import staticData from "../../services/static-data";
 
 import style from "./style.module.scss";
+import * as OrgService from "../../services/user-org";
+
+let primaryAttributeIds = [
+  config.STANDARD_USER_ATTRIBUTES.location,
+  config.STANDARD_USER_ATTRIBUTES.isAvailable,
+  config.STANDARD_USER_ATTRIBUTES.title,
+  config.STANDARD_USER_ATTRIBUTES.company,
+];
 
 const colorIterator = makeColorIterator(avatarColors);
 
@@ -102,9 +110,85 @@ export default function SearchGlobal({ keyword }) {
     }
 
     let isSubscribed = true;
+    const source = axios.CancelToken.source();
 
     (async () => {
-      const companyAttrs = await getCompanyAttributes(apiClient);
+      //const companyAttrs = await getCompanyAttributes(apiClient, source);
+      // Code moved from company-attributes.js -- START
+      // As cancel dispatch event wasn't working as expected.
+      let response;
+      let attributeGroups;
+      let attributes = [];
+      let errorMessage =
+        "An error occurred when getting company attributes for the custom filter";
+      const organizationId = OrgService.getSingleOrg();
+
+      // Get the attribute groups under the org
+      let url = `${config.API_URL}/attributeGroups?organizationId=${organizationId}`;
+
+      try {
+        response = await apiClient.get(url, {
+          cancelToken: source.token,
+        });
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          // request explicitly cancelled.
+          console.log(error);
+          return;
+        }
+        console.log(error);
+        alert(errorMessage);
+        // TODO - handle error
+        return attributes;
+      }
+
+      if (!response.data || response.data.length < 1) {
+        alert(errorMessage);
+        return attributes;
+      }
+
+      attributeGroups = response.data;
+
+      // Now, for each attribute group, we will proceed to get the attributes
+      for (let i = 0; i < attributeGroups.length; i++) {
+        url = `${config.API_URL}/attributes?attributeGroupId=${attributeGroups[0].id}`;
+
+        try {
+          response = await apiClient.get(url, {
+            cancelToken: source.token,
+          });
+        } catch (error) {
+          if (axios.isCancel(error)) {
+            // request explicitly cancelled.
+            console.log(error);
+            return;
+          }
+          console.log(error);
+          alert(errorMessage);
+          // TODO - handle error
+          return attributes;
+        }
+
+        if (!response.data) {
+          alert(errorMessage);
+          return attributes;
+        }
+
+        if (response.data.length > 0) {
+          attributes = attributes.concat(response.data);
+        }
+      }
+
+      // Finally, we only need the company attributes
+      attributes = attributes.filter((attribute) => {
+        if (primaryAttributeIds.includes(attribute.id)) {
+          return false;
+        }
+
+        return true;
+      });
+      const companyAttrs = attributes;
+      // END
       const filtersWithCompanyAttrs = { ...searchContext.filters };
       companyAttrs.forEach((companyAttr) => {
         filtersWithCompanyAttrs[companyAttr.id] = {
@@ -119,7 +203,10 @@ export default function SearchGlobal({ keyword }) {
       }
     })();
 
-    return () => (isSubscribed = false);
+    return () => {
+      isSubscribed = false;
+      source.cancel("Cancelling in cleanup");
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, auth0User]);
 
