@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PT from "prop-types";
 
 import Button from "../Button";
@@ -10,6 +10,7 @@ import { useAuth0 } from "../../react-auth0-spa";
 import * as groupLib from "../../lib/groups";
 
 import style from "./style.module.scss";
+import Axios from "axios";
 
 export default function AddToGroupModal({ onCancel, updateUser, user }) {
   const apiClient = api();
@@ -21,6 +22,16 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
   const [updatingGroups, setUpdatingGroups] = React.useState(false);
   const [userGroups, setUserGroups] = React.useState(user.groups);
   const [creatingGroup, setCreatingGroup] = React.useState(false);
+  const cancelTokenSource = Axios.CancelToken.source();
+
+  /**
+   * Component unmount trigger
+   */
+  useEffect(() => {
+    return () => {
+      cancelTokenSource.cancel();
+    };
+  });
 
   React.useEffect(() => {
     if (isLoading || !isAuthenticated) {
@@ -28,7 +39,11 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
     }
 
     (async () => {
-      const groups = await groupLib.getGroups(apiClient, auth0User.nickname);
+      const groups = await groupLib.getGroups(
+        apiClient,
+        auth0User.nickname,
+        cancelTokenSource.token
+      );
 
       groups.myGroups.forEach((g, i, a) => {
         userGroups.forEach((ug, iug, aug) => {
