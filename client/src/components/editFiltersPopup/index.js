@@ -111,15 +111,17 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
         <div className={styles.popupContent}>
           <div className={styles.popupHeader}>
             <div className={styles.popupTitle}>Manage Filters</div>
-            <div className={utilityStyles.mt16}>
-              <SearchBox
-                name="editFiltersSearchbox"
-                placeholder="Search filter"
-                onChange={handleSearch}
-              />
-            </div>
           </div>
           <div className={styles.popupBoby}>
+            <div className={styles.searchBox}>
+              <div className={utilityStyles.mt16}>
+                <SearchBox
+                  name="editFiltersSearchbox"
+                  placeholder="Search filter"
+                  onChange={handleSearch}
+                />
+              </div>
+            </div>
             {sections.map((section, index) => {
               const filters = filterGroups[section];
               return (
@@ -200,7 +202,7 @@ function PopupSection({ title, filters, onFilterValueChange }) {
   return (
     <>
       <PopupSectionTitle text={title} />
-      <div className={styles.popupSectionBody}>
+      <div>
         {filters.map((filter, index) => {
           return (
             <PopupSectionRow

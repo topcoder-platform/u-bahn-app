@@ -2,9 +2,6 @@
 
 .container {
   display: flex;
-  height: 791px;
-  max-height: 791px;
-  overflow-y: auto;
 }
 
 .editor {
@@ -39,6 +36,13 @@
   display: flex;
 }
 
+.body {
+  max-height: calc(95vh - 102px);
+  padding: 0 20px;
+  margin: 20px -20px -20px 0;
+  overflow-y: auto;
+}
+
 .input {
   background: $lightGray2;
   border: none;
@@ -63,8 +67,8 @@
 
 .companyAttributes {
   margin: 0 -20px;
-  height: 80px;
-  overflow-y: auto;
+  // height: 80px;
+  // overflow-y: auto;
 }
 
 .pillGroup {
