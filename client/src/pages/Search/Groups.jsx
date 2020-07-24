@@ -129,14 +129,13 @@ export default function SearchGroups() {
    * @param {Number} newPageNumber The new page number
    */
   const onChangePage = async (newPageNumber) => {
-    setPage(newPageNumber);
-    await getMembersInGroup(selectedGroup.id, newPageNumber);
     if (window) {
       window.scrollTo({
         top: 0,
-        behavior: "smooth",
       });
     }
+    setPage(newPageNumber);
+    await getMembersInGroup(selectedGroup.id, newPageNumber);
   };
 
   return (

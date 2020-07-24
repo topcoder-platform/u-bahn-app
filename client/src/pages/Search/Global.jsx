@@ -239,12 +239,6 @@ export default function SearchGlobal({ keyword }) {
         setUsers(data);
         setTotalResults(Number(headers["x-total"]));
         setTotalPages(Number(headers["x-total-pages"]));
-        if (window) {
-          window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-          });
-        }
       }
     })();
 
@@ -260,6 +254,19 @@ export default function SearchGlobal({ keyword }) {
    */
   const updateWindowDimensions = () => {
     setWindowWidth(window.innerWidth);
+  };
+
+  /**
+   * Sets the new page number and gets the new set of users
+   * @param {Number} newPageNumber The new page number
+   */
+  const onChangePage = async (newPageNumber) => {
+    if (window) {
+      window.scrollTo({
+        top: 0,
+      });
+    }
+    searchContext.changePageNumber(newPageNumber);
   };
 
   return (
@@ -341,7 +348,11 @@ export default function SearchGlobal({ keyword }) {
             })}
           </div>
           <div>
-            <Pagination currentPage={page} numPages={totalPages} />
+            <Pagination
+              currentPage={page}
+              numPages={totalPages}
+              onChangePage={onChangePage}
+            />
           </div>
         </div>
       )}
