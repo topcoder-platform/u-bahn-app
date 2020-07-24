@@ -10,6 +10,7 @@
   height: 45px;
   padding: 0 30px;
   position: relative;
+  justify-content: space-between;
 
   &:last-child {
     border-bottom: 1px solid $lightGray2;
@@ -21,9 +22,4 @@
   text-overflow: ellipsis;
   max-width: 400px;
   white-space: nowrap;
-}
-
-.switch {
-  position: absolute;
-  right: 30px;
 }
