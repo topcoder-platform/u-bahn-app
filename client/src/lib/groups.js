@@ -18,10 +18,10 @@ export async function getGroups(apiClient, handle, cancelToken) {
       cancelToken,
     });
   } catch (error) {
-    console.log(error);
     if (Axios.isCancel(error)) {
       return undefined;
     }
+    console.log(error);
     // TODO - handle error
     return { myGroups, otherGroups };
   }
@@ -43,10 +43,10 @@ export async function getGroups(apiClient, handle, cancelToken) {
       { cancelToken }
     );
   } catch (error) {
-    console.log(error);
     if (Axios.isCancel(error)) {
       return undefined;
     }
+    console.log(error);
     // TODO - handle error
     return { myGroups, otherGroups };
   }
@@ -70,10 +70,10 @@ export async function getGroups(apiClient, handle, cancelToken) {
       { cancelToken }
     );
   } catch (error) {
-    console.log(error);
     if (Axios.isCancel(error)) {
       return undefined;
     }
+    console.log(error);
     // TODO - handle error
     return { myGroups, otherGroups };
   }
@@ -104,10 +104,10 @@ export async function getGroups(apiClient, handle, cancelToken) {
       { cancelToken }
     );
   } catch (error) {
-    console.log(error);
     if (Axios.isCancel(error)) {
       return undefined;
     }
+    console.log(error);
     // TODO - handle error
     return { myGroups, otherGroups };
   }
@@ -127,10 +127,10 @@ export async function getGroups(apiClient, handle, cancelToken) {
       { cancelToken }
     );
   } catch (error) {
-    console.log(error);
     if (Axios.isCancel(error)) {
       return undefined;
     }
+    console.log(error);
     // TODO - handle error
     return { myGroups, otherGroups };
   }
