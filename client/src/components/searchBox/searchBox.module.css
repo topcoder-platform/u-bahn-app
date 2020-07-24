@@ -4,8 +4,6 @@
 
 /* Searchbox */
 .searchbox {
-  display: flex;
-  flex-direction: row;
   position: relative;
   overflow: hidden;
 
@@ -21,24 +19,21 @@
 }
 
 .searchboxItems {
-  flex: 1;
-  display: flex;
-  flex-direction: row;
+  align-items: center;
+  display: inline-flex;
   font-family: Helvetica;
   font-size: 18px;
   height: 20px;
+  position: relative;
 }
 
 .searchboxIcon {
-  order: 1;
   background: url("/sprites.png") no-repeat -1px -1px;
   width: 20px;
   height: 20px;
 }
 
 .searchboxInput {
-  order: 2;
-  flex: 1;
   border: 0;
   margin-left: 12px;
   margin-top: 1px;
@@ -49,8 +44,31 @@
   font-size: 16px;
 }
 
+.searchboxInput::-ms-clear {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
 .searchboxInput:focus,
 .searchboxInput:focus,
 .searchboxInput:focus {
   outline: none;
+}
+
+.resetKeyword {
+  appearance: none;
+  border: none;
+  color: #55596c;
+  cursor: pointer;
+  font-size: 18px;
+  outline: none;
+}
+
+.resetKeywordHidden {
+  visibility: hidden;
+}
+
+.resetKeyword:hover {
+  color: #fd827a;
 }

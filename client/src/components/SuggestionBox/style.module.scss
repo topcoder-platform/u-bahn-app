@@ -9,8 +9,6 @@
 }
 
 .input {
-  order: 2;
-  flex: 1;
   background-color: $lightGray2;
   border: none;
   border-radius: 5px;
@@ -18,7 +16,8 @@
   font-size: 16px;
   margin-left: 12px;
   margin-top: 1px;
-  width: 100%;
+  width: 240px;
+  margin-right: 5px;
 }
 
 .inputOpen {
@@ -69,8 +68,8 @@
 
 /* Searchbox */
 .searchbox {
-  display: flex;
-  flex-direction: row;
+  align-items: center;
+  display: inline-flex;
   position: relative;
   overflow: hidden;
 
@@ -86,8 +85,24 @@
 }
 
 .searchboxIcon {
-  order: 1;
   background: url("/sprites.png") no-repeat -1px -1px;
   width: 20px;
   height: 20px;
+}
+
+.resetKeyword {
+  appearance: none;
+  border: none;
+  color: #55596c;
+  cursor: pointer;
+  font-size: 18px;
+  outline: none;
+}
+
+.resetKeywordHidden {
+  visibility: hidden;
+}
+
+.resetKeyword:hover {
+  color: #fd827a;
 }

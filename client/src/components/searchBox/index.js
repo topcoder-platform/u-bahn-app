@@ -6,6 +6,7 @@ import styles from "./searchBox.module.css";
  * Searchbox
  */
 export default function SearchBox({
+  className,
   name,
   value,
   placeholder,
@@ -26,18 +27,37 @@ export default function SearchBox({
     }
   };
 
+  const reset = () => {
+    setQuery("");
+    onChange && onChange("");
+  };
+
+  let containerStyle = styles.searchboxInput;
+  if (className) containerStyle += ` ${className}`;
+
   return (
     <div className={styles.searchbox}>
       <div className={styles.searchboxItems}>
         <i className={styles.searchboxIcon}></i>
         <input
-          className={styles.searchboxInput}
+          className={containerStyle}
           name={name}
           value={query}
           placeholder={placeholder}
           onChange={handleChange}
           disabled={disabled}
         />
+        <span
+          className={
+            query.length > 0
+              ? `${styles.resetKeyword}`
+              : `${styles.resetKeyword} ${styles.resetKeywordHidden}`
+          }
+          onClick={() => reset()}
+        >
+          &times;
+        </span>
+
       </div>
     </div>
   );

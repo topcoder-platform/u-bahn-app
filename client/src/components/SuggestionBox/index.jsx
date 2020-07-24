@@ -29,6 +29,16 @@ const renderInputComponent = (inputProps) => (
   <div className={style.searchbox}>
     <i className={style.searchboxIcon}></i>
     <input {...inputProps} />
+    <span
+      className={
+        inputProps.value.length > 0
+          ? `${style.resetKeyword}`
+          : `${style.resetKeyword} ${style.resetKeywordHidden}`
+      }
+      onClick={() => inputProps.reset()}
+    >
+      &times;
+    </span>
   </div>
 );
 
@@ -114,10 +124,15 @@ export default function SuggestionBox({
     setValue("");
   };
 
+  const reset = () => {
+    setValue("");
+  };
+
   const inputProps = {
     placeholder,
     value,
     onChange,
+    reset
   };
 
   return (
