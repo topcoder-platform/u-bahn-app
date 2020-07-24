@@ -1,7 +1,6 @@
 import React from "react";
 import PT from "prop-types";
 
-import { ReactComponent as DownArrow } from "../../assets/images/down-arrow.svg";
 import { ReactComponent as SearchTabIcon } from "../../assets/images/search-tab-icon.svg";
 import { ReactComponent as GroupsTabIcon } from "../../assets/images/groups-tab-icon.svg";
 import { ReactComponent as UploadsTabIcon } from "../../assets/images/uploads-tab-icon.svg";

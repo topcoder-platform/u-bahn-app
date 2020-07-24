@@ -4,7 +4,7 @@ import PT from "prop-types";
 
 import style from "./style.module.scss";
 
-export default function Modal({ children, className }) {
+export default function Modal({ children, className, overlayClassName = "" }) {
   const [portal, setPortal] = React.useState();
 
   React.useEffect(() => {
@@ -21,6 +21,9 @@ export default function Modal({ children, className }) {
   let containerStyle = style.container;
   if (className) containerStyle += ` ${className}`;
 
+  let overlayStyle = style.overlay;
+  if (overlayClassName) overlayStyle += ` ${overlayClassName}`;
+
   return portal
     ? ReactDom.createPortal(
         <>
@@ -32,7 +35,7 @@ export default function Modal({ children, className }) {
           </div>
           <button
             aria-label="Cancel"
-            className={style.overlay}
+            className={overlayStyle}
             ref={(node) => {
               if (node) {
                 node.focus();

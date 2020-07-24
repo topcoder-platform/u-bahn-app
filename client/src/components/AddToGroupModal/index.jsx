@@ -111,7 +111,7 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
 
     const newGroup = await groupLib.createGroup(apiClient, groupName);
 
-    if (newGroup.id) {
+    if (newGroup && newGroup.id) {
       const newOtherGroups = JSON.parse(JSON.stringify(otherGroups));
 
       newOtherGroups.push(newGroup);
@@ -121,6 +121,8 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
       alert(`Group with name ${groupName} created successfully`);
 
       setFilter("");
+    } else if (newGroup.message) {
+      alert(newGroup.message);
     } else {
       alert("Group creation failed");
     }
@@ -129,7 +131,11 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
   };
 
   return (
-    <Modal onCancel={onCancel}>
+    <Modal
+      onCancel={onCancel}
+      className={style.container}
+      overlayClassName={style.overlay}
+    >
       <h1 className={style.title}>Add to Group</h1>
       <div className={style.searchRow}>
         <ZoomIcon className={style.zoomIcon} />
