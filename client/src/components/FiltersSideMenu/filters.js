@@ -34,6 +34,7 @@ export default function SearchTabFilters({ locations, achievements }) {
       console.log("filters unmounted...");
       handleReset();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleReset = () => {
@@ -328,7 +329,6 @@ SearchTabFilters.propTypes = {
 };
 
 function Summary({ filtersApplied, handleReset }) {
-  const search = useSearch();
   return (
     <div className={styles.searchTabFiltersSummary}>
       <div className={styles.searchTabFiltersSummaryTextContainer}>
