@@ -157,6 +157,7 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
       <div className={style.searchRow}>
         <ZoomIcon className={style.zoomIcon} />
         <input
+          type="search"
           className={style.search}
           onChange={({ target }) => {
             setFilter(target.value);
