@@ -31,7 +31,7 @@ export default function AppRouter() {
           right: 0,
         }}
       >
-        <img src={loader} alt="Loading" />
+        <img style={{marginTop: "19%", height: "120px", width: "120px" }} src={loader} alt="Loading" />
       </div>
     );
   }
