@@ -1,6 +1,10 @@
 /* importing colors */
 @value colors: "../../styles/colors.module.css";
-@value gray1, gray2, gray1_025, white, blue from colors;
+@value gray1,
+gray2,
+gray1_025,
+white,
+blue from colors;
 
 /* Group Tab filters (lett col) styles */
 .groupTabFilters {
@@ -83,7 +87,6 @@
 
 .sectionItem {
   cursor: pointer;
-  height: 24px;
   width: 322px;
   border-radius: 10px;
   border: 1px solid gray1_025;
@@ -102,6 +105,8 @@
 
 .sectionItemTitle {
   align-self: flex-start;
+  word-break: break-word;
+  padding-right: 12px;
   color: gray2;
 }
 
