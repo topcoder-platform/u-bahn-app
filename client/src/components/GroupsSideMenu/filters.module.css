@@ -1,10 +1,6 @@
 /* importing colors */
 @value colors: "../../styles/colors.module.css";
-@value gray1,
-gray2,
-gray1_025,
-white,
-blue from colors;
+@value gray1, gray2, gray1_025, white, blue from colors;
 
 /* Group Tab filters (lett col) styles */
 .groupTabFilters {
@@ -93,6 +89,7 @@ blue from colors;
 
   display: flex;
   flex-direction: row;
+  align-items: center;
   padding-left: 17px;
   padding-top: 13px;
   padding-bottom: 13px;
@@ -104,14 +101,13 @@ blue from colors;
 }
 
 .sectionItemTitle {
-  align-self: flex-start;
+  color: gray2;
   word-break: break-word;
   padding-right: 12px;
-  color: gray2;
 }
 
 .sectionItemBadge {
-  align-self: flex-start;
+  align-self: center;
   margin-left: auto;
   color: gray1;
 
