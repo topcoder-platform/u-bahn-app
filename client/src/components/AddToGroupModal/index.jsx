@@ -123,6 +123,10 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
       alert("Enter a group name");
       return;
     }
+    if (groupName.length > 150) {
+      alert("Group Name length exceeds 150 characters");
+      return;
+    }
 
     setCreatingGroup(true);
 
