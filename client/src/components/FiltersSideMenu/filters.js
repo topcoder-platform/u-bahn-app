@@ -26,6 +26,28 @@ export default function SearchTabFilters({ locations, achievements }) {
   const [locationsData, setLocationsData] = useState(locations);
   const [achievementsData, setAchievementsData] = useState(achievements);
 
+  /**
+   * Component unmount trigger
+   */
+  useEffect(() => {
+    return () => {
+      handleReset();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleReset = () => {
+    search.selectLocations([]);
+    search.selectSkills([]);
+    search.selectAchievements([]);
+    search.selectAvailability({
+      isAvailableSelected: false,
+      isUnavailableSelected: false,
+    });
+    search.selectCompanyAttributes({});
+    search.changePageNumber(1);
+  };
+
   useEffect(() => {
     setLocationsData(locations);
     setAchievementsData(achievements);
@@ -202,7 +224,10 @@ export default function SearchTabFilters({ locations, achievements }) {
 
   return (
     <div className={styles.searchTabFilters}>
-      <Summary filtersApplied={numberOfFiltersApplied} />
+      <Summary
+        filtersApplied={numberOfFiltersApplied}
+        handleReset={handleReset}
+      />
       {search.isFilterActive(FILTERS.LOCATIONS) && (
         <div className={utilityStyles.mt32}>
           <Collapsible title="Location" collapsed={false}>
@@ -302,21 +327,7 @@ SearchTabFilters.propTypes = {
   achievements: PT.array,
 };
 
-function Summary({ filtersApplied }) {
-  const search = useSearch();
-
-  const handleReset = () => {
-    search.selectLocations([]);
-    search.selectSkills([]);
-    search.selectAchievements([]);
-    search.selectAvailability({
-      isAvailableSelected: false,
-      isUnavailableSelected: false,
-    });
-    search.selectCompanyAttributes({});
-    search.changePageNumber(1);
-  };
-
+function Summary({ filtersApplied, handleReset }) {
   return (
     <div className={styles.searchTabFiltersSummary}>
       <div className={styles.searchTabFiltersSummaryTextContainer}>

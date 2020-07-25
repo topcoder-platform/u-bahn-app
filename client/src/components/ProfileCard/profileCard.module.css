@@ -74,7 +74,6 @@
 }
 
 .profileCardMainContainer {
-  height: 100px;
   width: 100%;
   margin-bottom: 44px;
 }
@@ -95,6 +94,8 @@
   font-family: Helvetica;
   font-size: 20px;
   color: gray2;
+  word-break: break-all;
+  padding-bottom: 10px;
 }
 
 .mainNameBagde {

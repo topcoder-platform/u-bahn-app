@@ -17,8 +17,12 @@
   border: 0;
   color: $black;
   font: 400 12pt/1.25 Inter;
-  height: 38px;
+  height: 36px;
   outline: none;
+
+  &::-ms-clear {
+    display: none;
+  }
 }
 
 .label {
