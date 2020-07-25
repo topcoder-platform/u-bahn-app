@@ -118,7 +118,13 @@ GroupTabFilters.propTypes = {
   onCreateNewGroup: PT.func,
 };
 
-function GroupsSection({ title, items, onItemClicked, selectedItemId, loadingGroups }) {
+function GroupsSection({
+  title,
+  items,
+  onItemClicked,
+  selectedItemId,
+  loadingGroups,
+}) {
   return (
     <>
       <div className={styles.sectionTitle}>{title}</div>
@@ -137,7 +143,9 @@ function GroupsSection({ title, items, onItemClicked, selectedItemId, loadingGro
           );
         })}
       </div>
-      {items.length === 0 && !loadingGroups && <div className={styles.message}>No results found</div>}
+      {items.length === 0 && !loadingGroups && (
+        <div className={styles.message}>No results found</div>
+      )}
     </>
   );
 }
