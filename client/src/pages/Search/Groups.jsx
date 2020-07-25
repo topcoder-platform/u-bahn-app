@@ -88,6 +88,11 @@ export default function SearchGroups() {
    * @param {Object} group The selected group
    */
   const onGroupSelected = async (group) => {
+    if (window) {
+      window.scrollTo({
+        top: 0,
+      });
+    }
     setSelectedGroup(group);
     // Reset pagination
     setPage(1);
