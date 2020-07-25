@@ -42,6 +42,7 @@ export default function Header({
       alert("Enter talent or keyword to search");
       return;
     }
+    searchContext.changePageNumber(1);
     onSearch && onSearch(value.trim());
   };
 
