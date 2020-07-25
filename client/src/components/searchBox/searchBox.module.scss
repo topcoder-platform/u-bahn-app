@@ -1,4 +1,5 @@
 /* importing colors */
+@import "../../styles/mixins";
 @value colors: "../../styles/colors.module.css";
 @value lightGray from colors;
 
@@ -47,10 +48,33 @@
 
   font-family: Helvetica;
   font-size: 16px;
+  &::-ms-clear {
+    display: none;
+    height: 0;
+    width: 0;
+  }
 }
 
 .searchboxInput:focus,
 .searchboxInput:focus,
 .searchboxInput:focus {
   outline: none;
+}
+
+.resetKeyword {
+  order: 2;
+  appearance: none;
+  border: none;
+  color: $textColor;
+  cursor: pointer;
+  font-size: 24px;
+  outline: none;
+
+  &:hover {
+    color: $red;
+  }
+
+  &.resetKeywordHidden {
+    visibility: hidden;
+  }
 }
