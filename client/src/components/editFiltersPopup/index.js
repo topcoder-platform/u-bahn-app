@@ -73,16 +73,16 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
       if (index === -1) {
         setSelectedFilters([filter, ...selectedFilters]);
         setSearchFilters({
-          ...search.filters,
-          [filter]: { ...search.filters[filter], active: true },
+          ...searchFilters,
+          [filter]: { ...searchFilters[filter], active: true },
         });
       }
     } else {
       if (index !== -1) {
         setSelectedFilters(selectedFilters.filter((_, i) => i !== index));
         setSearchFilters({
-          ...search.filters,
-          [filter]: { ...search.filters[filter], active: false },
+          ...searchFilters,
+          [filter]: { ...searchFilters[filter], active: false },
         });
       }
     }
