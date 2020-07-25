@@ -1,10 +1,6 @@
 /* importing colors */
 @value colors: "../../styles/colors.module.css";
-@value gray1,
-gray2,
-gray1_025,
-white,
-blue from colors;
+@value gray1, gray2, gray1_025, lightGray2, white, blue from colors;
 
 /* Group Tab filters (lett col) styles */
 .groupTabFilters {
@@ -143,4 +139,9 @@ blue from colors;
 
 .sectionItemChevron {
   margin-left: 13px;
+}
+
+.message {
+  color: lightGray2;
+  font: 400 12pt/1.25 Inter;
 }

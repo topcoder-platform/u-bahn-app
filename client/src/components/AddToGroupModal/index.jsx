@@ -190,6 +190,10 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
               />
             ))}
       </div>
+      {myGroups.filter((g) =>
+        g.name.toLowerCase().includes(filter.toLowerCase())
+      ).length === 0 &&
+        !loadingGroups && <div className={style.message}>No results found</div>}
       <h3 className={style.subTitle}>
         Other Groups{loadingGroups && " (Loading...)"}
       </h3>
@@ -206,6 +210,10 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
               />
             ))}
       </div>
+      {otherGroups.filter((g) =>
+        g.name.toLowerCase().includes(filter.toLowerCase())
+      ).length === 0 &&
+        !loadingGroups && <div className={style.message}>No results found</div>}
       <div className={style.buttons}>
         <Button onClick={onCancel} disabled={updatingGroups || creatingGroup}>
           Cancel

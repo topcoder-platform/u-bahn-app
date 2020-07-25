@@ -3,6 +3,11 @@
 .logo {
   display: flex;
   align-items: center;
+
+  img {
+    width: 80px;
+    height: auto;
+  }
 }
 
 .accountMenu {
