@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PT from "prop-types";
 
 import Button from "../Button";
@@ -10,6 +10,7 @@ import { useAuth0 } from "../../react-auth0-spa";
 import * as groupLib from "../../lib/groups";
 
 import style from "./style.module.scss";
+import Axios from "axios";
 
 export default function AddToGroupModal({ onCancel, updateUser, user }) {
   const apiClient = api();
@@ -21,6 +22,16 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
   const [updatingGroups, setUpdatingGroups] = React.useState(false);
   const [userGroups, setUserGroups] = React.useState(user.groups);
   const [creatingGroup, setCreatingGroup] = React.useState(false);
+  const cancelTokenSource = Axios.CancelToken.source();
+
+  /**
+   * Component unmount trigger
+   */
+  useEffect(() => {
+    return () => {
+      cancelTokenSource.cancel();
+    };
+  });
 
   React.useEffect(() => {
     if (isLoading || !isAuthenticated) {
@@ -28,27 +39,33 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
     }
 
     (async () => {
-      const groups = await groupLib.getGroups(apiClient, auth0User.nickname);
+      const groups = await groupLib.getGroups(
+        apiClient,
+        auth0User.nickname,
+        cancelTokenSource.token
+      );
 
-      groups.myGroups.forEach((g, i, a) => {
-        userGroups.forEach((ug, iug, aug) => {
-          if (g.id === ug.id && !ug.isDeleted) {
-            a[i] = { ...g, isSelected: true };
-          }
+      if (groups) {
+        groups.myGroups.forEach((g, i, a) => {
+          userGroups.forEach((ug, iug, aug) => {
+            if (g.id === ug.id && !ug.isDeleted) {
+              a[i] = { ...g, isSelected: true };
+            }
+          });
         });
-      });
 
-      groups.otherGroups.forEach((g, i, a) => {
-        userGroups.forEach((ug, iug, aug) => {
-          if (g.id === ug.id && !ug.isDeleted) {
-            a[i] = { ...g, isSelected: true };
-          }
+        groups.otherGroups.forEach((g, i, a) => {
+          userGroups.forEach((ug, iug, aug) => {
+            if (g.id === ug.id && !ug.isDeleted) {
+              a[i] = { ...g, isSelected: true };
+            }
+          });
         });
-      });
 
-      setMyGroups(groups.myGroups);
-      setOtherGroups(groups.otherGroups);
-      setIsLoadingGroups(false);
+        setMyGroups(groups.myGroups);
+        setOtherGroups(groups.otherGroups);
+        setIsLoadingGroups(false);
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, auth0User]);
@@ -176,6 +193,12 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
                 />
               ))}
         </div>
+        {myGroups.filter((g) =>
+          g.name.toLowerCase().includes(filter.toLowerCase())
+        ).length === 0 &&
+          !loadingGroups && (
+            <div className={style.message}>No results found</div>
+          )}
         <h3 className={style.subTitle}>
           Other Groups{loadingGroups && " (Loading...)"}
         </h3>
@@ -194,6 +217,12 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
                 />
               ))}
         </div>
+        {otherGroups.filter((g) =>
+          g.name.toLowerCase().includes(filter.toLowerCase())
+        ).length === 0 &&
+          !loadingGroups && (
+            <div className={style.message}>No results found</div>
+          )}
       </div>
       <div className={style.buttons}>
         <Button onClick={onCancel} disabled={updatingGroups || creatingGroup}>

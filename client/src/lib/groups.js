@@ -1,20 +1,26 @@
 import config from "../config";
 import * as OrgService from "../services/user-org";
+import Axios from "axios";
 
 /**
  * Returns the groups for the logged in user
  * @param {Object} apiClient The api client
  * @param {Object} handle The logged in user's handle
  */
-export async function getGroups(apiClient, handle) {
+export async function getGroups(apiClient, handle, cancelToken) {
   let myGroups = [];
   let otherGroups = [];
   let response;
 
   // First, we get the userId of the current user
   try {
-    response = await apiClient.get(`${config.API_URL}/users?handle=${handle}`);
+    response = await apiClient.get(`${config.API_URL}/users?handle=${handle}`, {
+      cancelToken,
+    });
   } catch (error) {
+    if (Axios.isCancel(error)) {
+      return undefined;
+    }
     console.log(error);
     // TODO - handle error
     return { myGroups, otherGroups };
@@ -33,9 +39,13 @@ export async function getGroups(apiClient, handle) {
   // Now, get my groups first
   try {
     response = await apiClient.get(
-      `${config.GROUPS_API_URL}?universalUID=${userId}&membershipType=user`
+      `${config.GROUPS_API_URL}?universalUID=${userId}&membershipType=user`,
+      { cancelToken }
     );
   } catch (error) {
+    if (Axios.isCancel(error)) {
+      return undefined;
+    }
     console.log(error);
     // TODO - handle error
     return { myGroups, otherGroups };
@@ -56,9 +66,13 @@ export async function getGroups(apiClient, handle) {
   // Fetch all groups in the org
   try {
     response = await apiClient.get(
-      `${config.GROUPS_API_URL}?organizationId=${organizationId}`
+      `${config.GROUPS_API_URL}?organizationId=${organizationId}`,
+      { cancelToken }
     );
   } catch (error) {
+    if (Axios.isCancel(error)) {
+      return undefined;
+    }
     console.log(error);
     // TODO - handle error
     return { myGroups, otherGroups };
@@ -86,9 +100,13 @@ export async function getGroups(apiClient, handle) {
   // Now, get member counts
   try {
     response = await apiClient.get(
-      `${config.GROUPS_API_URL}/memberGroups/groupMembersCount?universalUID=${userId}`
+      `${config.GROUPS_API_URL}/memberGroups/groupMembersCount?universalUID=${userId}`,
+      { cancelToken }
     );
   } catch (error) {
+    if (Axios.isCancel(error)) {
+      return undefined;
+    }
     console.log(error);
     // TODO - handle error
     return { myGroups, otherGroups };
@@ -105,9 +123,13 @@ export async function getGroups(apiClient, handle) {
   // Fetch all groups in the org
   try {
     response = await apiClient.get(
-      `${config.GROUPS_API_URL}/memberGroups/groupMembersCount?organizationId=${organizationId}`
+      `${config.GROUPS_API_URL}/memberGroups/groupMembersCount?organizationId=${organizationId}`,
+      { cancelToken }
     );
   } catch (error) {
+    if (Axios.isCancel(error)) {
+      return undefined;
+    }
     console.log(error);
     // TODO - handle error
     return { myGroups, otherGroups };

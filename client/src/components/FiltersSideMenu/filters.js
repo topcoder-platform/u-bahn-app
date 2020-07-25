@@ -31,7 +31,6 @@ export default function SearchTabFilters({ locations, achievements }) {
    */
   useEffect(() => {
     return () => {
-      console.log("filters unmounted...");
       handleReset();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
