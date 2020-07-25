@@ -22,6 +22,7 @@ export default function AppRouter() {
           position: "absolute",
           display: "flex",
           justifyContent: "center",
+          alignItems: "center",
           height: "100vh",
           width: "100vw",
           backgroundColor: "white",
@@ -31,7 +32,7 @@ export default function AppRouter() {
           right: 0,
         }}
       >
-        <img style={{marginTop: "19%", height: "120px", width: "120px" }} src={loader} alt="Loading" />
+        <img style={{height: "120px", width: "120px" }} src={loader} alt="Loading" />
       </div>
     );
   }
