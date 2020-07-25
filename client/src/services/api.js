@@ -34,7 +34,6 @@ export default () => {
           redirect_uri: window.location.origin,
         });
       } else if (
-        error.status === 409 &&
         error.response &&
         error.response.data &&
         error.response.data.message
