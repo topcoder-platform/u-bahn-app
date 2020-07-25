@@ -32,7 +32,7 @@ export default function Initial({ onError, onUpload, templateId }) {
       const { data } = await apiClient.get(url);
       window.location = data.url;
     } catch (error) {
-      if (onError) onError(error.toJSON());
+      if (onError) onError(error);
     }
   };
 
