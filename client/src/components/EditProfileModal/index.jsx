@@ -62,22 +62,27 @@ export default function EditProfileModal({
    */
   const addSkill = (skill) => {
     // Verify that the skill does not already exist on the user
-    const exists = localUser.skills.find(
+    const index = localUser.skills.findIndex(
       (existingSkill) => existingSkill.externalId === skill.id
     );
+    const exists = localUser.skills[index];
 
-    if (exists) {
+    if (exists && !exists.isDeleted) {
       return;
     }
 
     const skills = JSON.parse(JSON.stringify(localUser.skills));
 
-    skills.push({
-      externalId: skill.id, // The skill id returned from EMSI becomes externalId in our db
-      isNew: true,
-      name: skill.name,
-      skillProviderId: config.EMSI_SKILLPROVIDER_ID,
-    });
+    if (exists) {
+      delete skills[index].isDeleted;
+    } else {
+      skills.push({
+        externalId: skill.id, // The skill id returned from EMSI becomes externalId in our db
+        isNew: true,
+        name: skill.name,
+        skillProviderId: config.EMSI_SKILLPROVIDER_ID,
+      });
+    }
 
     setLocalUser({ ...localUser, skills });
   };

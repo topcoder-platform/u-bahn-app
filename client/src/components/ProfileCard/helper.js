@@ -198,9 +198,27 @@ export async function updateUserSkills(apiClient, { id, skills }) {
   for (let i = 0; i < skills.length; i++) {
     const skill = skills[i];
     if (skills[i].isDeleted) {
-      url = `${config.API_URL}/users/${id}/skills/${skill.id}`;
+      let skillId;
+      // check if there is an id
+      if (skills[i].id) {
+        skillId = skills[i].id;
+      } else {
+        // find the existing skill id to delete
+        // skill marked to be deleted can be without id when it came directly from react state (not database)
+        const existingSkill = await checkIfSkillExists(
+          apiClient,
+          skill.skillProviderId,
+          skill.externalId
+        );
+        if (existingSkill && existingSkill.length > 0) {
+          skillId = existingSkill[0].id;
+        }
+      }
+      if (skillId) {
+        url = `${config.API_URL}/users/${id}/skills/${skillId}`;
 
-      await apiClient.delete(url);
+        await apiClient.delete(url);
+      }
     } else if (skills[i].isNew) {
       let userSkill;
       // We first check if the skill is already defined in the database, before we add it to the user
