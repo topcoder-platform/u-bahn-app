@@ -65,7 +65,42 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
       onDone(selectedFilters);
     }
     search.setFilters(searchFilters);
+    removeDataFromDisabledFilters(searchFilters)
   };
+
+  const removeDataFromDisabledFilters = (searchFilters) => {
+    const companyAttrIdsToBeRemoved = []
+    for (const [key, value] of Object.entries(searchFilters)) {
+      if(value.group === "General attributes") {
+        if(!value.active) {
+          removeGeneralAttr(value.text);
+        }
+      } else {
+        if(!value.active) {
+          companyAttrIdsToBeRemoved.push(key);
+        }
+      }
+    }
+    search.clearSelectCompanyAttributes(companyAttrIdsToBeRemoved)
+  }
+
+  const removeGeneralAttr = (text) => {
+    if (text === "Location") {
+      search.selectLocations([])
+    }
+    if (text === "Skills") {
+      search.selectSkills([])
+    }
+    if (text === "Achievements") {
+      search.selectAchievements([])
+    }
+    if (text === "Availability") {
+      search.selectAvailability({
+        isAvailableSelected: false,
+        isUnavailableSelected: false
+      })
+    }
+  }
 
   const handleFilterValueChanged = (filter, newValue) => {
     var index = selectedFilters.indexOf(filter);
