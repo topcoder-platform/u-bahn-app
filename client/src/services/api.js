@@ -35,6 +35,7 @@ export default () => {
         });
       } else if (
         error.response &&
+        error.response.data &&
         error.response.data.message
       ) {
         const modError = new Error(error.response.data.message);

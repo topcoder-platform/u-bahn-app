@@ -260,6 +260,19 @@ export default function SearchGlobal({ keyword }) {
     setWindowWidth(window.innerWidth);
   };
 
+  /**
+   * Sets the new page number and gets the new set of users
+   * @param {Number} newPageNumber The new page number
+   */
+  const onChangePage = async (newPageNumber) => {
+    if (window) {
+      window.scrollTo({
+        top: 0,
+      });
+    }
+    searchContext.changePageNumber(newPageNumber);
+  };
+
   const onWholeContentClick = (evt) => {
     if (dropdownRef.current && !dropdownRef.current.contains(evt.target)) {
       setSortByDropdownShown(false);
@@ -346,7 +359,11 @@ export default function SearchGlobal({ keyword }) {
             })}
           </div>
           <div>
-            <Pagination currentPage={page} numPages={totalPages} />
+            <Pagination
+              currentPage={page}
+              numPages={totalPages}
+              onChangePage={onChangePage}
+            />
           </div>
         </div>
       )}

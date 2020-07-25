@@ -32,7 +32,7 @@ export default function Initial({ onError, onUpload, templateId }) {
       const { data } = await apiClient.get(url);
       window.location = data.url;
     } catch (error) {
-      if (onError) onError(error.toJSON());
+      if (onError) onError(error);
     }
   };
 
@@ -40,6 +40,7 @@ export default function Initial({ onError, onUpload, templateId }) {
     const allowedMineTypes = [
       "application/vnd.ms-excel",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "text/csv",
     ];
     if (files && files[0] && allowedMineTypes.indexOf(files[0].type) !== -1)
       onUpload(files[0]);
