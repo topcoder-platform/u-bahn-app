@@ -124,11 +124,11 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
       return;
     }
     if (groupName.length < 3) {
-      alert("Group Name length must be atleast 3 character");
+      alert("Group name must be more than three characters");
       return;
     }
     if (groupName.length > 150) {
-      alert("Group Name length exceeds 150 characters");
+      alert("Group name cannot exceed 150 characters");
       return;
     }
 
