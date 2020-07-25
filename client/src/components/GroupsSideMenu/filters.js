@@ -52,6 +52,14 @@ export default function GroupTabFilters({
       alert("Enter a group name");
       return;
     }
+    if (groupName.length < 3) {
+      alert("Group name must be more than three characters");
+      return;
+    }
+    if (groupName.length > 150) {
+      alert("Group name cannot exceed 150 characters");
+      return;
+    }
 
     onCreateNewGroup(groupName);
   };
@@ -90,6 +98,7 @@ export default function GroupTabFilters({
             )}
             onItemClicked={handleGroupItemClicked}
             selectedItemId={selectedGroup === "My Groups" ? selectedItemId : -1}
+            loadingGroups={loadingGroups}
           />
           <GroupsSection
             title={loadingGroups ? "Other Groups (Loading...)" : "Other Groups"}
@@ -100,6 +109,7 @@ export default function GroupTabFilters({
             selectedItemId={
               selectedGroup === "Other Groups" ? selectedItemId : -1
             }
+            loadingGroups={loadingGroups}
           />
         </div>
       </div>
@@ -116,7 +126,13 @@ GroupTabFilters.propTypes = {
   onCreateNewGroup: PT.func,
 };
 
-function GroupsSection({ title, items, onItemClicked, selectedItemId }) {
+function GroupsSection({
+  title,
+  items,
+  onItemClicked,
+  selectedItemId,
+  loadingGroups,
+}) {
   return (
     <>
       <div className={styles.sectionTitle}>{title}</div>
@@ -135,6 +151,9 @@ function GroupsSection({ title, items, onItemClicked, selectedItemId }) {
           );
         })}
       </div>
+      {items.length === 0 && !loadingGroups && (
+        <div className={styles.message}>No results found</div>
+      )}
     </>
   );
 }
@@ -144,6 +163,7 @@ GroupsSection.propTypes = {
   items: PT.array.isRequired,
   onItemClicked: PT.func,
   selectedIndex: PT.number,
+  loadingGroups: PT.bool,
 };
 
 function SectionRow({ title, badge, selected = false, action }) {

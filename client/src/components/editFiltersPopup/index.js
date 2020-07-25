@@ -52,7 +52,7 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
   );
   const [filterGroups, setFilterGroups] = useState(initialFilters);
   const [selectedFilters, setSelectedFilters] = useState(initialSelection);
-  const [sections, setSections] = useState(initialSections, initialSections);
+  const [sections, setSections] = useState(initialSections);
 
   const handleCancel = () => {
     if (onCancel) {
@@ -65,6 +65,41 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
       onDone(selectedFilters);
     }
     search.setFilters(searchFilters);
+    removeDataFromDisabledFilters(searchFilters);
+  };
+
+  const removeDataFromDisabledFilters = (searchFilters) => {
+    const companyAttrIdsToBeRemoved = [];
+    for (const [key, value] of Object.entries(searchFilters)) {
+      if (value.group === "General attributes") {
+        if (!value.active) {
+          removeGeneralAttr(value.text);
+        }
+      } else {
+        if (!value.active) {
+          companyAttrIdsToBeRemoved.push(key);
+        }
+      }
+    }
+    search.clearSelectCompanyAttributes(companyAttrIdsToBeRemoved);
+  };
+
+  const removeGeneralAttr = (text) => {
+    if (text === "Location") {
+      search.selectLocations([]);
+    }
+    if (text === "Skills") {
+      search.selectSkills([]);
+    }
+    if (text === "Achievements") {
+      search.selectAchievements([]);
+    }
+    if (text === "Availability") {
+      search.selectAvailability({
+        isAvailableSelected: false,
+        isUnavailableSelected: false,
+      });
+    }
   };
 
   const handleFilterValueChanged = (filter, newValue) => {
@@ -73,16 +108,16 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
       if (index === -1) {
         setSelectedFilters([filter, ...selectedFilters]);
         setSearchFilters({
-          ...search.filters,
-          [filter]: { ...search.filters[filter], active: true },
+          ...searchFilters,
+          [filter]: { ...searchFilters[filter], active: true },
         });
       }
     } else {
       if (index !== -1) {
         setSelectedFilters(selectedFilters.filter((_, i) => i !== index));
         setSearchFilters({
-          ...search.filters,
-          [filter]: { ...search.filters[filter], active: false },
+          ...searchFilters,
+          [filter]: { ...searchFilters[filter], active: false },
         });
       }
     }
@@ -90,10 +125,15 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
 
   const handleSearch = (q) => {
     if (q.length === 0) {
-      setFilterGroups(initialFilters);
+      const [filteredSections, filteredGroups] = getInitialFilters(
+        searchFilters,
+        () => true
+      );
+      setSections(filteredSections);
+      setFilterGroups(filteredGroups);
     } else if (q.length >= 3) {
       const [filteredSections, filteredGroups] = getInitialFilters(
-        { ...search.filters },
+        searchFilters,
         (f) => {
           return f.text.toLowerCase().includes(q.toLowerCase());
         }
@@ -111,15 +151,17 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
         <div className={styles.popupContent}>
           <div className={styles.popupHeader}>
             <div className={styles.popupTitle}>Manage Filters</div>
-            <div className={utilityStyles.mt16}>
-              <SearchBox
-                name="editFiltersSearchbox"
-                placeholder="Search filter"
-                onChange={handleSearch}
-              />
-            </div>
           </div>
           <div className={styles.popupBoby}>
+            <div className={styles.searchBox}>
+              <div className={utilityStyles.mt16}>
+                <SearchBox
+                  name="editFiltersSearchbox"
+                  placeholder="Search filter"
+                  onChange={handleSearch}
+                />
+              </div>
+            </div>
             {sections.map((section, index) => {
               const filters = filterGroups[section];
               return (
@@ -200,11 +242,11 @@ function PopupSection({ title, filters, onFilterValueChange }) {
   return (
     <>
       <PopupSectionTitle text={title} />
-      <div className={styles.popupSectionBody}>
-        {filters.map((filter, index) => {
+      <div>
+        {filters.map((filter) => {
           return (
             <PopupSectionRow
-              key={index}
+              key={filter.id}
               text={filter.name}
               filterActivated={filter.isActive}
               id={filter.id}

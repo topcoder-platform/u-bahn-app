@@ -114,132 +114,136 @@ export default function EditProfileModal({
             {isSavingChanges ? "Saving changes, please wait..." : "Save"}
           </Button>
         </div>
-        <h3>General</h3>
-        <div className={style.inputs}>
-          <Input
-            label="First name"
-            onChange={({ target }) => {
-              setLocalUser({
-                ...localUser,
-                firstName: target.value,
-              });
-              setImmediate(() => target.focus());
-            }}
-            value={localUser.firstName}
-          />
-          <Input
-            label="Last name"
-            onChange={({ target }) => {
-              setLocalUser({
-                ...localUser,
-                lastName: target.value,
-              });
-              setImmediate(() => target.focus());
-            }}
-            value={localUser.lastName}
-          />
-          <Input
-            label="Current role"
-            onChange={({ target }) => {
-              setLocalUser({
-                ...localUser,
-                title: {
-                  id: localUser.title.id,
-                  value: target.value,
-                },
-              });
-              setImmediate(() => target.focus());
-            }}
-            value={localUser.title.value}
-          />
-          <Input
-            label="Company"
-            onChange={({ target }) => {
-              setLocalUser({
-                ...localUser,
-                company: {
-                  id: localUser.company.id,
-                  value: target.value,
-                },
-              });
-              setImmediate(() => target.focus());
-            }}
-            value={localUser.company.value}
-          />
-          <Input
-            label="Location"
-            onChange={({ target }) => {
-              setLocalUser({
-                ...localUser,
-                location: {
-                  id: localUser.location.id,
-                  value: target.value,
-                },
-              });
-              setImmediate(() => target.focus());
-            }}
-            value={localUser.location.value}
-          />
-        </div>
-        <h3>Skills</h3>
-        <div className={style.pillGroup}>
-          <SuggestionBox
-            placeholder={"Search skill to add"}
-            onSelect={addSkill}
-            purpose="skills"
-          />
-          {localUser.skills
-            .filter((item) => !item.isDeleted)
-            .map((item) => (
-              <Pill
-                key={`${item.skillProviderId}-${item.externalId}`}
-                name={item.name}
-                onRemove={() => {
-                  deleteSkill(item.externalId);
-                }}
-              />
-            ))}
-        </div>
-        <h3>Achievements</h3>
-        <div className={style.pillGroup}>
-          {localUser.achievements.length > 0 &&
-            localUser.achievements.map((value, key) => (
-              <Pill key={key} name={value} removable={false} />
-            ))}
-          {localUser.achievements.length === 0 && (
-            <span className={style.message}>
-              {"This user has no achievements"}
-            </span>
-          )}
-        </div>
-        <h3>Custom attributes</h3>
-        <div className={style.companyAttributes}>
-          {localUser.companyAttributes.map((attr, key) => (
+        <div className={style.body}>
+          <h3>General</h3>
+          <div className={style.inputs}>
             <Input
-              key={key}
-              label={attr.name}
+              label="First name"
               onChange={({ target }) => {
                 setLocalUser({
                   ...localUser,
-                  companyAttributes: localUser.companyAttributes.map((el) =>
-                    el.id === attr.id ? { ...el, value: target.value } : el
-                  ),
+                  firstName: target.value,
                 });
                 setImmediate(() => target.focus());
               }}
-              value={localUser.companyAttributes[key].value}
+              value={localUser.firstName}
             />
-          ))}
+            <Input
+              label="Last name"
+              onChange={({ target }) => {
+                setLocalUser({
+                  ...localUser,
+                  lastName: target.value,
+                });
+                setImmediate(() => target.focus());
+              }}
+              value={localUser.lastName}
+            />
+            <Input
+              label="Current role"
+              onChange={({ target }) => {
+                setLocalUser({
+                  ...localUser,
+                  title: {
+                    id: localUser.title.id,
+                    value: target.value,
+                  },
+                });
+                setImmediate(() => target.focus());
+              }}
+              value={localUser.title.value}
+            />
+            <Input
+              label="Company"
+              onChange={({ target }) => {
+                setLocalUser({
+                  ...localUser,
+                  company: {
+                    id: localUser.company.id,
+                    value: target.value,
+                  },
+                });
+                setImmediate(() => target.focus());
+              }}
+              value={localUser.company.value}
+            />
+            <Input
+              label="Location"
+              onChange={({ target }) => {
+                setLocalUser({
+                  ...localUser,
+                  location: {
+                    id: localUser.location.id,
+                    value: target.value,
+                  },
+                });
+                setImmediate(() => target.focus());
+              }}
+              value={localUser.location.value}
+            />
+          </div>
+          <h3>Skills</h3>
+          <div className={style.pillGroup}>
+            <SuggestionBox
+              placeholder={"Search skill to add"}
+              onSelect={addSkill}
+              purpose="skills"
+            />
+            {localUser.skills
+              .filter((item) => !item.isDeleted)
+              .map((item) => (
+                <Pill
+                  key={`${item.skillProviderId}-${item.externalId}`}
+                  name={item.name}
+                  onRemove={() => {
+                    deleteSkill(item.externalId);
+                  }}
+                />
+              ))}
+          </div>
+          <h3>Achievements</h3>
+          <div className={style.pillGroup}>
+            {localUser.achievements.length > 0 &&
+              localUser.achievements.map((value, key) => (
+                <Pill key={key} name={value} removable={false} />
+              ))}
+            {localUser.achievements.length === 0 && (
+              <span className={style.message}>
+                {"This user has no achievements"}
+              </span>
+            )}
+          </div>
+          <h3>Custom attributes</h3>
+          <div className={style.companyAttributes}>
+            {localUser.companyAttributes.map((attr, key) => (
+              <Input
+                key={key}
+                label={attr.name}
+                onChange={({ target }) => {
+                  setLocalUser({
+                    ...localUser,
+                    companyAttributes: localUser.companyAttributes.map((el) =>
+                      el.id === attr.id ? { ...el, value: target.value } : el
+                    ),
+                  });
+                  setImmediate(() => target.focus());
+                }}
+                value={localUser.companyAttributes[key].value}
+              />
+            ))}
+          </div>
+          <Button
+            className={
+              isDeactivatingUser
+                ? style.disabledDangerButton
+                : style.dangerButton
+            }
+            onClick={confirmDeactivateUser}
+            disabled={isDeactivatingUser || isSavingChanges}
+          >
+            {isDeactivatingUser ? "Deactivating" : "Deactivate this user"}
+          </Button>
         </div>
-        <Button
-          className={
-            isDeactivatingUser ? style.disabledDangerButton : style.dangerButton
-          }
-          onClick={confirmDeactivateUser}
-          disabled={isDeactivatingUser || isSavingChanges}
-        >
-          {isDeactivatingUser ? "Deactivating" : "Deactivate this user"}
-        </Button>
       </div>
     </Modal>
   );

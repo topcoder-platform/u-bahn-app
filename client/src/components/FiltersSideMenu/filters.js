@@ -230,12 +230,18 @@ export default function SearchTabFilters({ locations, achievements }) {
       />
       {search.isFilterActive(FILTERS.LOCATIONS) && (
         <div className={utilityStyles.mt32}>
-          <Collapsible title="Location" collapsed={false}>
+          <Collapsible
+            onCollapsed={(isCollapsed) =>
+              filterData("", locations, "name", setLocationsData)
+            }
+            title="Location"
+            collapsed={false}
+          >
             <SearchBox
               placeholder="Search for a location"
               name={"location search"}
               onChange={(q) =>
-                filterData(q, locations, "name", setLocationsData)
+                filterData(q.trim(), locations, "name", setLocationsData)
               }
             />
             <TagList
@@ -290,12 +296,17 @@ export default function SearchTabFilters({ locations, achievements }) {
       )}
       {search.isFilterActive(FILTERS.ACHIEVEMENTS) && (
         <div className={utilityStyles.mt32}>
-          <Collapsible title="Achievements">
+          <Collapsible
+            title="Achievements"
+            onCollapsed={(isCollapsed) =>
+              filterData("", achievements, "name", setAchievementsData)
+            }
+          >
             <SearchBox
               placeholder="Search for an achievement"
               name={"achievements search"}
               onChange={(q) =>
-                filterData(q, achievements, "name", setAchievementsData)
+                filterData(q.trim(), achievements, "name", setAchievementsData)
               }
             />
             <TagList
