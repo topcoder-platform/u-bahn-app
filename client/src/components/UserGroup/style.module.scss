@@ -51,3 +51,11 @@ div.groupContent > button:first-child {
   align-items: center;
   height: 30px;
 }
+
+.pillContainer {
+  max-width: -webkit-fill-available;
+  /* Mozilla-based browsers will ignore this. */
+  max-width: stretch;
+  max-width: -moz-available;
+  /* WebKit-based browsers will ignore this. */
+}
