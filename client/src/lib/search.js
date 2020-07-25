@@ -94,6 +94,14 @@ function useProvideSearch() {
     });
   };
 
+  const clearSelectCompanyAttributes = (ids) => {
+    const selectedCmpAttr = { ...selectedCompanyAttributes };
+    for (let id of ids) {
+      selectedCmpAttr[id] = [];
+    }
+    setSelectedCompanyAttributes(selectedCmpAttr);
+  };
+
   const getCompanyAttrActiveFilter = () => {
     const companyAttrActiveFilters = [];
     for (const filter in filters) {
@@ -120,6 +128,7 @@ function useProvideSearch() {
     selectAvailability: setSelectedAvailability,
     selectedCompanyAttributes,
     selectCompanyAttributes: setSelectedCompanyAttributes,
+    clearSelectCompanyAttributes,
     popupShown,
     showPopup,
     filters,

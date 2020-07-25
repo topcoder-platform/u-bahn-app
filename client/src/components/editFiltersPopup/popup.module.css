@@ -21,9 +21,9 @@
 }
 
 .popup {
-  margin: 60px auto;
+  margin: 2.5vh auto;
   border-radius: 5px;
-  width: 30%;
+  width: 500px;
   position: relative;
   transition: all 5s ease-in-out;
 
@@ -56,9 +56,14 @@
   color: gray2;
 }
 
-.popupSectionBody {
-  max-height: 188px;
+.popupBoby {
+  max-height: calc(95vh - 141px);
   overflow-y: auto;
+  margin-top: 16px;
+}
+
+.searchBox {
+  margin: -16px 25px 0 25px;
 }
 
 .popupSectionTitle {

@@ -17,6 +17,7 @@ import api from "../../services/api";
 import staticData from "../../services/static-data";
 
 import style from "./style.module.scss";
+import _ from "lodash";
 
 const colorIterator = makeColorIterator(avatarColors);
 
@@ -61,6 +62,7 @@ export default function SearchGlobal({ keyword }) {
   const dropdownRef = React.useRef(null);
 
   const prevOrderBy = usePrevious(orderBy);
+  const [prevCriteria, setPrevCriteria] = React.useState(null);
 
   const usersPerPage = config.ITEMS_PER_PAGE;
 
@@ -129,79 +131,88 @@ export default function SearchGlobal({ keyword }) {
       return;
     }
 
+    const criteria = {};
+    if (
+      searchContext.filters[FILTERS.LOCATIONS].active &&
+      searchContext.selectedLocations.length > 0
+    ) {
+      criteria.locations = searchContext.selectedLocations;
+    }
+    if (
+      searchContext.filters[FILTERS.SKILLS].active &&
+      searchContext.selectedSkills.length > 0
+    ) {
+      criteria.skills = searchContext.selectedSkills;
+    }
+    if (
+      searchContext.filters[FILTERS.ACHIEVEMENTS].active &&
+      searchContext.selectedAchievements.length > 0
+    ) {
+      criteria.achievements = searchContext.selectedAchievements;
+    }
+    if (searchContext.filters[FILTERS.AVAILABILITY].active) {
+      if (
+        searchContext.selectedAvailability &&
+        ("isAvailableSelected" in searchContext.selectedAvailability ||
+          "isUnavailableSelected" in searchContext.selectedAvailability)
+      ) {
+        const availabilityFilter = searchContext.selectedAvailability;
+        if (
+          availabilityFilter.isAvailableSelected &&
+          !availabilityFilter.isUnavailableSelected
+        ) {
+          criteria.isAvailable = true;
+        } else if (
+          !availabilityFilter.isAvailableSelected &&
+          availabilityFilter.isUnavailableSelected
+        ) {
+          criteria.isAvailable = false;
+        }
+      }
+    }
+
+    criteria.attributes = [];
+    searchContext.getCompanyAttrActiveFilter().forEach((filter) => {
+      if (
+        searchContext.selectedCompanyAttributes[filter.id] &&
+        searchContext.selectedCompanyAttributes[filter.id].length > 0
+      ) {
+        criteria.attributes.push({
+          id: filter.id,
+          value: searchContext.selectedCompanyAttributes[filter.id].map(
+            (data) => data.value
+          ),
+        });
+      }
+    });
+
+    // reset first page when change orderBy or criteria
+    if ((prevOrderBy !== "undefined" && prevOrderBy !== orderBy)
+      || _.isEqual(prevCriteria,criteria) === false) {
+      searchContext.pagination.page = 1;
+    }
+
+    let pageChanged = false;
+    if (searchContext.pagination.page !== page) {
+      setPage(searchContext.pagination.page);
+      pageChanged = true;
+    }
+
+    if (_.isEqual(prevCriteria,criteria) && !pageChanged) {
+      return;
+    } else {
+      setPrevCriteria(criteria);
+    }
+
     let isSubscribed = true;
     let source = axios.CancelToken.source();
 
     (async () => {
-      const criteria = {};
       let headers;
       let data;
 
       setIsSearching(true);
       setUsers([]);
-
-      if (
-        searchContext.filters[FILTERS.LOCATIONS].active &&
-        searchContext.selectedLocations.length > 0
-      ) {
-        criteria.locations = searchContext.selectedLocations;
-      }
-      if (
-        searchContext.filters[FILTERS.SKILLS].active &&
-        searchContext.selectedSkills.length > 0
-      ) {
-        criteria.skills = searchContext.selectedSkills;
-      }
-      if (
-        searchContext.filters[FILTERS.ACHIEVEMENTS].active &&
-        searchContext.selectedAchievements.length > 0
-      ) {
-        criteria.achievements = searchContext.selectedAchievements;
-      }
-      if (searchContext.filters[FILTERS.AVAILABILITY].active) {
-        if (
-          searchContext.selectedAvailability &&
-          ("isAvailableSelected" in searchContext.selectedAvailability ||
-            "isUnavailableSelected" in searchContext.selectedAvailability)
-        ) {
-          const availabilityFilter = searchContext.selectedAvailability;
-          if (
-            availabilityFilter.isAvailableSelected &&
-            !availabilityFilter.isUnavailableSelected
-          ) {
-            criteria.isAvailable = true;
-          } else if (
-            !availabilityFilter.isAvailableSelected &&
-            availabilityFilter.isUnavailableSelected
-          ) {
-            criteria.isAvailable = false;
-          }
-        }
-      }
-
-      criteria.attributes = [];
-      searchContext.getCompanyAttrActiveFilter().forEach((filter) => {
-        if (
-          searchContext.selectedCompanyAttributes[filter.id] &&
-          searchContext.selectedCompanyAttributes[filter.id].length > 0
-        ) {
-          criteria.attributes.push({
-            id: filter.id,
-            value: searchContext.selectedCompanyAttributes[filter.id].map(
-              (data) => data.value
-            ),
-          });
-        }
-      });
-
-      // reset first page when change orderBy
-      if (prevOrderBy !== "undefined" && prevOrderBy !== orderBy) {
-        searchContext.pagination.page = 1;
-      }
-
-      if (searchContext.pagination.page !== page) {
-        setPage(searchContext.pagination.page);
-      }
 
       const { url, options, body } = helper.getSearchUsersRequestDetails({
         keyword,
@@ -245,11 +256,6 @@ export default function SearchGlobal({ keyword }) {
         setTotalPages(Number(headers["x-total-pages"]));
       }
     })();
-
-    return () => {
-      isSubscribed = false;
-      source.cancel("Cancelling in cleanup");
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, keyword, orderBy, searchContext]);
 
