@@ -235,7 +235,7 @@ export default function SearchTabFilters({ locations, achievements }) {
               placeholder="Search for a location"
               name={"location search"}
               onChange={(q) =>
-                filterData(q, locations, "name", setLocationsData)
+                filterData(q.trim(), locations, "name", setLocationsData)
               }
             />
             <TagList
@@ -295,7 +295,7 @@ export default function SearchTabFilters({ locations, achievements }) {
               placeholder="Search for an achievement"
               name={"achievements search"}
               onChange={(q) =>
-                filterData(q, achievements, "name", setAchievementsData)
+                filterData(q.trim(), achievements, "name", setAchievementsData)
               }
             />
             <TagList
