@@ -9,12 +9,22 @@ import iconStyles from "../../styles/icons.module.css";
  * childre: children component
  * collapse: if set to true the component is collapsed
  */
-export default function Collapsible({ title, children, collapsed = false }) {
+export default function Collapsible({
+  title,
+  children,
+  collapsed = false,
+  onCollapsed,
+}) {
   const [isCollapsed, setIsCollapsed] = useState(collapsed);
 
   const mainStyle = isCollapsed
     ? styles.collapsibleContainerCollapsed
     : styles.collapsibleContainer;
+
+  const handleCollapseChange = () => {
+    setIsCollapsed(!isCollapsed);
+    if (onCollapsed) onCollapsed(isCollapsed);
+  };
 
   return (
     <div className={mainStyle}>
@@ -22,7 +32,7 @@ export default function Collapsible({ title, children, collapsed = false }) {
         <div className={styles.collapsibleTitle}>{title}</div>
         <div
           className={styles.collapsibleChevronContainer}
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={handleCollapseChange}
         >
           {isCollapsed ? (
             <div className={iconStyles.chevronDownG}></div>
