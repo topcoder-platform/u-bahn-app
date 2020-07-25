@@ -86,7 +86,7 @@ export default function SuggestionBox({
   const [suggestions, setSuggestions] = React.useState([]);
   const [value, setValue] = React.useState("");
 
-  const onChange = (event, { newValue }) => setValue(newValue);
+  const onChange = (event, { newValue }) => setValue(newValue.trim());
 
   const onSuggestionsFetchRequested = async ({ value }) => {
     if (purpose === "skills") {

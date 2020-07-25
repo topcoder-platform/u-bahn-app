@@ -97,7 +97,7 @@ export default function Header({
         </div>
         <div
           className={style.accountMenu}
-          onClick={() => setShowAccountDropdown(!showAccountDropdown)}
+          onMouseDown={() => setShowAccountDropdown(!showAccountDropdown)}
         >
           {user.nickname}
           {organization ? <>&nbsp;({organization.name})</> : ""}
