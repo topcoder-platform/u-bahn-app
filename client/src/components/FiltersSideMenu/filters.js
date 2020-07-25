@@ -200,6 +200,8 @@ export default function SearchTabFilters({ locations, achievements }) {
             purpose="companyAttributes"
             companyAttrId={filter.id}
             onSelect={addCompanyAttributeToFilter}
+            selectCompanyAttr={search.selectedCompanyAttributes[filter.id]}
+            forLabel={filter.text}
           />
           {filter.id in search.selectedCompanyAttributes &&
             search.selectedCompanyAttributes[filter.id].length > 0 && (
@@ -276,6 +278,8 @@ export default function SearchTabFilters({ locations, achievements }) {
               placeholder={"Search skill to filter with"}
               onSelect={addSkillToFilter}
               purpose="skills"
+              selectCompanyAttr={search.selectedSkills}
+              forLabel="skills"
             />
             {search.selectedSkills.length > 0 && (
               <div className={utilityStyles.mt16}>

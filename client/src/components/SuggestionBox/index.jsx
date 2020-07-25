@@ -81,6 +81,8 @@ export default function SuggestionBox({
   companyAttrId,
   placeholder,
   onSelect,
+  selectCompanyAttr,
+  forLabel,
 }) {
   const apiClient = api();
   const [suggestions, setSuggestions] = React.useState([]);
@@ -119,18 +121,23 @@ export default function SuggestionBox({
     value,
     onChange,
   };
-
   return (
-    <Autosuggest
-      suggestions={suggestions}
-      onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-      onSuggestionsClearRequested={onSuggestionsClearRequested}
-      onSuggestionSelected={onSuggestionSelected}
-      getSuggestionValue={getSuggestionValue}
-      renderSuggestion={renderSuggestion}
-      inputProps={inputProps}
-      theme={style}
-      renderInputComponent={renderInputComponent}
-    />
+    <>
+      <Autosuggest
+        suggestions={suggestions}
+        onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+        onSuggestionsClearRequested={onSuggestionsClearRequested}
+        onSuggestionSelected={onSuggestionSelected}
+        getSuggestionValue={getSuggestionValue}
+        renderSuggestion={renderSuggestion}
+        inputProps={inputProps}
+        theme={style}
+        renderInputComponent={renderInputComponent}
+      />
+      {value !== "" &&
+        (!selectCompanyAttr || selectCompanyAttr.length === 0) && (
+          <span className={style.message}>{`No ${forLabel} found`}</span>
+        )}
+    </>
   );
 }
