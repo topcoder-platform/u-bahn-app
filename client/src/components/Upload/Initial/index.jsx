@@ -82,6 +82,7 @@ export default function Initial({ onError, onUpload, templateId }) {
             onChange={(e) => upload(e.target.files)}
             ref={fileInputRef}
             type="file"
+            accept=".csv,.xls,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
           />
           <img src={spreadsheetIcon} alt="icon" />
           <div className={style.label1}>
