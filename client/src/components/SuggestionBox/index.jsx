@@ -3,6 +3,7 @@ import Autosuggest from "react-autosuggest";
 import config from "../../config";
 import api from "../../services/api";
 import style from "./style.module.scss";
+import _ from "lodash";
 
 const NO_RESULTS_FOUND = "no results found";
 
@@ -37,7 +38,7 @@ const renderInputComponent = (inputProps) => (
  * @param {Object} apiClient The api client to make the query
  * @param {String} inputValue The search query
  */
-const getSkillsSuggestions = async (apiClient, inputValue) => {
+const getSkillsSuggestions = _.debounce(async (apiClient, inputValue) => {
   let term = inputValue.trim();
   if (term.length < 1) {
     return [];
@@ -50,31 +51,30 @@ const getSkillsSuggestions = async (apiClient, inputValue) => {
   const { data } = await apiClient.get(url);
 
   return data.skills;
-};
+}, 1500);
 
 /**
  * Returns the suggestions for company attributes
  * @param {Object} apiClient The api client to make the query
  * @param {String} inputValue The search query
  */
-const getCompanyAttributesSuggestions = async (
-  apiClient,
-  inputValue,
-  attrId
-) => {
-  let term = inputValue.trim();
-  if (term.length < 1) {
-    return [];
-  }
+const getCompanyAttributesSuggestions = _.debounce(
+  async (apiClient, inputValue, attrId) => {
+    let term = inputValue.trim();
+    if (term.length < 1) {
+      return [];
+    }
 
-  term = encodeURIComponent(term);
+    term = encodeURIComponent(term);
 
-  const url = `${config.API_URL}/search/userAttributes?attributeId=${attrId}&attributeValue=${term}`;
+    const url = `${config.API_URL}/search/userAttributes?attributeId=${attrId}&attributeValue=${term}`;
 
-  const { data } = await apiClient.get(url);
+    const { data } = await apiClient.get(url);
 
-  return data;
-};
+    return data;
+  },
+  1500
+);
 
 export default function SuggestionBox({
   purpose,
@@ -91,15 +91,19 @@ export default function SuggestionBox({
   const onSuggestionsFetchRequested = async ({ value }) => {
     if (purpose === "skills") {
       let data = await getSkillsSuggestions(apiClient, value);
-      if (data.length < 1) data = [{ name: NO_RESULTS_FOUND }];
-      setSuggestions(data);
+      if (data) {
+        if (data.length < 1) data = [{ name: NO_RESULTS_FOUND }];
+        setSuggestions(data);
+      }
     } else {
       const data = await getCompanyAttributesSuggestions(
         apiClient,
         value,
         companyAttrId
       );
-      setSuggestions(data);
+      if (data) {
+        setSuggestions(data);
+      }
     }
   };
 
