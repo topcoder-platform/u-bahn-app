@@ -44,7 +44,7 @@
 
 .groups {
   margin: 0 -30px;
-  max-height: 150px;
+  max-height: calc(95vh - 157px);
   overflow-y: auto;
 }
 
@@ -68,10 +68,12 @@
 .searchRow {
   display: flex;
   position: relative;
+  margin: 0 30px;
 }
 
 .subTitle {
   @include h3;
+  margin-left: 30px;
 }
 
 .title {
@@ -88,4 +90,5 @@
 .message {
   color: $textColor2;
   font: 400 12pt/1.25 Inter;
+  margin-left: 30px;
 }

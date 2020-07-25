@@ -65,42 +65,42 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
       onDone(selectedFilters);
     }
     search.setFilters(searchFilters);
-    removeDataFromDisabledFilters(searchFilters)
+    removeDataFromDisabledFilters(searchFilters);
   };
 
   const removeDataFromDisabledFilters = (searchFilters) => {
-    const companyAttrIdsToBeRemoved = []
+    const companyAttrIdsToBeRemoved = [];
     for (const [key, value] of Object.entries(searchFilters)) {
-      if(value.group === "General attributes") {
-        if(!value.active) {
+      if (value.group === "General attributes") {
+        if (!value.active) {
           removeGeneralAttr(value.text);
         }
       } else {
-        if(!value.active) {
+        if (!value.active) {
           companyAttrIdsToBeRemoved.push(key);
         }
       }
     }
-    search.clearSelectCompanyAttributes(companyAttrIdsToBeRemoved)
-  }
+    search.clearSelectCompanyAttributes(companyAttrIdsToBeRemoved);
+  };
 
   const removeGeneralAttr = (text) => {
     if (text === "Location") {
-      search.selectLocations([])
+      search.selectLocations([]);
     }
     if (text === "Skills") {
-      search.selectSkills([])
+      search.selectSkills([]);
     }
     if (text === "Achievements") {
-      search.selectAchievements([])
+      search.selectAchievements([]);
     }
     if (text === "Availability") {
       search.selectAvailability({
         isAvailableSelected: false,
-        isUnavailableSelected: false
-      })
+        isUnavailableSelected: false,
+      });
     }
-  }
+  };
 
   const handleFilterValueChanged = (filter, newValue) => {
     var index = selectedFilters.indexOf(filter);
@@ -151,15 +151,17 @@ export default function EditFiltersPopup({ onCancel, onDone }) {
         <div className={styles.popupContent}>
           <div className={styles.popupHeader}>
             <div className={styles.popupTitle}>Manage Filters</div>
-            <div className={utilityStyles.mt16}>
-              <SearchBox
-                name="editFiltersSearchbox"
-                placeholder="Search filter"
-                onChange={handleSearch}
-              />
-            </div>
           </div>
           <div className={styles.popupBoby}>
+            <div className={styles.searchBox}>
+              <div className={utilityStyles.mt16}>
+                <SearchBox
+                  name="editFiltersSearchbox"
+                  placeholder="Search filter"
+                  onChange={handleSearch}
+                />
+              </div>
+            </div>
             {sections.map((section, index) => {
               const filters = filterGroups[section];
               return (
@@ -240,7 +242,7 @@ function PopupSection({ title, filters, onFilterValueChange }) {
   return (
     <>
       <PopupSectionTitle text={title} />
-      <div className={styles.popupSectionBody}>
+      <div>
         {filters.map((filter) => {
           return (
             <PopupSectionRow

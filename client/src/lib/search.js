@@ -95,12 +95,12 @@ function useProvideSearch() {
   };
 
   const clearSelectCompanyAttributes = (ids) => {
-    const selectedCmpAttr = {...selectedCompanyAttributes};
+    const selectedCmpAttr = { ...selectedCompanyAttributes };
     for (let id of ids) {
       selectedCmpAttr[id] = [];
     }
-    setSelectedCompanyAttributes(selectedCmpAttr)
-  }
+    setSelectedCompanyAttributes(selectedCmpAttr);
+  };
 
   const getCompanyAttrActiveFilter = () => {
     const companyAttrActiveFilters = [];

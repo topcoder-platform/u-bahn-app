@@ -154,66 +154,76 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
       overlayClassName={style.overlay}
     >
       <h1 className={style.title}>Add to Group</h1>
-      <div className={style.searchRow}>
-        <ZoomIcon className={style.zoomIcon} />
-        <input
-          className={style.search}
-          onChange={({ target }) => {
-            setFilter(target.value);
-            setImmediate(() => target.focus());
-          }}
-          placeholder="Search or create group"
-          value={filter}
-          disabled={loadingGroups}
-        />
-        <Button
-          className={style.createButton}
-          onClick={createGroup}
-          disabled={creatingGroup}
-        >
-          {creatingGroup ? "Creating..." : "+ Create"}
-        </Button>
-      </div>
-      <h3 className={style.subTitle}>
-        My groups{loadingGroups && " (Loading...)"}
-      </h3>
       <div className={style.groups}>
-        {!loadingGroups &&
-          myGroups
-            .filter((g) => g.name.toLowerCase().includes(filter.toLowerCase()))
-            .map((g) => (
-              <Group
-                checked={g.isSelected === true}
-                group={g}
-                key={g.id}
-                onSwitch={() => switchSelected(g)}
-              />
-            ))}
+        <div className={style.searchRow}>
+          <ZoomIcon className={style.zoomIcon} />
+          <input
+            className={style.search}
+            onChange={({ target }) => {
+              setFilter(target.value);
+              setImmediate(() => target.focus());
+            }}
+            placeholder="Search or create group"
+            value={filter}
+            disabled={loadingGroups}
+          />
+          <Button
+            className={style.createButton}
+            onClick={createGroup}
+            disabled={creatingGroup}
+          >
+            {creatingGroup ? "Creating..." : "+ Create"}
+          </Button>
+        </div>
+        <h3 className={style.subTitle}>
+          My groups{loadingGroups && " (Loading...)"}
+        </h3>
+        <div>
+          {!loadingGroups &&
+            myGroups
+              .filter((g) =>
+                g.name.toLowerCase().includes(filter.toLowerCase())
+              )
+              .map((g) => (
+                <Group
+                  checked={g.isSelected === true}
+                  group={g}
+                  key={g.id}
+                  onSwitch={() => switchSelected(g)}
+                />
+              ))}
+        </div>
+        {myGroups.filter((g) =>
+          g.name.toLowerCase().includes(filter.toLowerCase())
+        ).length === 0 &&
+          !loadingGroups && (
+            <div className={style.message}>No results found</div>
+          )}
+        <h3 className={style.subTitle}>
+          Other Groups{loadingGroups && " (Loading...)"}
+        </h3>
+        <div>
+          {!loadingGroups &&
+            otherGroups
+              .filter((g) =>
+                g.name.toLowerCase().includes(filter.toLowerCase())
+              )
+              .map((g) => (
+                <Group
+                  checked={g.isSelected === true}
+                  group={g}
+                  key={g.id}
+                  onSwitch={() => switchSelected(g)}
+                />
+              ))}
+        </div>
+        {otherGroups.filter((g) =>
+          g.name.toLowerCase().includes(filter.toLowerCase())
+        ).length === 0 &&
+          !loadingGroups && (
+            <div className={style.message}>No results found</div>
+          )}
       </div>
-      {myGroups.filter((g) =>
-        g.name.toLowerCase().includes(filter.toLowerCase())
-      ).length === 0 &&
-        !loadingGroups && <div className={style.message}>No results found</div>}
-      <h3 className={style.subTitle}>
-        Other Groups{loadingGroups && " (Loading...)"}
-      </h3>
-      <div className={style.groups}>
-        {!loadingGroups &&
-          otherGroups
-            .filter((g) => g.name.toLowerCase().includes(filter.toLowerCase()))
-            .map((g) => (
-              <Group
-                checked={g.isSelected === true}
-                group={g}
-                key={g.id}
-                onSwitch={() => switchSelected(g)}
-              />
-            ))}
-      </div>
-      {otherGroups.filter((g) =>
-        g.name.toLowerCase().includes(filter.toLowerCase())
-      ).length === 0 &&
-        !loadingGroups && <div className={style.message}>No results found</div>}
       <div className={style.buttons}>
         <Button onClick={onCancel} disabled={updatingGroups || creatingGroup}>
           Cancel
