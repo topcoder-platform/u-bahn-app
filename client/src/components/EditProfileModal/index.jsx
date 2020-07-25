@@ -122,7 +122,7 @@ export default function EditProfileModal({
               onChange={({ target }) => {
                 setLocalUser({
                   ...localUser,
-                  firstName: target.value,
+                  firstName: target.value.trim(),
                 });
                 setImmediate(() => target.focus());
               }}
@@ -133,7 +133,7 @@ export default function EditProfileModal({
               onChange={({ target }) => {
                 setLocalUser({
                   ...localUser,
-                  lastName: target.value,
+                  lastName: target.value.trim(),
                 });
                 setImmediate(() => target.focus());
               }}
@@ -146,7 +146,7 @@ export default function EditProfileModal({
                   ...localUser,
                   title: {
                     id: localUser.title.id,
-                    value: target.value,
+                    value: target.value.trim(),
                   },
                 });
                 setImmediate(() => target.focus());
@@ -160,7 +160,7 @@ export default function EditProfileModal({
                   ...localUser,
                   company: {
                     id: localUser.company.id,
-                    value: target.value,
+                    value: target.value.trim(),
                   },
                 });
                 setImmediate(() => target.focus());
@@ -174,7 +174,7 @@ export default function EditProfileModal({
                   ...localUser,
                   location: {
                     id: localUser.location.id,
-                    value: target.value,
+                    value: target.value.trim(),
                   },
                 });
                 setImmediate(() => target.focus());
