@@ -115,7 +115,7 @@ export default function Header({
             >
               <li
                 className={style.dropdownItem}
-                onClick={() => logoutWithRedirect()}
+                onMouseDown={() => logoutWithRedirect()}
               >
                 Logout
               </li>
