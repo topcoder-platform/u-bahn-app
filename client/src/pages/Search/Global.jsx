@@ -186,7 +186,19 @@ export default function SearchGlobal({ keyword }) {
       }
     });
 
-    if (_.isEqual(prevCriteria,criteria)) {
+    // reset first page when change orderBy or criteria
+    if ((prevOrderBy !== "undefined" && prevOrderBy !== orderBy)
+      || _.isEqual(prevCriteria,criteria) === false) {
+      searchContext.pagination.page = 1;
+    }
+
+    let pageChanged = false;
+    if (searchContext.pagination.page !== page) {
+      setPage(searchContext.pagination.page);
+      pageChanged = true;
+    }
+
+    if (_.isEqual(prevCriteria,criteria) && !pageChanged) {
       return;
     } else {
       setPrevCriteria(criteria);
@@ -201,15 +213,6 @@ export default function SearchGlobal({ keyword }) {
 
       setIsSearching(true);
       setUsers([]);
-
-      // reset first page when change orderBy
-      if (prevOrderBy !== "undefined" && prevOrderBy !== orderBy) {
-        searchContext.pagination.page = 1;
-      }
-
-      if (searchContext.pagination.page !== page) {
-        setPage(searchContext.pagination.page);
-      }
 
       const { url, options, body } = helper.getSearchUsersRequestDetails({
         keyword,
