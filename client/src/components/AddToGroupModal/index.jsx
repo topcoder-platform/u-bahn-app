@@ -155,6 +155,10 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
     setCreatingGroup(false);
   };
 
+  const reset = () => {
+    setFilter("");
+  };
+
   return (
     <Modal
       onCancel={onCancel}
@@ -175,6 +179,16 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
             value={filter}
             disabled={loadingGroups}
           />
+          <span
+            className={
+              filter.length > 0
+                ? `${style.resetKeyword}`
+                : `${style.resetKeyword} ${style.resetKeywordHidden}`
+            }
+            onClick={() => reset()}
+          >
+            &times;
+          </span>
           <Button
             className={style.createButton}
             onClick={createGroup}

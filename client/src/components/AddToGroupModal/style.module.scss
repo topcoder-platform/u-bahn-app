@@ -63,6 +63,12 @@
   &::placeholder {
     opacity: 0.5;
   }
+
+  &::-ms-clear {
+    display: none;
+    height: 0;
+    width: 0;
+  }
 }
 
 .searchRow {
@@ -91,4 +97,25 @@
   color: $textColor2;
   font: 400 12pt/1.25 Inter;
   margin-left: 30px;
+}
+
+.resetKeyword {
+  position: absolute;
+  left: 67.5%;
+  top: 10px;
+  appearance: none;
+  border: none;
+  color: $textColor;
+  cursor: pointer;
+  font-size: 24px;
+  font-family: Arial;
+  outline: none;
+
+  &:hover {
+    color: $red;
+  }
+
+  &.resetKeywordHidden {
+    visibility: hidden;
+  }
 }

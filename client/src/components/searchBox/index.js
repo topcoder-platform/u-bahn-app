@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PT from "prop-types";
-import styles from "./searchBox.module.css";
+import styles from "./searchBox.module.scss";
 
 /**
  * Searchbox
@@ -26,6 +26,11 @@ export default function SearchBox({
     }
   };
 
+  const reset = () => {
+    setQuery("");
+    onChange && onChange("");
+  };
+
   return (
     <div className={styles.searchbox}>
       <div className={styles.searchboxItems}>
@@ -38,6 +43,16 @@ export default function SearchBox({
           onChange={handleChange}
           disabled={disabled}
         />
+        <span
+          className={
+            query.length > 0
+              ? `${styles.resetKeyword}`
+              : `${styles.resetKeyword} ${styles.resetKeywordHidden}`
+          }
+          onClick={() => reset()}
+        >
+          &times;
+        </span>
       </div>
     </div>
   );
