@@ -32,7 +32,11 @@ export default function AppRouter() {
           right: 0,
         }}
       >
-        <img style={{height: "120px", width: "120px" }} src={loader} alt="Loading" />
+        <img
+          style={{ height: "120px", width: "120px" }}
+          src={loader}
+          alt="Loading"
+        />
       </div>
     );
   }

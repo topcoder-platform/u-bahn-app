@@ -1,4 +1,5 @@
 import React from "react";
+import Axios from "axios";
 import GroupsSideMenu from "../../components/GroupsSideMenu";
 import ProfileCardGroupWrapper from "../../components/ProfileCardGroupWrapper";
 import Pagination from "../../components/Pagination";
@@ -26,7 +27,7 @@ export default function SearchGroups() {
   const [totalResults, setTotalResults] = React.useState(0);
   const [totalPages, setTotalPages] = React.useState(0);
   const [creatingGroup, setCreatingGroup] = React.useState(false);
-
+  const cancelTokenSource = Axios.CancelToken.source();
   const usersPerPage = config.ITEMS_PER_PAGE;
 
   React.useEffect(() => {
@@ -34,16 +35,23 @@ export default function SearchGroups() {
     setLoadingGroups(true);
 
     (async () => {
-      const groups = await groupLib.getGroups(apiClient, auth0User.nickname);
+      const groups = await groupLib.getGroups(
+        apiClient,
+        auth0User.nickname,
+        cancelTokenSource.token
+      );
 
-      if (isSubscribed) {
+      if (isSubscribed && groups) {
         setMyGroups(groups.myGroups);
         setOtherGroups(groups.otherGroups);
         setLoadingGroups(false);
       }
     })();
 
-    return () => (isSubscribed = false);
+    return () => {
+      isSubscribed = false;
+      cancelTokenSource.cancel();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

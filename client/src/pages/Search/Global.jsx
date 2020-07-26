@@ -63,7 +63,7 @@ export default function SearchGlobal({ keyword }) {
 
   const prevOrderBy = usePrevious(orderBy);
   const [prevCriteria, setPrevCriteria] = React.useState(null);
-
+  const cancelTokenSource = axios.CancelToken.source();
   const usersPerPage = config.ITEMS_PER_PAGE;
 
   React.useEffect(() => {
@@ -106,22 +106,30 @@ export default function SearchGlobal({ keyword }) {
     let isSubscribed = true;
 
     (async () => {
-      const companyAttrs = await getCompanyAttributes(apiClient);
+      const companyAttrs = await getCompanyAttributes(
+        apiClient,
+        cancelTokenSource.token
+      );
       const filtersWithCompanyAttrs = { ...searchContext.filters };
-      companyAttrs.forEach((companyAttr) => {
-        filtersWithCompanyAttrs[companyAttr.id] = {
-          text: companyAttr.name,
-          group: "Company attributes",
-          active: false,
-        };
-      });
+      if (companyAttrs) {
+        companyAttrs.forEach((companyAttr) => {
+          filtersWithCompanyAttrs[companyAttr.id] = {
+            text: companyAttr.name,
+            group: "Company attributes",
+            active: false,
+          };
+        });
 
-      if (isSubscribed) {
-        searchContext.setFilters(filtersWithCompanyAttrs);
+        if (isSubscribed) {
+          searchContext.setFilters(filtersWithCompanyAttrs);
+        }
       }
     })();
 
-    return () => (isSubscribed = false);
+    return () => {
+      isSubscribed = false;
+      cancelTokenSource.cancel();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, auth0User]);
 
@@ -187,8 +195,10 @@ export default function SearchGlobal({ keyword }) {
     });
 
     // reset first page when change orderBy or criteria
-    if ((prevOrderBy !== "undefined" && prevOrderBy !== orderBy)
-      || _.isEqual(prevCriteria,criteria) === false) {
+    if (
+      (prevOrderBy !== "undefined" && prevOrderBy !== orderBy) ||
+      _.isEqual(prevCriteria, criteria) === false
+    ) {
       searchContext.pagination.page = 1;
     }
 
@@ -198,14 +208,13 @@ export default function SearchGlobal({ keyword }) {
       pageChanged = true;
     }
 
-    if (_.isEqual(prevCriteria,criteria) && !pageChanged) {
+    if (_.isEqual(prevCriteria, criteria) && !pageChanged) {
       return;
     } else {
       setPrevCriteria(criteria);
     }
 
     let isSubscribed = true;
-    let source = axios.CancelToken.source();
 
     (async () => {
       let headers;
@@ -225,7 +234,7 @@ export default function SearchGlobal({ keyword }) {
       try {
         const response = await apiClient.post(url, body, {
           ...options,
-          cancelToken: source.token,
+          cancelToken: cancelTokenSource.token,
         });
 
         headers = response.headers;
@@ -256,6 +265,7 @@ export default function SearchGlobal({ keyword }) {
         setTotalPages(Number(headers["x-total-pages"]));
       }
     })();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, keyword, orderBy, searchContext]);
 

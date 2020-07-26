@@ -1,6 +1,7 @@
 // FIRST - import config from the file under src/config
 import config from "../config";
 import * as OrgService from "../services/user-org";
+import Axios from "axios";
 
 let primaryAttributeIds = [
   config.STANDARD_USER_ATTRIBUTES.location,
@@ -13,7 +14,7 @@ let primaryAttributeIds = [
  * Get the attributes associated with the company (organization)
  * @param {Object} apiClient The api client (you can get this from src/services/api and then call api() to get the apiClient)
  */
-export async function getCompanyAttributes(apiClient) {
+export async function getCompanyAttributes(apiClient, cancelToken) {
   let response;
   let attributeGroups;
   let attributes = [];
@@ -25,8 +26,11 @@ export async function getCompanyAttributes(apiClient) {
   let url = `${config.API_URL}/attributeGroups?organizationId=${organizationId}`;
 
   try {
-    response = await apiClient.get(url);
+    response = await apiClient.get(url, { cancelToken });
   } catch (error) {
+    if (Axios.isCancel(error)) {
+      return undefined;
+    }
     console.log(error);
     alert(errorMessage);
     // TODO - handle error
@@ -45,8 +49,11 @@ export async function getCompanyAttributes(apiClient) {
     url = `${config.API_URL}/attributes?attributeGroupId=${attributeGroups[0].id}`;
 
     try {
-      response = await apiClient.get(url);
+      response = await apiClient.get(url, { cancelToken });
     } catch (error) {
+      if (Axios.isCancel(error)) {
+        return undefined;
+      }
       console.log(error);
       alert(errorMessage);
       // TODO - handle error
