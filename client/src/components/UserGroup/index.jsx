@@ -21,6 +21,7 @@ export default function UserGroup({
           .map((group, index) => {
             return (
               <Pill
+                className={styles.pillContainer}
                 key={group.id}
                 name={group.name}
                 removable={true}

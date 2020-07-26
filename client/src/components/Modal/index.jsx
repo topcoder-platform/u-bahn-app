@@ -4,22 +4,32 @@ import PT from "prop-types";
 
 import style from "./style.module.scss";
 
-export default function Modal({ children, className }) {
+export default function Modal({ children, className, overlayClassName = "" }) {
   const [portal, setPortal] = React.useState();
+  const [isDisabledScroll, disableScroll] = React.useState(false);
 
   React.useEffect(() => {
     const p = document.createElement("div");
-    document.body.classList.add("scrolling-disabled-by-modal");
+    if (document.body.classList.contains("scrolling-disabled-by-modal")) {
+      disableScroll(true);
+    } else {
+      document.body.classList.add("scrolling-disabled-by-modal");
+    }
     document.body.appendChild(p);
     setPortal(p);
     return () => {
-      document.body.classList.remove("scrolling-disabled-by-modal");
+      if (isDisabledScroll === false) {
+        document.body.classList.remove("scrolling-disabled-by-modal");
+      }
       document.body.removeChild(p);
     };
-  }, []);
+  }, [isDisabledScroll]);
 
   let containerStyle = style.container;
   if (className) containerStyle += ` ${className}`;
+
+  let overlayStyle = style.overlay;
+  if (overlayClassName) overlayStyle += ` ${overlayClassName}`;
 
   return portal
     ? ReactDom.createPortal(
@@ -32,7 +42,7 @@ export default function Modal({ children, className }) {
           </div>
           <button
             aria-label="Cancel"
-            className={style.overlay}
+            className={overlayStyle}
             ref={(node) => {
               if (node) {
                 node.focus();

@@ -1,5 +1,6 @@
 import config from "../../config";
 import * as groupLib from "../../lib/groups";
+import { getSingleOrg } from "../../services/user-org";
 
 /**
  * Checks if the skill exists by using its provider id and external id
@@ -424,4 +425,19 @@ export async function updateUserInDb(
         throw Error(`Unknown attribute ${changedKeys[i]}`);
     }
   }
+}
+
+/**
+ * Determines if the user is deactivated in the current org
+ * @param {Object} profile The user profile
+ */
+export function isUserDeactivated(profile) {
+  const { externalProfiles } = profile;
+  const organizationId = getSingleOrg();
+
+  const externalProfile = externalProfiles.find(
+    (ep) => ep.organizationId === organizationId
+  );
+
+  return externalProfile.isInactive;
 }

@@ -18,10 +18,12 @@ function useProvideModal() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = (show) => {
+    document.body.classList.add("scrolling-disabled-by-modal");
     return setIsModalOpen(true);
   };
 
   const hideModal = (show) => {
+    document.body.classList.remove("scrolling-disabled-by-modal");
     return setIsModalOpen(false);
   };
 

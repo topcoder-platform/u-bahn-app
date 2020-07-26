@@ -26,6 +26,28 @@ export default function SearchTabFilters({ locations, achievements }) {
   const [locationsData, setLocationsData] = useState(locations);
   const [achievementsData, setAchievementsData] = useState(achievements);
 
+  /**
+   * Component unmount trigger
+   */
+  useEffect(() => {
+    return () => {
+      handleReset();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleReset = () => {
+    search.selectLocations([]);
+    search.selectSkills([]);
+    search.selectAchievements([]);
+    search.selectAvailability({
+      isAvailableSelected: false,
+      isUnavailableSelected: false,
+    });
+    search.selectCompanyAttributes({});
+    search.changePageNumber(1);
+  };
+
   useEffect(() => {
     setLocationsData(locations);
     setAchievementsData(achievements);
@@ -202,15 +224,24 @@ export default function SearchTabFilters({ locations, achievements }) {
 
   return (
     <div className={styles.searchTabFilters}>
-      <Summary filtersApplied={numberOfFiltersApplied} />
+      <Summary
+        filtersApplied={numberOfFiltersApplied}
+        handleReset={handleReset}
+      />
       {search.isFilterActive(FILTERS.LOCATIONS) && (
         <div className={utilityStyles.mt32}>
-          <Collapsible title="Location" collapsed={false}>
+          <Collapsible
+            onCollapsed={(isCollapsed) =>
+              filterData("", locations, "name", setLocationsData)
+            }
+            title="Location"
+            collapsed={false}
+          >
             <SearchBox
               placeholder="Search for a location"
               name={"location search"}
               onChange={(q) =>
-                filterData(q, locations, "name", setLocationsData)
+                filterData(q.trim(), locations, "name", setLocationsData)
               }
             />
             <TagList
@@ -265,12 +296,17 @@ export default function SearchTabFilters({ locations, achievements }) {
       )}
       {search.isFilterActive(FILTERS.ACHIEVEMENTS) && (
         <div className={utilityStyles.mt32}>
-          <Collapsible title="Achievements">
+          <Collapsible
+            title="Achievements"
+            onCollapsed={(isCollapsed) =>
+              filterData("", achievements, "name", setAchievementsData)
+            }
+          >
             <SearchBox
               placeholder="Search for an achievement"
               name={"achievements search"}
               onChange={(q) =>
-                filterData(q, achievements, "name", setAchievementsData)
+                filterData(q.trim(), achievements, "name", setAchievementsData)
               }
             />
             <TagList
@@ -302,21 +338,7 @@ SearchTabFilters.propTypes = {
   achievements: PT.array,
 };
 
-function Summary({ filtersApplied }) {
-  const search = useSearch();
-
-  const handleReset = () => {
-    search.selectLocations([]);
-    search.selectSkills([]);
-    search.selectAchievements([]);
-    search.selectAvailability({
-      isAvailableSelected: false,
-      isUnavailableSelected: false,
-    });
-    search.selectCompanyAttributes({});
-    search.changePageNumber(1);
-  };
-
+function Summary({ filtersApplied, handleReset }) {
   return (
     <div className={styles.searchTabFiltersSummary}>
       <div className={styles.searchTabFiltersSummaryTextContainer}>

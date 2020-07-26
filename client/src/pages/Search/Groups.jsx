@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import Axios from "axios";
 import GroupsSideMenu from "../../components/GroupsSideMenu";
 import ProfileCardGroupWrapper from "../../components/ProfileCardGroupWrapper";
 import Pagination from "../../components/Pagination";
@@ -11,7 +11,6 @@ import api from "../../services/api";
 import * as groupLib from "../../lib/groups";
 
 import style from "./style.module.scss";
-import * as OrgService from "../../services/user-org";
 
 const colorIterator = makeColorIterator(avatarColors);
 
@@ -28,180 +27,21 @@ export default function SearchGroups() {
   const [totalResults, setTotalResults] = React.useState(0);
   const [totalPages, setTotalPages] = React.useState(0);
   const [creatingGroup, setCreatingGroup] = React.useState(false);
-
+  const cancelTokenSource = Axios.CancelToken.source();
   const usersPerPage = config.ITEMS_PER_PAGE;
 
   React.useEffect(() => {
     let isSubscribed = true;
     setLoadingGroups(true);
 
-    const source = axios.CancelToken.source();
     (async () => {
-      //const groups = await groupLib.getGroups(apiClient, auth0User.nickname);
-      // Moved the code from group.js START
-      // Dispatch cancel event wasn't working as expected.
-      const handle = auth0User.nickname;
-      let myGroups = [];
-      let otherGroups = [];
-      let response;
+      const groups = await groupLib.getGroups(
+        apiClient,
+        auth0User.nickname,
+        cancelTokenSource.token
+      );
 
-      // First, we get the userId of the current user
-      try {
-        response = await apiClient.get(
-          `${config.API_URL}/users?handle=${handle}`,
-          {
-            cancelToken: source.token,
-          }
-        );
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          // request explicitly cancelled.
-          console.log(error);
-          return;
-        }
-        console.log(error);
-        // TODO - handle error
-        return { myGroups, otherGroups };
-      }
-
-      if (!response.data || response.data.length !== 1) {
-        alert(
-          "Your user is not present in Ubahn. Cannot get your organization details, and thus the group details"
-        );
-
-        return { myGroups, otherGroups };
-      }
-
-      const userId = response.data[0].id;
-
-      // Now, get my groups first
-      try {
-        response = await apiClient.get(
-          `${config.GROUPS_API_URL}?universalUID=${userId}&membershipType=user`,
-          {
-            cancelToken: source.token,
-          }
-        );
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          // request explicitly cancelled.
-          console.log(error);
-          return;
-        }
-        console.log(error);
-        // TODO - handle error
-        return { myGroups, otherGroups };
-      }
-
-      myGroups = response.data
-        .filter((g) => g.status === "active")
-        .map((g) => ({
-          ...g,
-          count: 0,
-        }));
-
-      // Get other groups next
-      // These are groups that belong to the org of the logged in user
-      // but the user is not a part of them
-      const organizationId = OrgService.getSingleOrg();
-
-      // Fetch all groups in the org
-      try {
-        response = await apiClient.get(
-          `${config.GROUPS_API_URL}?organizationId=${organizationId}`,
-          {
-            cancelToken: source.token,
-          }
-        );
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          // request explicitly cancelled.
-          console.log(error);
-          return;
-        }
-        console.log(error);
-        // TODO - handle error
-        return { myGroups, otherGroups };
-      }
-
-      if (!response.data || response.data.length === 0) {
-        return { myGroups, otherGroups };
-      }
-
-      otherGroups = response.data
-        .filter((g) => g.status === "active")
-        .filter((g) => {
-          // Don't include groups part of my groups
-          if (myGroups.findIndex((mygroup) => mygroup.id === g.id) === -1) {
-            return true;
-          }
-
-          return false;
-        })
-        .map((g) => ({
-          ...g,
-          count: 0,
-        }));
-
-      // Now, get member counts
-      try {
-        response = await apiClient.get(
-          `${config.GROUPS_API_URL}/memberGroups/groupMembersCount?universalUID=${userId}`,
-          {
-            cancelToken: source.token,
-          }
-        );
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          // request explicitly cancelled.
-          console.log(error);
-          return;
-        }
-        console.log(error);
-        // TODO - handle error
-        return { myGroups, otherGroups };
-      }
-
-      myGroups.forEach((m, i, arr) => {
-        response.data.forEach((c) => {
-          if (c.id === m.id) {
-            arr[i].count = c.count;
-          }
-        });
-      });
-
-      // Fetch all groups in the org
-      try {
-        response = await apiClient.get(
-          `${config.GROUPS_API_URL}/memberGroups/groupMembersCount?organizationId=${organizationId}`,
-          {
-            cancelToken: source.token,
-          }
-        );
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          // request explicitly cancelled.
-          console.log(error);
-          return;
-        }
-        console.log(error);
-        // TODO - handle error
-        return { myGroups, otherGroups };
-      }
-
-      otherGroups.forEach((o, i, arr) => {
-        response.data.forEach((c) => {
-          if (c.id === o.id) {
-            arr[i].count = c.count;
-          }
-        });
-      });
-
-      const groups = { myGroups, otherGroups };
-
-      // END
-
-      if (isSubscribed) {
+      if (isSubscribed && groups) {
         setMyGroups(groups.myGroups);
         setOtherGroups(groups.otherGroups);
         setLoadingGroups(false);
@@ -210,7 +50,7 @@ export default function SearchGroups() {
 
     return () => {
       isSubscribed = false;
-      source.cancel("Cancelling for cleanup");
+      cancelTokenSource.cancel();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -256,6 +96,11 @@ export default function SearchGroups() {
    * @param {Object} group The selected group
    */
   const onGroupSelected = async (group) => {
+    if (window) {
+      window.scrollTo({
+        top: 0,
+      });
+    }
     setSelectedGroup(group);
     // Reset pagination
     setPage(1);
@@ -297,6 +142,11 @@ export default function SearchGroups() {
    * @param {Number} newPageNumber The new page number
    */
   const onChangePage = async (newPageNumber) => {
+    if (window) {
+      window.scrollTo({
+        top: 0,
+      });
+    }
     setPage(newPageNumber);
     await getMembersInGroup(selectedGroup.id, newPageNumber);
   };

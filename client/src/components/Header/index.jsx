@@ -1,6 +1,7 @@
 import React from "react";
 import PT from "prop-types";
 
+import { useSearch } from "../../lib/search";
 import { ReactComponent as SearchTabIcon } from "../../assets/images/search-tab-icon.svg";
 import { ReactComponent as GroupsTabIcon } from "../../assets/images/groups-tab-icon.svg";
 import { ReactComponent as UploadsTabIcon } from "../../assets/images/uploads-tab-icon.svg";
@@ -25,8 +26,16 @@ export default function Header({
   onTabChange,
   organization,
 }) {
+  const searchContext = useSearch();
   const [searchText, setSearchText] = React.useState("");
   const [showAccountDropdown, setShowAccountDropdown] = React.useState(false);
+
+  const profileDropdownEl = React.useRef(null);
+  React.useEffect(() => {
+    if (showAccountDropdown) {
+      profileDropdownEl.current.focus();
+    }
+  }, [showAccountDropdown]);
 
   const handleSearch = (value) => {
     value = value || searchText;
@@ -35,6 +44,7 @@ export default function Header({
       alert("Enter talent or keyword to search");
       return;
     }
+    searchContext.changePageNumber(1);
     onSearch && onSearch(value.trim());
   };
 
@@ -90,7 +100,7 @@ export default function Header({
         </div>
         <div
           className={style.accountMenu}
-          onClick={() => setShowAccountDropdown(!showAccountDropdown)}
+          onMouseDown={() => setShowAccountDropdown(!showAccountDropdown)}
         >
           {user.nickname}
           {organization ? <>&nbsp;({organization.name})</> : ""}
@@ -100,10 +110,15 @@ export default function Header({
             <div className={`${iconStyles.chevronDownG} ${style.arrow}`}></div>
           )}
           {showAccountDropdown && (
-            <ul className={style.dropdown}>
+            <ul
+              tabIndex="0"
+              className={style.dropdown}
+              ref={profileDropdownEl}
+              onBlur={() => setShowAccountDropdown(false)}
+            >
               <li
                 className={style.dropdownItem}
-                onClick={() => logoutWithRedirect()}
+                onMouseDown={() => logoutWithRedirect()}
               >
                 Logout
               </li>

@@ -53,6 +53,11 @@
   text-underline-position: under;
 }
 
+.label3[disabled] {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
 .message {
   position: absolute;
   top: 0;

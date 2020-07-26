@@ -1,6 +1,6 @@
 /* importing colors */
 @value colors: "../../styles/colors.module.css";
-@value gray1, gray2, gray1_025, white, blue from colors;
+@value gray1, gray2, gray1_025, lightGray2, white, blue from colors;
 
 /* Group Tab filters (lett col) styles */
 .groupTabFilters {
@@ -51,7 +51,7 @@
 
 .groupTabFiltersContentSearchCreate {
   align-self: flex-end;
-  margin-left: auto;
+  margin-left: 15px;
 }
 
 .groupTabGroupsContainer {
@@ -102,7 +102,7 @@
 
 .sectionItemTitle {
   color: gray2;
-  word-break: break-word;
+  word-break: break-all;
   padding-right: 12px;
 }
 
@@ -139,4 +139,9 @@
 
 .sectionItemChevron {
   margin-left: 13px;
+}
+
+.message {
+  color: lightGray2;
+  font: 400 12pt/1.25 Inter;
 }

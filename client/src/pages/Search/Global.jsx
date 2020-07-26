@@ -17,14 +17,7 @@ import api from "../../services/api";
 import staticData from "../../services/static-data";
 
 import style from "./style.module.scss";
-import * as OrgService from "../../services/user-org";
-
-let primaryAttributeIds = [
-  config.STANDARD_USER_ATTRIBUTES.location,
-  config.STANDARD_USER_ATTRIBUTES.isAvailable,
-  config.STANDARD_USER_ATTRIBUTES.title,
-  config.STANDARD_USER_ATTRIBUTES.company,
-];
+import _ from "lodash";
 
 const colorIterator = makeColorIterator(avatarColors);
 
@@ -69,7 +62,8 @@ export default function SearchGlobal({ keyword }) {
   const dropdownRef = React.useRef(null);
 
   const prevOrderBy = usePrevious(orderBy);
-
+  const [prevCriteria, setPrevCriteria] = React.useState(null);
+  const cancelTokenSource = axios.CancelToken.source();
   const usersPerPage = config.ITEMS_PER_PAGE;
 
   React.useEffect(() => {
@@ -110,102 +104,31 @@ export default function SearchGlobal({ keyword }) {
     }
 
     let isSubscribed = true;
-    const source = axios.CancelToken.source();
 
     (async () => {
-      //const companyAttrs = await getCompanyAttributes(apiClient, source);
-      // Code moved from company-attributes.js -- START
-      // As cancel dispatch event wasn't working as expected.
-      let response;
-      let attributeGroups;
-      let attributes = [];
-      let errorMessage =
-        "An error occurred when getting company attributes for the custom filter";
-      const organizationId = OrgService.getSingleOrg();
-
-      // Get the attribute groups under the org
-      let url = `${config.API_URL}/attributeGroups?organizationId=${organizationId}`;
-
-      try {
-        response = await apiClient.get(url, {
-          cancelToken: source.token,
-        });
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          // request explicitly cancelled.
-          console.log(error);
-          return;
-        }
-        console.log(error);
-        alert(errorMessage);
-        // TODO - handle error
-        return attributes;
-      }
-
-      if (!response.data || response.data.length < 1) {
-        alert(errorMessage);
-        return attributes;
-      }
-
-      attributeGroups = response.data;
-
-      // Now, for each attribute group, we will proceed to get the attributes
-      for (let i = 0; i < attributeGroups.length; i++) {
-        url = `${config.API_URL}/attributes?attributeGroupId=${attributeGroups[0].id}`;
-
-        try {
-          response = await apiClient.get(url, {
-            cancelToken: source.token,
-          });
-        } catch (error) {
-          if (axios.isCancel(error)) {
-            // request explicitly cancelled.
-            console.log(error);
-            return;
-          }
-          console.log(error);
-          alert(errorMessage);
-          // TODO - handle error
-          return attributes;
-        }
-
-        if (!response.data) {
-          alert(errorMessage);
-          return attributes;
-        }
-
-        if (response.data.length > 0) {
-          attributes = attributes.concat(response.data);
-        }
-      }
-
-      // Finally, we only need the company attributes
-      attributes = attributes.filter((attribute) => {
-        if (primaryAttributeIds.includes(attribute.id)) {
-          return false;
-        }
-
-        return true;
-      });
-      const companyAttrs = attributes;
-      // END
+      const companyAttrs = await getCompanyAttributes(
+        apiClient,
+        cancelTokenSource.token
+      );
       const filtersWithCompanyAttrs = { ...searchContext.filters };
-      companyAttrs.forEach((companyAttr) => {
-        filtersWithCompanyAttrs[companyAttr.id] = {
-          text: companyAttr.name,
-          group: "Company attributes",
-          active: false,
-        };
-      });
+      if (companyAttrs) {
+        companyAttrs.forEach((companyAttr) => {
+          filtersWithCompanyAttrs[companyAttr.id] = {
+            text: companyAttr.name,
+            group: "Company attributes",
+            active: false,
+          };
+        });
 
-      if (isSubscribed) {
-        searchContext.setFilters(filtersWithCompanyAttrs);
+        if (isSubscribed) {
+          searchContext.setFilters(filtersWithCompanyAttrs);
+        }
       }
     })();
 
     return () => {
       isSubscribed = false;
-      source.cancel("Cancelling in cleanup");
+      cancelTokenSource.cancel();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, auth0User]);
@@ -216,79 +139,90 @@ export default function SearchGlobal({ keyword }) {
       return;
     }
 
+    const criteria = {};
+    if (
+      searchContext.filters[FILTERS.LOCATIONS].active &&
+      searchContext.selectedLocations.length > 0
+    ) {
+      criteria.locations = searchContext.selectedLocations;
+    }
+    if (
+      searchContext.filters[FILTERS.SKILLS].active &&
+      searchContext.selectedSkills.length > 0
+    ) {
+      criteria.skills = searchContext.selectedSkills;
+    }
+    if (
+      searchContext.filters[FILTERS.ACHIEVEMENTS].active &&
+      searchContext.selectedAchievements.length > 0
+    ) {
+      criteria.achievements = searchContext.selectedAchievements;
+    }
+    if (searchContext.filters[FILTERS.AVAILABILITY].active) {
+      if (
+        searchContext.selectedAvailability &&
+        ("isAvailableSelected" in searchContext.selectedAvailability ||
+          "isUnavailableSelected" in searchContext.selectedAvailability)
+      ) {
+        const availabilityFilter = searchContext.selectedAvailability;
+        if (
+          availabilityFilter.isAvailableSelected &&
+          !availabilityFilter.isUnavailableSelected
+        ) {
+          criteria.isAvailable = true;
+        } else if (
+          !availabilityFilter.isAvailableSelected &&
+          availabilityFilter.isUnavailableSelected
+        ) {
+          criteria.isAvailable = false;
+        }
+      }
+    }
+
+    criteria.attributes = [];
+    searchContext.getCompanyAttrActiveFilter().forEach((filter) => {
+      if (
+        searchContext.selectedCompanyAttributes[filter.id] &&
+        searchContext.selectedCompanyAttributes[filter.id].length > 0
+      ) {
+        criteria.attributes.push({
+          id: filter.id,
+          value: searchContext.selectedCompanyAttributes[filter.id].map(
+            (data) => data.value
+          ),
+        });
+      }
+    });
+
+    // reset first page when change orderBy or criteria
+    if (
+      (prevOrderBy !== "undefined" && prevOrderBy !== orderBy) ||
+      _.isEqual(prevCriteria, criteria) === false
+    ) {
+      searchContext.pagination.page = 1;
+    }
+
+    let pageChanged = false;
+    if (searchContext.pagination.page !== page) {
+      setPage(searchContext.pagination.page);
+      pageChanged = true;
+    }
+
+    if (_.isEqual(prevCriteria, criteria) && !pageChanged) {
+      return;
+    } else {
+      setPrevCriteria(criteria);
+    }
+
     let isSubscribed = true;
     let source = axios.CancelToken.source();
 
     (async () => {
-      const criteria = {};
       let headers;
       let data;
 
       setIsSearching(true);
       setUsers([]);
-
-      if (
-        searchContext.filters[FILTERS.LOCATIONS].active &&
-        searchContext.selectedLocations.length > 0
-      ) {
-        criteria.locations = searchContext.selectedLocations;
-      }
-      if (
-        searchContext.filters[FILTERS.SKILLS].active &&
-        searchContext.selectedSkills.length > 0
-      ) {
-        criteria.skills = searchContext.selectedSkills;
-      }
-      if (
-        searchContext.filters[FILTERS.ACHIEVEMENTS].active &&
-        searchContext.selectedAchievements.length > 0
-      ) {
-        criteria.achievements = searchContext.selectedAchievements;
-      }
-      if (searchContext.filters[FILTERS.AVAILABILITY].active) {
-        if (
-          searchContext.selectedAvailability &&
-          ("isAvailableSelected" in searchContext.selectedAvailability ||
-            "isUnavailableSelected" in searchContext.selectedAvailability)
-        ) {
-          const availabilityFilter = searchContext.selectedAvailability;
-          if (
-            availabilityFilter.isAvailableSelected &&
-            !availabilityFilter.isUnavailableSelected
-          ) {
-            criteria.isAvailable = true;
-          } else if (
-            !availabilityFilter.isAvailableSelected &&
-            availabilityFilter.isUnavailableSelected
-          ) {
-            criteria.isAvailable = false;
-          }
-        }
-      }
-
-      criteria.attributes = [];
-      searchContext.getCompanyAttrActiveFilter().forEach((filter) => {
-        if (
-          searchContext.selectedCompanyAttributes[filter.id] &&
-          searchContext.selectedCompanyAttributes[filter.id].length > 0
-        ) {
-          criteria.attributes.push({
-            id: filter.id,
-            value: searchContext.selectedCompanyAttributes[filter.id].map(
-              (data) => data.value
-            ),
-          });
-        }
-      });
-
-      // reset first page when change orderBy
-      if (prevOrderBy !== "undefined" && prevOrderBy !== orderBy) {
-        searchContext.pagination.page = 1;
-      }
-
-      if (searchContext.pagination.page !== page) {
-        setPage(searchContext.pagination.page);
-      }
 
       const { url, options, body } = helper.getSearchUsersRequestDetails({
         keyword,
@@ -332,11 +266,6 @@ export default function SearchGlobal({ keyword }) {
         setTotalPages(Number(headers["x-total-pages"]));
       }
     })();
-
-    return () => {
-      isSubscribed = false;
-      source.cancel("Cancelling in cleanup");
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, keyword, orderBy, searchContext]);
 
@@ -345,6 +274,19 @@ export default function SearchGlobal({ keyword }) {
    */
   const updateWindowDimensions = () => {
     setWindowWidth(window.innerWidth);
+  };
+
+  /**
+   * Sets the new page number and gets the new set of users
+   * @param {Number} newPageNumber The new page number
+   */
+  const onChangePage = async (newPageNumber) => {
+    if (window) {
+      window.scrollTo({
+        top: 0,
+      });
+    }
+    searchContext.changePageNumber(newPageNumber);
   };
 
   const onWholeContentClick = (evt) => {
@@ -433,7 +375,11 @@ export default function SearchGlobal({ keyword }) {
             })}
           </div>
           <div>
-            <Pagination currentPage={page} numPages={totalPages} />
+            <Pagination
+              currentPage={page}
+              numPages={totalPages}
+              onChangePage={onChangePage}
+            />
           </div>
         </div>
       )}

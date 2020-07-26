@@ -26,20 +26,24 @@ export default function Initial({ onError, onUpload, templateId }) {
 
   const [invalidFileExtension, setInvalidFileExtension] = React.useState(false);
 
+  const [isDisabledDownload, disableDownload] = React.useState(false);
   const downloadTemplate = async () => {
+    disableDownload(true);
     const url = `${config.API_PREFIX}/templates/${templateId}`;
     try {
       const { data } = await apiClient.get(url);
       window.location = data.url;
     } catch (error) {
-      if (onError) onError(error.toJSON());
+      if (onError) onError(error);
     }
+    disableDownload(false);
   };
 
   const upload = (files) => {
     const allowedMineTypes = [
       "application/vnd.ms-excel",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "text/csv",
     ];
     if (files && files[0] && allowedMineTypes.indexOf(files[0].type) !== -1)
       onUpload(files[0]);
@@ -95,7 +99,11 @@ export default function Initial({ onError, onUpload, templateId }) {
             </span>
           </div>
           <div className={style.label2}>Supports XLS, XLSX or CSV file</div>
-          <div className={style.label3} onClick={downloadTemplate}>
+          <div
+            className={style.label3}
+            onClick={downloadTemplate}
+            disabled={isDisabledDownload}
+          >
             Download Import Template (.XLSX)
           </div>
         </>

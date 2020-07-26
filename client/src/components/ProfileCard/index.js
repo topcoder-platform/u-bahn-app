@@ -58,7 +58,7 @@ function ProfileCard({
       avatarColor,
       // Indicates if the user has been deactivated. The user is still shown in this case, but with a
       // clear indicator about its deactivated status.
-      isDeactivated: false,
+      isDeactivated: cardHelper.isUserDeactivated(profile),
     };
   } else {
     // Data is already in the format seen above. No further processing needed
