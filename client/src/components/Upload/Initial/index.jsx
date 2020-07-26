@@ -73,7 +73,7 @@ export default function Initial({ onError, onUpload, templateId }) {
       {invalidFileExtension && (
         <div className={style.message}>
           <Message
-            message={"Only XLS and CSV files are allowed"}
+            message={"Only XLS, XLSX and CSV files are allowed"}
             onClose={() => setInvalidFileExtension(false)}
             title={"Upload Error"}
           />
