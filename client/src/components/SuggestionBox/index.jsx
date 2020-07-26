@@ -105,11 +105,12 @@ export default function SuggestionBox({
       if (data.length < 1) data = [{ name: NO_RESULTS_FOUND }];
       setSuggestions(data);
     } else {
-      const data = await getCompanyAttributesSuggestions(
+      let data = await getCompanyAttributesSuggestions(
         apiClient,
         value,
         companyAttrId
       );
+      if (data.length < 1) data = [{ name: NO_RESULTS_FOUND }];
       setSuggestions(data);
     }
   };
@@ -120,7 +121,8 @@ export default function SuggestionBox({
     if (purpose === "skills") {
       if (suggestion.name !== NO_RESULTS_FOUND) onSelect(suggestion);
     } else {
-      onSelect(companyAttrId, suggestion);
+      if (suggestion.name !== NO_RESULTS_FOUND)
+        onSelect(companyAttrId, suggestion);
     }
     setValue("");
   };
