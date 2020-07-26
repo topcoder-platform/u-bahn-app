@@ -1,6 +1,7 @@
 import React from "react";
 import PT from "prop-types";
 
+import { useSearch } from "../../lib/search";
 import { ReactComponent as SearchTabIcon } from "../../assets/images/search-tab-icon.svg";
 import { ReactComponent as GroupsTabIcon } from "../../assets/images/groups-tab-icon.svg";
 import { ReactComponent as UploadsTabIcon } from "../../assets/images/uploads-tab-icon.svg";
@@ -25,6 +26,7 @@ export default function Header({
   onTabChange,
   organization,
 }) {
+  const searchContext = useSearch();
   const [searchText, setSearchText] = React.useState("");
   const [showAccountDropdown, setShowAccountDropdown] = React.useState(false);
 
@@ -42,6 +44,7 @@ export default function Header({
       alert("Enter talent or keyword to search");
       return;
     }
+    searchContext.changePageNumber(1);
     onSearch && onSearch(value.trim());
   };
 
