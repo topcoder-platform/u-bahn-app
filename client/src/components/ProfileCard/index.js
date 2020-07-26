@@ -140,6 +140,12 @@ function ProfileCard({
     let updatedCompanyAttributes = [];
     const oldUser = JSON.parse(JSON.stringify(user));
 
+    newUser.firstName = newUser.firstName.trim();
+    newUser.lastName = newUser.lastName.trim();
+    newUser.title.value = newUser.title.value.trim();
+    newUser.location.value = newUser.location.value.trim();
+    newUser.company.value = newUser.company.value.trim();
+
     // Prevent updates to id field
     delete oldUser.id;
 
