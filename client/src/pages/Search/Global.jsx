@@ -215,7 +215,6 @@ export default function SearchGlobal({ keyword }) {
     }
 
     let isSubscribed = true;
-    let source = axios.CancelToken.source();
 
     (async () => {
       let headers;
@@ -235,7 +234,7 @@ export default function SearchGlobal({ keyword }) {
       try {
         const response = await apiClient.post(url, body, {
           ...options,
-          cancelToken: source.token,
+          cancelToken: cancelTokenSource.token,
         });
 
         headers = response.headers;
@@ -267,7 +266,6 @@ export default function SearchGlobal({ keyword }) {
       }
     })();
 
-    return () => source.cancel();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, keyword, orderBy, searchContext]);
 
