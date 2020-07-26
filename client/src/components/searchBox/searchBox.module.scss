@@ -61,6 +61,13 @@
   outline: none;
 }
 
+// firefox solution to vertically align .resetKeyword
+@supports (-moz-appearance: none) {
+  .resetKeyword {
+    align-self: center;
+  }
+}
+
 .resetKeyword {
   order: 2;
   appearance: none;
@@ -68,6 +75,7 @@
   color: $textColor;
   cursor: pointer;
   font-size: 24px;
+  font-family: Arial;
   outline: none;
 
   &:hover {
