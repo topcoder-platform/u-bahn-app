@@ -6,7 +6,7 @@ import style from "./style.module.scss";
 import _ from "lodash";
 
 const NO_RESULTS_FOUND = "no results found";
-const DELAY_SEARCH = 1500;
+const DELAY_SEARCH = 300;
 
 /**
  * Decides what is displayed after the user selects a suggestion
