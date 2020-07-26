@@ -266,6 +266,8 @@ export default function SearchGlobal({ keyword }) {
         setTotalPages(Number(headers["x-total-pages"]));
       }
     })();
+
+    return () => source.cancel();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isAuthenticated, keyword, orderBy, searchContext]);
 
