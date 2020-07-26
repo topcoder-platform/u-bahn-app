@@ -3,8 +3,10 @@ import Autosuggest from "react-autosuggest";
 import config from "../../config";
 import api from "../../services/api";
 import style from "./style.module.scss";
+import _ from "lodash";
 
 const NO_RESULTS_FOUND = "no results found";
+const DELAY_SEARCH = 1500;
 
 /**
  * Decides what is displayed after the user selects a suggestion
@@ -91,6 +93,7 @@ export default function SuggestionBox({
   const onSuggestionsFetchRequested = async ({ value }) => {
     if (purpose === "skills") {
       let data = await getSkillsSuggestions(apiClient, value);
+
       if (data.length < 1) data = [{ name: NO_RESULTS_FOUND }];
       setSuggestions(data);
     } else {
@@ -102,6 +105,11 @@ export default function SuggestionBox({
       setSuggestions(data);
     }
   };
+
+  const onSuggestionsFetchRequestedDebounce = React.useCallback(
+    _.debounce(onSuggestionsFetchRequested, DELAY_SEARCH),
+    []
+  );
 
   const onSuggestionsClearRequested = () => setSuggestions([]);
 
@@ -123,7 +131,7 @@ export default function SuggestionBox({
   return (
     <Autosuggest
       suggestions={suggestions}
-      onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+      onSuggestionsFetchRequested={onSuggestionsFetchRequestedDebounce}
       onSuggestionsClearRequested={onSuggestionsClearRequested}
       onSuggestionSelected={onSuggestionSelected}
       getSuggestionValue={getSuggestionValue}
