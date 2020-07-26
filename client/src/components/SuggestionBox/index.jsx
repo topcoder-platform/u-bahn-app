@@ -26,11 +26,22 @@ const renderSuggestion = (suggestion) => (
 /**
  * Styles the input field for the suggestion input
  * @param {Object} inputProps The input props
+ * @param {Function} reset resets the input
  */
-const renderInputComponent = (inputProps) => (
+const renderInputComponent = (inputProps, reset) => (
   <div className={style.searchbox}>
     <i className={style.searchboxIcon}></i>
     <input {...inputProps} />
+    <span
+      className={
+        inputProps.value.length > 0
+          ? `${style.resetKeyword}`
+          : `${style.resetKeyword} ${style.resetKeywordHidden}`
+      }
+      onClick={() => reset()}
+    >
+      &times;
+    </span>
   </div>
 );
 
@@ -97,11 +108,12 @@ export default function SuggestionBox({
       if (data.length < 1) data = [{ name: NO_RESULTS_FOUND }];
       setSuggestions(data);
     } else {
-      const data = await getCompanyAttributesSuggestions(
+      let data = await getCompanyAttributesSuggestions(
         apiClient,
         value,
         companyAttrId
       );
+      if (data.length < 1) data = [{ name: NO_RESULTS_FOUND }];
       setSuggestions(data);
     }
   };
@@ -117,7 +129,8 @@ export default function SuggestionBox({
     if (purpose === "skills") {
       if (suggestion.name !== NO_RESULTS_FOUND) onSelect(suggestion);
     } else {
-      onSelect(companyAttrId, suggestion);
+      if (suggestion.name !== NO_RESULTS_FOUND)
+        onSelect(companyAttrId, suggestion);
     }
     setValue("");
   };
@@ -126,6 +139,10 @@ export default function SuggestionBox({
     placeholder,
     value,
     onChange,
+  };
+
+  const reset = () => {
+    setValue("");
   };
 
   return (
@@ -138,7 +155,9 @@ export default function SuggestionBox({
       renderSuggestion={renderSuggestion}
       inputProps={inputProps}
       theme={style}
-      renderInputComponent={renderInputComponent}
+      renderInputComponent={(inputProps) =>
+        renderInputComponent(inputProps, reset)
+      }
     />
   );
 }

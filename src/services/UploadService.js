@@ -5,8 +5,32 @@ const _ = require('lodash')
 const Joi = require('joi')
 const config = require('config')
 const { v4: uuid } = require('uuid')
+const FileType = require('file-type')
+const errors = require('../common/errors')
 const helper = require('../common/helper')
 const logger = require('../common/logger')
+
+/**
+ * Checks the type of uploaded file and ensures it's allowed.
+ * @param {Object} upload The uploaded file
+ */
+async function ensureFileTypeIsValid(upload) {
+  const allowedExtensions = ['xls', 'xlsx', 'csv']
+  const allowedMimeTypes = [
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'text/csv',
+  ]
+  const fileType = await FileType.fromBuffer(upload.buffer)
+  const fileExt = upload.originalname.split('.').pop().toLowerCase()
+
+  const isValidMimeType = fileType && _.includes(allowedMimeTypes, fileType.mime)
+  const isValidExt = _.includes(allowedExtensions, fileExt)
+  const isAllowed = fileType !== undefined ? isValidMimeType : isValidExt
+  if (isAllowed === false) {
+    throw new errors.ForbiddenError(`You are allowed to upload only ${_.join(allowedExtensions, ',')} types.`)
+  }
+} 
 
 /**
  * Get upload entity by id.
@@ -31,6 +55,7 @@ getEntity.schema = {
  * @returns {Object} the created upload
  */
 async function create (authUser, upload, data) {
+  await ensureFileTypeIsValid(upload)
   const id = uuid()
   // upload file to s3 under uploads folder
   const objectKey = await helper.uploadToS3(config.UPLOAD_S3_BUCKET, upload, `uploads/${id}`)

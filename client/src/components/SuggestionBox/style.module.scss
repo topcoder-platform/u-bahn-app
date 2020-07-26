@@ -19,6 +19,11 @@
   margin-left: 12px;
   margin-top: 1px;
   width: 100%;
+  &::-ms-clear {
+    display: none;
+    height: 0;
+    width: 0;
+  }
 }
 
 .inputOpen {
@@ -90,4 +95,30 @@
   background: url("/sprites.png") no-repeat -1px -1px;
   width: 20px;
   height: 20px;
+}
+
+// firefox solution to vertically align .resetKeyword
+@supports (-moz-appearance: none) {
+  .resetKeyword {
+    align-self: center;
+  }
+}
+
+.resetKeyword {
+  order: 2;
+  appearance: none;
+  border: none;
+  color: $textColor;
+  cursor: pointer;
+  font-size: 24px;
+  font-family: Arial;
+  outline: none;
+
+  &:hover {
+    color: $red;
+  }
+
+  &.resetKeywordHidden {
+    visibility: hidden;
+  }
 }
