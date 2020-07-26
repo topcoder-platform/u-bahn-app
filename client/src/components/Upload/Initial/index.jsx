@@ -40,14 +40,15 @@ export default function Initial({ onError, onUpload, templateId }) {
   };
 
   const upload = (files) => {
-    const allowedMineTypes = [
-      "application/vnd.ms-excel",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "text/csv",
-    ];
-    if (files && files[0] && allowedMineTypes.indexOf(files[0].type) !== -1)
-      onUpload(files[0]);
-    else setInvalidFileExtension(true);
+    const allowedExtensions = ["xls", "xlsx", "csv"];
+    if (files && files[0]) {
+      const ext = files[0].name.split(".").pop();
+      if (allowedExtensions.includes(ext.toLowerCase())) {
+        onUpload(files[0]);
+      } else {
+        setInvalidFileExtension(true);
+      }
+    }
   };
 
   let contentStyle = style.content;
@@ -85,6 +86,7 @@ export default function Initial({ onError, onUpload, templateId }) {
             onChange={(e) => upload(e.target.files)}
             ref={fileInputRef}
             type="file"
+            accept=".xls,.xlsx,.csv"
           />
           <img src={spreadsheetIcon} alt="icon" />
           <div className={style.label1}>
@@ -99,7 +101,11 @@ export default function Initial({ onError, onUpload, templateId }) {
             </span>
           </div>
           <div className={style.label2}>Supports XLS, XLSX or CSV file</div>
-          <div className={style.label3} onClick={downloadTemplate} disabled={isDisabledDownload}>
+          <div
+            className={style.label3}
+            onClick={downloadTemplate}
+            disabled={isDisabledDownload}
+          >
             Download Import Template (.XLSX)
           </div>
         </>
