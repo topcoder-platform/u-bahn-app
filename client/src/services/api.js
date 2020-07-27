@@ -7,6 +7,8 @@ import axios from "axios";
 
 import { useAuth0 } from "../react-auth0-spa";
 
+import Cookies from "js-cookie";
+
 export default () => {
   const { getTokenSilently, loginWithRedirect } = useAuth0();
   const api = useRef(
@@ -17,6 +19,15 @@ export default () => {
     })
   );
   useEffect(() => {
+    const cookie = Cookies.get('auth0.is.authenticated');
+    if (cookie && cookie === 'true') {
+      // Do nothing
+    } else {
+      loginWithRedirect({
+        redirect_uri: window.location.origin,
+      });
+      return;
+    }
     const currentAPI = api.current;
     currentAPI.interceptors.request.use(async (config) => {
       let token;
