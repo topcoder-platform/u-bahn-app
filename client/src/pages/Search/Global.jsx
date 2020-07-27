@@ -62,6 +62,7 @@ export default function SearchGlobal({ keyword }) {
   const dropdownRef = React.useRef(null);
 
   const prevOrderBy = usePrevious(orderBy);
+  const prevKeyword = usePrevious(keyword);
   const [prevCriteria, setPrevCriteria] = React.useState(null);
   const cancelTokenSource = axios.CancelToken.source();
   const usersPerPage = config.ITEMS_PER_PAGE;
@@ -208,7 +209,10 @@ export default function SearchGlobal({ keyword }) {
       pageChanged = true;
     }
 
-    if (_.isEqual(prevCriteria, criteria) && !pageChanged) {
+    if (_.isEqual(prevCriteria, criteria)
+      && prevKeyword === keyword
+      && prevOrderBy === orderBy
+      && pageChanged === false) {
       return;
     } else {
       setPrevCriteria(criteria);
