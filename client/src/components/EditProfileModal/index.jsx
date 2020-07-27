@@ -1,5 +1,6 @@
 import React from "react";
 import PT from "prop-types";
+import { trim, findIndex } from "lodash";
 
 import Button from "../Button";
 import Input from "../Input";
@@ -87,6 +88,38 @@ export default function EditProfileModal({
     setLocalUser({ ...localUser, skills });
   };
 
+  /**
+   * Checks if all required fields are field
+   * @param {Object} localUser user's new data
+   */
+  const isValid = (localUser) => {
+    let fieldName;
+    if (!trim(localUser.firstName)) {
+      fieldName = "First name";
+    } else if (!trim(localUser.lastName)) {
+      fieldName = "Last name";
+    } else if (!trim(localUser.title.value)) {
+      fieldName = "Current role";
+    } else if (!trim(localUser.company.value)) {
+      fieldName = "Company";
+    } else if (!trim(localUser.location.value)) {
+      fieldName = "Location";
+    } else {
+      let fieldIndex = findIndex(
+        localUser.companyAttributes,
+        (a) => !trim(a.value)
+      );
+      if (fieldIndex !== -1) {
+        fieldName = localUser.companyAttributes[fieldIndex].name;
+      }
+    }
+    if (fieldName) {
+      alert(`Please enter a value for the "${fieldName}" field`);
+      return false;
+    }
+    return true;
+  };
+
   return (
     <Modal className={style.container} onCancel={onCancel}>
       <ProfileCard
@@ -111,8 +144,10 @@ export default function EditProfileModal({
               isSavingChanges ? style.disabledButton : style.saveButton
             }
             onClick={() => {
-              setIsSavingChanges(true);
-              updateUser(localUser);
+              if (isValid(localUser)) {
+                setIsSavingChanges(true);
+                updateUser(localUser);
+              }
             }}
             disabled={isSavingChanges || isDeactivatingUser}
           >
@@ -132,6 +167,7 @@ export default function EditProfileModal({
                 setImmediate(() => target.focus());
               }}
               value={localUser.firstName}
+              required
             />
             <Input
               label="Last name"
@@ -143,6 +179,7 @@ export default function EditProfileModal({
                 setImmediate(() => target.focus());
               }}
               value={localUser.lastName}
+              required
             />
             <Input
               label="Current role"
@@ -157,6 +194,7 @@ export default function EditProfileModal({
                 setImmediate(() => target.focus());
               }}
               value={localUser.title.value}
+              required
             />
             <Input
               label="Company"
@@ -171,6 +209,7 @@ export default function EditProfileModal({
                 setImmediate(() => target.focus());
               }}
               value={localUser.company.value}
+              required
             />
             <Input
               label="Location"
@@ -185,6 +224,7 @@ export default function EditProfileModal({
                 setImmediate(() => target.focus());
               }}
               value={localUser.location.value}
+              required
             />
           </div>
           <h3>Skills</h3>
@@ -234,6 +274,7 @@ export default function EditProfileModal({
                   setImmediate(() => target.focus());
                 }}
                 value={localUser.companyAttributes[key].value}
+                required
               />
             ))}
           </div>
