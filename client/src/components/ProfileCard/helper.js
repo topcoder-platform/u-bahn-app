@@ -127,7 +127,9 @@ export function getUserCompanyAttributeDetails(profile) {
   }
 
   attributes = profile.attributes
-    .filter((attribute) => !primaryAttributeIds.includes(attribute.attributeId))
+    .filter(
+      (attribute) => !primaryAttributeIds.includes(attribute.attribute.name)
+    )
     .map((attribute) => ({
       id: attribute.attributeId,
       name: attribute.attribute.name,
