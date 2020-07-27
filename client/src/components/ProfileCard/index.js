@@ -140,6 +140,12 @@ function ProfileCard({
     let updatedCompanyAttributes = [];
     const oldUser = JSON.parse(JSON.stringify(user));
 
+    newUser.firstName = newUser.firstName.trim();
+    newUser.lastName = newUser.lastName.trim();
+    newUser.title.value = newUser.title.value.trim();
+    newUser.location.value = newUser.location.value.trim();
+    newUser.company.value = newUser.company.value.trim();
+
     // Prevent updates to id field
     delete oldUser.id;
 
@@ -156,6 +162,7 @@ function ProfileCard({
             for (let j = 0; j < oldUser[userKeys[i]].length; j++) {
               const oldAttribute = oldUser[userKeys[i]][j];
               const newAttribute = newUser[userKeys[i]][j];
+              newAttribute.value = newAttribute.value.trim();
 
               if (oldAttribute.value !== newAttribute.value) {
                 updatedCompanyAttributes.push(newAttribute);
