@@ -128,6 +128,8 @@ export default function SuggestionBox({
   const onSuggestionSelected = (event, { suggestion }) => {
     if (purpose === "skills") {
       if (suggestion.name !== NO_RESULTS_FOUND) onSelect(suggestion);
+    } else if (purpose === "locations") {
+      if (suggestion.name !== NO_RESULTS_FOUND) onSelect(suggestion);
     } else {
       if (suggestion.name !== NO_RESULTS_FOUND)
         onSelect(companyAttrId, suggestion);

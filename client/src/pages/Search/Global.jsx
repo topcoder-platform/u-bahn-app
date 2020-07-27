@@ -145,7 +145,7 @@ export default function SearchGlobal({ keyword }) {
       searchContext.filters[FILTERS.LOCATIONS].active &&
       searchContext.selectedLocations.length > 0
     ) {
-      criteria.locations = searchContext.selectedLocations;
+      criteria.locations = searchContext.selectedLocations.map((l) => l.name);
     }
     if (
       searchContext.filters[FILTERS.SKILLS].active &&

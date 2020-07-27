@@ -15,6 +15,7 @@ import { useModal } from "../../lib/modal";
 
 import styles from "./filters.module.css";
 import utilityStyles from "../../styles/utility.module.css";
+import config from "../../config";
 
 /**
  * SearchTabFilters - component containing all the filters on the search tab page
@@ -23,7 +24,6 @@ import utilityStyles from "../../styles/utility.module.css";
  */
 export default function SearchTabFilters({ locations, achievements }) {
   const search = useSearch();
-  const [locationsData, setLocationsData] = useState(locations);
   const [achievementsData, setAchievementsData] = useState(achievements);
 
   /**
@@ -49,7 +49,6 @@ export default function SearchTabFilters({ locations, achievements }) {
   };
 
   useEffect(() => {
-    setLocationsData(locations);
     setAchievementsData(achievements);
   }, [locations, achievements]);
 
@@ -132,6 +131,28 @@ export default function SearchTabFilters({ locations, achievements }) {
     } else {
       modal.showModal();
     }
+  };
+
+  const addLocationToFilter = (location) => {
+    const locationFilters = JSON.parse(JSON.stringify(search.selectedLocations));
+
+    if (locationFilters.findIndex((s) => s.id === location.id) !== -1) {
+      return;
+    }
+    locationFilters.push({ name: location.value, id: location.id });
+    search["selectLocations"](locationFilters);
+  };
+
+  const removeLocationFromFilter = (location) => {
+    const locationFilters = JSON.parse(JSON.stringify(search.selectedLocations));
+    const index = locationFilters.findIndex((s) => s.id === location.id);
+
+    if (index === -1) {
+      return;
+    }
+
+    locationFilters.splice(index, 1);
+    search["selectLocations"](locationFilters);
   };
 
   const addSkillToFilter = (skill) => {
@@ -230,27 +251,27 @@ export default function SearchTabFilters({ locations, achievements }) {
       />
       {search.isFilterActive(FILTERS.LOCATIONS) && (
         <div className={utilityStyles.mt32}>
-          <Collapsible
-            onCollapsed={(isCollapsed) =>
-              filterData("", locations, "name", setLocationsData)
-            }
-            title="Location"
-            collapsed={false}
-          >
-            <SearchBox
-              placeholder="Search for a location"
-              name={"location search"}
-              onChange={(q) =>
-                filterData(q.trim(), locations, "name", setLocationsData)
-              }
+          <Collapsible title="Location">
+            <SuggestionBox
+              placeholder={"Search for a location"}
+              onSelect={addLocationToFilter}
+              purpose="locations"
+              companyAttrId={config.STANDARD_USER_ATTRIBUTES.location}
             />
-            <TagList
-              key="l"
-              tags={locationsData}
-              selected={search.selectedLocations}
-              selector={"selectLocations"}
-              noResultsText={"No location found"}
-            />
+            {search.selectedLocations.length > 0 && (
+              <div className={utilityStyles.mt16}>
+                {search.selectedLocations.map((location) => {
+                  return (
+                    <Pill
+                      key={location.id}
+                      name={location.name}
+                      removable={true}
+                      onRemove={() => removeLocationFromFilter(location)}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </Collapsible>
         </div>
       )}
