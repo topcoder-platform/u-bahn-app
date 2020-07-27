@@ -22,7 +22,7 @@ import config from "../../config";
  * locations: the values for the location filter options
  * achievements: the values for the achievements filter options
  */
-export default function SearchTabFilters({ locations, achievements }) {
+export default function SearchTabFilters({ achievements }) {
   const search = useSearch();
   const [achievementsData, setAchievementsData] = useState(achievements);
 
@@ -50,7 +50,7 @@ export default function SearchTabFilters({ locations, achievements }) {
 
   useEffect(() => {
     setAchievementsData(achievements);
-  }, [locations, achievements]);
+  }, [achievements]);
 
   const filterData = (query, initialValues, property, setState) => {
     const q = query.toLowerCase();
@@ -355,7 +355,6 @@ export default function SearchTabFilters({ locations, achievements }) {
 }
 
 SearchTabFilters.propTypes = {
-  locations: PT.array,
   achievements: PT.array,
 };
 

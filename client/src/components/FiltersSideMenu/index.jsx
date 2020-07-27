@@ -4,15 +4,14 @@ import PT from "prop-types";
 import style from "./style.module.scss";
 import SearchTabFilters from "./filters";
 
-export default function FiltersSideMenu({ locations, achievements }) {
+export default function FiltersSideMenu({ achievements }) {
   return (
     <div className={style.container}>
-      <SearchTabFilters locations={locations} achievements={achievements} />
+      <SearchTabFilters achievements={achievements} />
     </div>
   );
 }
 
 FiltersSideMenu.propTypes = {
-  locations: PT.array.isRequired,
   achievements: PT.array.isRequired,
 };

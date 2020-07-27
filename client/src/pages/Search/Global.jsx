@@ -50,7 +50,6 @@ export default function SearchGlobal({ keyword }) {
   const apiClient = api();
   const searchContext = useSearch();
   const [isSearching, setIsSearching] = React.useState(false);
-  const [locations, setLocations] = React.useState([]);
   const [achievements, setAchievements] = React.useState([]);
   const [users, setUsers] = React.useState([]);
   const [page, setPage] = React.useState(1);
@@ -85,11 +84,9 @@ export default function SearchGlobal({ keyword }) {
     let isSubscribed = true;
 
     (async () => {
-      const locations = await staticData.getLocations();
       const achievements = await staticData.getAchievements();
 
       if (isSubscribed) {
-        setLocations(locations);
         setAchievements(achievements);
       }
     })();
@@ -302,7 +299,7 @@ export default function SearchGlobal({ keyword }) {
   return (
     <>
       <div className={style.sideMenu}>
-        <FiltersSideMenu locations={locations} achievements={achievements} />
+        <FiltersSideMenu achievements={achievements} />
       </div>
       {!isSearching && users.length > 0 && (
         <div className={style.rightSide}>
