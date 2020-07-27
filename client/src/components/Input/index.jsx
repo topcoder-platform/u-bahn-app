@@ -18,6 +18,12 @@ export default function Input({ className, label, onChange, value }) {
         id={id}
         className={style.input}
         onChange={onChange}
+        onKeyDown={(event) => {
+          if (event.keyCode === 8) {
+            event.preventDefault();
+            event.currentTarget.value = event.currentTarget.value.slice(0, -1);
+          }
+        }}
         value={value}
       />
     </div>
