@@ -30,3 +30,8 @@
   font: 400 12pt/1.25 Inter;
   width: 180px;
 }
+
+.label.required:after {
+  content: "*";
+  color: red;
+}
