@@ -101,7 +101,7 @@ export default function EditProfileModal({
     } else if (!trim(localUser.title.value)) {
       fieldName = "Current role";
     } else if (!trim(localUser.company.value)) {
-      fieldName = "Companye";
+      fieldName = "Company";
     } else if (!trim(localUser.location.value)) {
       fieldName = "Location";
     } else {
