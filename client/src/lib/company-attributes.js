@@ -72,7 +72,7 @@ export async function getCompanyAttributes(apiClient, cancelToken) {
 
   // Finally, we only need the company attributes
   attributes = attributes.filter((attribute) => {
-    if (primaryAttributeIds.includes(attribute.id)) {
+    if (primaryAttributeIds.includes(attribute.name)) {
       return false;
     }
 
