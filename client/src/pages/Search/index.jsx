@@ -17,9 +17,11 @@ import { useAuth0 } from "../../react-auth0-spa";
 import * as OrgService from "../../services/user-org";
 import api from "../../services/api";
 
+import Cookies from "js-cookie";
+
 export default function SearchPage() {
   const apiClient = api();
-  const { isLoading, isAuthenticated, user: auth0User } = useAuth0();
+  const { isLoading, isAuthenticated, user: auth0User, loginWithRedirect } = useAuth0();
   const [tab, setTab] = React.useState(TABS.SEARCH);
   const [keyword, setKeyword] = React.useState(null);
   const [selectedOrg, setSelectedOrg] = React.useState(null);
@@ -62,9 +64,16 @@ export default function SearchPage() {
   }, [keyword]);
 
   const onSelectOrg = (org) => {
-    OrgService.setSingleOrg(org);
-    setSelectedOrg(org);
-    setShouldSelectOrg(false);
+    const cookie = Cookies.get('auth0.is.authenticated');
+    if (cookie && cookie === 'true') {
+      OrgService.setSingleOrg(org);
+      setSelectedOrg(org);
+      setShouldSelectOrg(false);
+    } else {
+      loginWithRedirect({
+        redirect_uri: window.location.origin,
+      });
+    }
   };
 
   let mainContent;
