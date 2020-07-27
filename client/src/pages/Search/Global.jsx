@@ -203,13 +203,16 @@ export default function SearchGlobal({ keyword }) {
       searchContext.pagination.page = 1;
     }
 
+    let pageChanged = false;
     if (searchContext.pagination.page !== page) {
       setPage(searchContext.pagination.page);
+      pageChanged = true;
     }
 
     if (_.isEqual(prevCriteria, criteria)
       && prevKeyword === keyword
-      && prevOrderBy === orderBy) {
+      && prevOrderBy === orderBy
+      && pageChanged === false) {
       return;
     } else {
       setPrevCriteria(criteria);
