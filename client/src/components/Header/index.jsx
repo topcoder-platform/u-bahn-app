@@ -53,7 +53,7 @@ export default function Header({
   const logoutWithRedirect = () => {
     clearOrg();
     logout({
-      redirect: window.location.origin,
+      returnTo: window.location.origin,
     });
   };
 
