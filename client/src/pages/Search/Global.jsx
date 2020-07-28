@@ -9,7 +9,7 @@ import Pagination from "../../components/Pagination";
 
 import * as helper from "./helper";
 import { useAuth0 } from "../../react-auth0-spa";
-import { getCompanyAttributes } from "../../lib/company-attributes";
+import { getAttributes } from "../../lib/company-attributes";
 import { useSearch, FILTERS } from "../../lib/search";
 import { makeColorIterator, avatarColors } from "../../lib/colors";
 import config from "../../config";
@@ -50,7 +50,6 @@ export default function SearchGlobal({ keyword }) {
   const apiClient = api();
   const searchContext = useSearch();
   const [isSearching, setIsSearching] = React.useState(false);
-  const [locations, setLocations] = React.useState([]);
   const [achievements, setAchievements] = React.useState([]);
   const [users, setUsers] = React.useState([]);
   const [page, setPage] = React.useState(1);
@@ -85,11 +84,9 @@ export default function SearchGlobal({ keyword }) {
     let isSubscribed = true;
 
     (async () => {
-      const locations = await staticData.getLocations();
       const achievements = await staticData.getAchievements();
 
       if (isSubscribed) {
-        setLocations(locations);
         setAchievements(achievements);
       }
     })();
@@ -107,7 +104,7 @@ export default function SearchGlobal({ keyword }) {
     let isSubscribed = true;
 
     (async () => {
-      const companyAttrs = await getCompanyAttributes(
+      const [companyAttrs, generalAttrs] = await getAttributes(
         apiClient,
         cancelTokenSource.token
       );
@@ -124,6 +121,17 @@ export default function SearchGlobal({ keyword }) {
         if (isSubscribed) {
           searchContext.setFilters(filtersWithCompanyAttrs);
         }
+      }
+      if (generalAttrs) {
+        generalAttrs.forEach((generalAttr) => {
+          if (generalAttr.name === config.STANDARD_USER_ATTRIBUTES.location) {
+            filtersWithCompanyAttrs[FILTERS.LOCATIONS].id = generalAttr.id;
+            searchContext.setFilter(
+              FILTERS.LOCATIONS,
+              filtersWithCompanyAttrs[FILTERS.LOCATIONS]
+            );
+          }
+        });
       }
     })();
 
@@ -145,7 +153,7 @@ export default function SearchGlobal({ keyword }) {
       searchContext.filters[FILTERS.LOCATIONS].active &&
       searchContext.selectedLocations.length > 0
     ) {
-      criteria.locations = searchContext.selectedLocations;
+      criteria.locations = searchContext.selectedLocations.map((l) => l.name);
     }
     if (
       searchContext.filters[FILTERS.SKILLS].active &&
@@ -209,10 +217,12 @@ export default function SearchGlobal({ keyword }) {
       pageChanged = true;
     }
 
-    if (_.isEqual(prevCriteria, criteria)
-      && prevKeyword === keyword
-      && prevOrderBy === orderBy
-      && pageChanged === false) {
+    if (
+      _.isEqual(prevCriteria, criteria) &&
+      prevKeyword === keyword &&
+      prevOrderBy === orderBy &&
+      pageChanged === false
+    ) {
       return;
     } else {
       setPrevCriteria(criteria);
@@ -302,7 +312,7 @@ export default function SearchGlobal({ keyword }) {
   return (
     <>
       <div className={style.sideMenu}>
-        <FiltersSideMenu locations={locations} achievements={achievements} />
+        <FiltersSideMenu achievements={achievements} />
       </div>
       {!isSearching && users.length > 0 && (
         <div className={style.rightSide}>

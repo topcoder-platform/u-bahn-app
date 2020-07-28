@@ -14,7 +14,7 @@ let primaryAttributeIds = [
  * Get the attributes associated with the company (organization)
  * @param {Object} apiClient The api client (you can get this from src/services/api and then call api() to get the apiClient)
  */
-export async function getCompanyAttributes(apiClient, cancelToken) {
+export async function getAttributes(apiClient, cancelToken) {
   let response;
   let attributeGroups;
   let attributes = [];
@@ -29,7 +29,7 @@ export async function getCompanyAttributes(apiClient, cancelToken) {
     response = await apiClient.get(url, { cancelToken });
   } catch (error) {
     if (Axios.isCancel(error)) {
-      return undefined;
+      return [undefined, undefined];
     }
     console.log(error);
     alert(errorMessage);
@@ -52,7 +52,7 @@ export async function getCompanyAttributes(apiClient, cancelToken) {
       response = await apiClient.get(url, { cancelToken });
     } catch (error) {
       if (Axios.isCancel(error)) {
-        return undefined;
+        return [undefined, undefined];
       }
       console.log(error);
       alert(errorMessage);
@@ -70,8 +70,8 @@ export async function getCompanyAttributes(apiClient, cancelToken) {
     }
   }
 
-  // Finally, we only need the company attributes
-  attributes = attributes.filter((attribute) => {
+  // Finally, split 2 attribute types
+  const companyAttrs = attributes.filter((attribute) => {
     if (primaryAttributeIds.includes(attribute.name)) {
       return false;
     }
@@ -79,5 +79,13 @@ export async function getCompanyAttributes(apiClient, cancelToken) {
     return true;
   });
 
-  return attributes;
+  const generalAttrs = attributes.filter((attribute) => {
+    if (primaryAttributeIds.includes(attribute.name)) {
+      return true;
+    }
+
+    return false;
+  });
+
+  return [companyAttrs, generalAttrs];
 }

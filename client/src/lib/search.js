@@ -66,6 +66,14 @@ function useProvideSearch() {
     setPopupShown(true);
   };
 
+  const setFilter = (id, filter) => {
+    return (filters[id] = filter);
+  };
+
+  const getAttributeId = (filter) => {
+    return filters[filter].id;
+  };
+
   const isFilterActive = (filter) => {
     return filters[filter].active;
   };
@@ -132,7 +140,9 @@ function useProvideSearch() {
     popupShown,
     showPopup,
     filters,
+    setFilter,
     setFilters,
+    getAttributeId,
     isFilterActive,
     activateFilter,
     deactivateFilter,

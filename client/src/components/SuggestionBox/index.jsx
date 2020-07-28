@@ -4,6 +4,7 @@ import config from "../../config";
 import api from "../../services/api";
 import style from "./style.module.scss";
 import _ from "lodash";
+import { useSearch, FILTERS } from "../../lib/search";
 
 const NO_RESULTS_FOUND = "no results found";
 const DELAY_SEARCH = 300;
@@ -95,6 +96,7 @@ export default function SuggestionBox({
   placeholder,
   onSelect,
 }) {
+  const search = useSearch();
   const apiClient = api();
   const [suggestions, setSuggestions] = React.useState([]);
   const [value, setValue] = React.useState("");
@@ -102,6 +104,11 @@ export default function SuggestionBox({
   const onChange = (event, { newValue }) => setValue(newValue.trim());
 
   const onSuggestionsFetchRequested = async ({ value }) => {
+    if (purpose === "locations") {
+      if (!companyAttrId) {
+        companyAttrId = search.getAttributeId(FILTERS.LOCATIONS);
+      }
+    }
     if (purpose === "skills") {
       let data = await getSkillsSuggestions(apiClient, value);
 
@@ -127,6 +134,8 @@ export default function SuggestionBox({
 
   const onSuggestionSelected = (event, { suggestion }) => {
     if (purpose === "skills") {
+      if (suggestion.name !== NO_RESULTS_FOUND) onSelect(suggestion);
+    } else if (purpose === "locations") {
       if (suggestion.name !== NO_RESULTS_FOUND) onSelect(suggestion);
     } else {
       if (suggestion.name !== NO_RESULTS_FOUND)
