@@ -15,7 +15,6 @@ import { useModal } from "../../lib/modal";
 
 import styles from "./filters.module.css";
 import utilityStyles from "../../styles/utility.module.css";
-import config from "../../config";
 
 /**
  * SearchTabFilters - component containing all the filters on the search tab page
