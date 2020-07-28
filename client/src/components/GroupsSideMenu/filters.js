@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { List } from "react-virtualized";
 import PT from "prop-types";
-import _ from "lodash";
 
 import SearchBox from "../searchBox";
 import Button from "../Button";
@@ -136,17 +135,6 @@ function GroupsSection({
   loadingGroups,
 }) {
   /**
-   * Calculates the height value of an item.
-   * @param {Number} index index of the item to be calculated
-   * @return {Number} row height
-   */
-  function rowHeight({ index }) {
-    return items[index].name.length <= 30
-      ? 60
-      : 60 + (Math.floor(items[index].name.length / 30) - 1) * 20 + 20;
-  }
-
-  /**
    * Row renderer for react-virtualized#List.
    * Renders each item as a row.
    * @param {String} key unique key for the item
@@ -177,17 +165,9 @@ function GroupsSection({
         <List
           className={styles.groupsList}
           width={385}
-          height={
-            items.length > 7
-              ? 450
-              : _.reduce(
-                  _.map(items, (item, index) => rowHeight({ index })),
-                  (a, b) => a + b,
-                  0
-                )
-          }
+          height={items.length > 7 ? 450 : items.length * 66}
           rowCount={items.length}
-          rowHeight={rowHeight}
+          rowHeight={66}
           rowRenderer={rowRenderer}
         />
       </div>
@@ -213,6 +193,7 @@ function SectionRow({ title, badge, selected = false, action }) {
       onClick={() => {
         action(selected);
       }}
+      title={title}
     >
       <div
         className={
