@@ -134,7 +134,9 @@ export default function SearchTabFilters({ achievements }) {
   };
 
   const addLocationToFilter = (location) => {
-    const locationFilters = JSON.parse(JSON.stringify(search.selectedLocations));
+    const locationFilters = JSON.parse(
+      JSON.stringify(search.selectedLocations)
+    );
 
     if (locationFilters.findIndex((s) => s.id === location.id) !== -1) {
       return;
@@ -144,7 +146,9 @@ export default function SearchTabFilters({ achievements }) {
   };
 
   const removeLocationFromFilter = (location) => {
-    const locationFilters = JSON.parse(JSON.stringify(search.selectedLocations));
+    const locationFilters = JSON.parse(
+      JSON.stringify(search.selectedLocations)
+    );
     const index = locationFilters.findIndex((s) => s.id === location.id);
 
     if (index === -1) {
@@ -256,7 +260,7 @@ export default function SearchTabFilters({ achievements }) {
               placeholder={"Search for a location"}
               onSelect={addLocationToFilter}
               purpose="locations"
-              companyAttrId={config.STANDARD_USER_ATTRIBUTES.location}
+              companyAttrId={search.getAttributeId(FILTERS.LOCATIONS)}
             />
             {search.selectedLocations.length > 0 && (
               <div className={utilityStyles.mt16}>

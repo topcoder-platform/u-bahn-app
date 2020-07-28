@@ -37,4 +37,7 @@ export default {
     clientId: process.env.REACT_APP_AUTH0_CLIENTID,
     audience: process.env.REACT_APP_AUTH0_AUDIENCE,
   },
+
+  REACT_APP_ATTRIBUTE_ID_LOCATION:
+    process.env.REACT_APP_ATTRIBUTE_ID_LOCATION || "location",
 };

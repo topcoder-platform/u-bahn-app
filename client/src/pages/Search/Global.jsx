@@ -116,6 +116,9 @@ export default function SearchGlobal({ keyword }) {
             group: "Company attributes",
             active: false,
           };
+          if (companyAttr.name === config.REACT_APP_ATTRIBUTE_ID_LOCATION) {
+            filtersWithCompanyAttrs[FILTERS.LOCATIONS].id = companyAttr.id;
+          }
         });
 
         if (isSubscribed) {
@@ -206,10 +209,12 @@ export default function SearchGlobal({ keyword }) {
       pageChanged = true;
     }
 
-    if (_.isEqual(prevCriteria, criteria)
-      && prevKeyword === keyword
-      && prevOrderBy === orderBy
-      && pageChanged === false) {
+    if (
+      _.isEqual(prevCriteria, criteria) &&
+      prevKeyword === keyword &&
+      prevOrderBy === orderBy &&
+      pageChanged === false
+    ) {
       return;
     } else {
       setPrevCriteria(criteria);
