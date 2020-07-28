@@ -39,7 +39,7 @@ export async function getGroups(apiClient, handle, cancelToken) {
   // Now, get my groups first
   try {
     response = await apiClient.get(
-      `${config.GROUPS_API_URL}?universalUID=${userId}&membershipType=user`,
+      `${config.GROUPS_API_URL}?universalUID=${userId}&membershipType=user&perPage=${config.GROUPS_PER_PAGE}`,
       { cancelToken }
     );
   } catch (error) {
@@ -66,7 +66,7 @@ export async function getGroups(apiClient, handle, cancelToken) {
   // Fetch all groups in the org
   try {
     response = await apiClient.get(
-      `${config.GROUPS_API_URL}?organizationId=${organizationId}`,
+      `${config.GROUPS_API_URL}?organizationId=${organizationId}&perPage=${config.GROUPS_PER_PAGE}`,
       { cancelToken }
     );
   } catch (error) {
