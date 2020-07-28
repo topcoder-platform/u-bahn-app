@@ -9,7 +9,7 @@ import Pagination from "../../components/Pagination";
 
 import * as helper from "./helper";
 import { useAuth0 } from "../../react-auth0-spa";
-import { getCompanyAttributes } from "../../lib/company-attributes";
+import { getAttributes } from "../../lib/company-attributes";
 import { useSearch, FILTERS } from "../../lib/search";
 import { makeColorIterator, avatarColors } from "../../lib/colors";
 import config from "../../config";
@@ -104,7 +104,7 @@ export default function SearchGlobal({ keyword }) {
     let isSubscribed = true;
 
     (async () => {
-      const companyAttrs = await getCompanyAttributes(
+      const [companyAttrs, generalAttrs] = await getAttributes(
         apiClient,
         cancelTokenSource.token
       );
@@ -116,14 +116,22 @@ export default function SearchGlobal({ keyword }) {
             group: "Company attributes",
             active: false,
           };
-          if (companyAttr.name === config.STANDARD_USER_ATTRIBUTES.location) {
-            filtersWithCompanyAttrs[FILTERS.LOCATIONS].id = companyAttr.id;
-          }
         });
 
         if (isSubscribed) {
           searchContext.setFilters(filtersWithCompanyAttrs);
         }
+      }
+      if (generalAttrs) {
+        generalAttrs.forEach((generalAttr) => {
+          if (generalAttr.name === config.STANDARD_USER_ATTRIBUTES.location) {
+            filtersWithCompanyAttrs[FILTERS.LOCATIONS].id = generalAttr.id;
+            searchContext.setFilter(
+              FILTERS.LOCATIONS,
+              filtersWithCompanyAttrs[FILTERS.LOCATIONS]
+            );
+          }
+        });
       }
     })();
 

@@ -3,11 +3,18 @@ import config from "../config";
 import * as OrgService from "../services/user-org";
 import Axios from "axios";
 
+let primaryAttributeIds = [
+  config.STANDARD_USER_ATTRIBUTES.location,
+  config.STANDARD_USER_ATTRIBUTES.isAvailable,
+  config.STANDARD_USER_ATTRIBUTES.title,
+  config.STANDARD_USER_ATTRIBUTES.company,
+];
+
 /**
  * Get the attributes associated with the company (organization)
  * @param {Object} apiClient The api client (you can get this from src/services/api and then call api() to get the apiClient)
  */
-export async function getCompanyAttributes(apiClient, cancelToken) {
+export async function getAttributes(apiClient, cancelToken) {
   let response;
   let attributeGroups;
   let attributes = [];
@@ -63,5 +70,22 @@ export async function getCompanyAttributes(apiClient, cancelToken) {
     }
   }
 
-  return attributes;
+  // Finally, split 2 attribute types
+  const companyAttrs = attributes.filter((attribute) => {
+    if (primaryAttributeIds.includes(attribute.name)) {
+      return false;
+    }
+
+    return true;
+  });
+
+  const generalAttrs = attributes.filter((attribute) => {
+    if (primaryAttributeIds.includes(attribute.name)) {
+      return true;
+    }
+
+    return false;
+  });
+
+  return [companyAttrs, generalAttrs];
 }
