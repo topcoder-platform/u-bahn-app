@@ -29,7 +29,7 @@ export async function getAttributes(apiClient, cancelToken) {
     response = await apiClient.get(url, { cancelToken });
   } catch (error) {
     if (Axios.isCancel(error)) {
-      return undefined;
+      return [undefined, undefined];
     }
     console.log(error);
     alert(errorMessage);
@@ -52,7 +52,7 @@ export async function getAttributes(apiClient, cancelToken) {
       response = await apiClient.get(url, { cancelToken });
     } catch (error) {
       if (Axios.isCancel(error)) {
-        return undefined;
+        return [undefined, undefined];
       }
       console.log(error);
       alert(errorMessage);

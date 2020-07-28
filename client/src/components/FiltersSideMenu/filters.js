@@ -18,7 +18,6 @@ import utilityStyles from "../../styles/utility.module.css";
 
 /**
  * SearchTabFilters - component containing all the filters on the search tab page
- * locations: the values for the location filter options
  * achievements: the values for the achievements filter options
  */
 export default function SearchTabFilters({ achievements }) {
