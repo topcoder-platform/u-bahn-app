@@ -116,7 +116,7 @@ export default function SearchGlobal({ keyword }) {
             group: "Company attributes",
             active: false,
           };
-          if (companyAttr.name === config.REACT_APP_ATTRIBUTE_ID_LOCATION) {
+          if (companyAttr.name === config.STANDARD_USER_ATTRIBUTES.location) {
             filtersWithCompanyAttrs[FILTERS.LOCATIONS].id = companyAttr.id;
           }
         });
