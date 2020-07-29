@@ -73,6 +73,10 @@
   flex-direction: column;
 }
 
+.groupsList {
+  outline: 0;
+}
+
 .sectionItemsContainer > div {
   margin-top: 20px;
 }
@@ -101,8 +105,11 @@
 }
 
 .sectionItemTitle {
+  width: 280px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   color: gray2;
-  word-break: break-all;
   padding-right: 12px;
 }
 

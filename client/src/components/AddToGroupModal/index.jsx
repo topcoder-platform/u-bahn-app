@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { List } from "react-virtualized";
 import PT from "prop-types";
 
 import Button from "../Button";
@@ -159,6 +160,42 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
     setFilter("");
   };
 
+  const filteredOtherGroups = otherGroups.filter((g) =>
+    g.name.toLowerCase().includes(filter.toLowerCase())
+  );
+  const filteredMyGroups = myGroups.filter((g) =>
+    g.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  const myGroupsListEstimatedWidth = filteredMyGroups.length > 10 ? 540 : 560;
+  const otherGroupsListEstimatedWidth =
+    filteredOtherGroups.length > 10 ? 540 : 560;
+  const listWidth =
+    myGroupsListEstimatedWidth > otherGroupsListEstimatedWidth
+      ? myGroupsListEstimatedWidth
+      : otherGroupsListEstimatedWidth;
+
+  /**
+   * Row renderer for react-virtualized#List.
+   * Renders each item as a row.
+   * @param {String} key unique key for the item
+   * @param {Number} index index of the item (row)
+   * @param {Object} style
+   * @return {SectionRow} row element
+   */
+  function rowRenderer({ key, index, style, items }) {
+    return (
+      <div key={key} style={style}>
+        <Group
+          checked={items[index].isSelected === true}
+          group={items[index]}
+          key={items[index].id}
+          onSwitch={() => switchSelected(items[index])}
+        />
+      </div>
+    );
+  }
+
   return (
     <Modal
       onCancel={onCancel}
@@ -201,19 +238,22 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
           My groups{loadingGroups && " (Loading...)"}
         </h3>
         <div>
-          {!loadingGroups &&
-            myGroups
-              .filter((g) =>
-                g.name.toLowerCase().includes(filter.toLowerCase())
-              )
-              .map((g) => (
-                <Group
-                  checked={g.isSelected === true}
-                  group={g}
-                  key={g.id}
-                  onSwitch={() => switchSelected(g)}
-                />
-              ))}
+          {!loadingGroups && (
+            <List
+              className={style.groupsList}
+              width={listWidth}
+              height={
+                filteredMyGroups.length > 10
+                  ? 450
+                  : filteredMyGroups.length * 45
+              }
+              rowCount={filteredMyGroups.length}
+              rowHeight={45}
+              rowRenderer={(params) =>
+                rowRenderer({ ...params, items: filteredMyGroups })
+              }
+            />
+          )}
         </div>
         {myGroups.filter((g) =>
           g.name.toLowerCase().includes(filter.toLowerCase())
@@ -225,19 +265,22 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
           Other Groups{loadingGroups && " (Loading...)"}
         </h3>
         <div>
-          {!loadingGroups &&
-            otherGroups
-              .filter((g) =>
-                g.name.toLowerCase().includes(filter.toLowerCase())
-              )
-              .map((g) => (
-                <Group
-                  checked={g.isSelected === true}
-                  group={g}
-                  key={g.id}
-                  onSwitch={() => switchSelected(g)}
-                />
-              ))}
+          {!loadingGroups && (
+            <List
+              className={style.groupsList}
+              width={listWidth}
+              height={
+                filteredOtherGroups.length > 10
+                  ? 450
+                  : filteredOtherGroups.length * 45
+              }
+              rowCount={filteredOtherGroups.length}
+              rowHeight={45}
+              rowRenderer={(params) =>
+                rowRenderer({ ...params, items: filteredOtherGroups })
+              }
+            />
+          )}
         </div>
         {otherGroups.filter((g) =>
           g.name.toLowerCase().includes(filter.toLowerCase())

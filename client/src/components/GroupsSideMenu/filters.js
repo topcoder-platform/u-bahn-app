@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { List } from "react-virtualized";
 import PT from "prop-types";
 
 import SearchBox from "../searchBox";
@@ -133,23 +134,42 @@ function GroupsSection({
   selectedItemId,
   loadingGroups,
 }) {
+  /**
+   * Row renderer for react-virtualized#List.
+   * Renders each item as a row.
+   * @param {String} key unique key for the item
+   * @param {Number} index index of the item (row)
+   * @param {Object} style
+   * @return {SectionRow} row element
+   */
+  function rowRenderer({ key, index, style }) {
+    return (
+      <div key={key} style={style}>
+        <SectionRow
+          key={`${title}${index}`}
+          title={items[index].name}
+          badge={items[index].count + ""}
+          action={(isSelected) =>
+            !isSelected && onItemClicked && onItemClicked(title, items[index])
+          }
+          selected={items[index].id === selectedItemId}
+        />
+      </div>
+    );
+  }
+
   return (
     <>
       <div className={styles.sectionTitle}>{title}</div>
       <div className={styles.sectionItemsContainer}>
-        {items.map((item, index) => {
-          return (
-            <SectionRow
-              key={`${title}${index}`}
-              title={item.name}
-              badge={item.count + ""}
-              action={(isSelected) =>
-                !isSelected && onItemClicked && onItemClicked(title, item)
-              }
-              selected={item.id === selectedItemId}
-            />
-          );
-        })}
+        <List
+          className={styles.groupsList}
+          width={385}
+          height={items.length > 7 ? 450 : items.length * 66}
+          rowCount={items.length}
+          rowHeight={66}
+          rowRenderer={rowRenderer}
+        />
       </div>
       {items.length === 0 && !loadingGroups && (
         <div className={styles.message}>No results found</div>
@@ -173,6 +193,7 @@ function SectionRow({ title, badge, selected = false, action }) {
       onClick={() => {
         action(selected);
       }}
+      title={title}
     >
       <div
         className={
