@@ -242,11 +242,7 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
             <List
               className={style.groupsList}
               width={listWidth}
-              height={
-                filteredMyGroups.length > 10
-                  ? 450
-                  : filteredMyGroups.length * 45
-              }
+              height={filteredMyGroups.length * 45}
               rowCount={filteredMyGroups.length}
               rowHeight={45}
               rowRenderer={(params) =>
@@ -269,11 +265,7 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
             <List
               className={style.groupsList}
               width={listWidth}
-              height={
-                filteredOtherGroups.length > 10
-                  ? 450
-                  : filteredOtherGroups.length * 45
-              }
+              height={filteredOtherGroups.length * 45}
               rowCount={filteredOtherGroups.length}
               rowHeight={45}
               rowRenderer={(params) =>
