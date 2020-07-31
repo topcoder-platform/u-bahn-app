@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { List } from "react-virtualized";
+import { List, AutoSizer } from "react-virtualized";
 import PT from "prop-types";
 
 import Button from "../Button";
@@ -237,24 +237,27 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
         <h3 className={style.subTitle}>
           My groups{loadingGroups && " (Loading...)"}
         </h3>
-        <div>
-          {!loadingGroups && (
-            <List
-              className={style.groupsList}
-              width={listWidth}
-              height={
-                filteredMyGroups.length > 10
-                  ? 450
-                  : filteredMyGroups.length * 45
-              }
-              rowCount={filteredMyGroups.length}
-              rowHeight={45}
-              rowRenderer={(params) =>
-                rowRenderer({ ...params, items: filteredMyGroups })
-              }
-            />
-          )}
-        </div>
+
+        {!loadingGroups && (
+          <AutoSizer disableHeight>
+            {() => (
+              <List
+                className={style.groupsList}
+                width={listWidth + 20}
+                height={
+                  filteredMyGroups.length > 10
+                    ? 450
+                    : filteredMyGroups.length * 45
+                }
+                rowCount={filteredMyGroups.length}
+                rowHeight={45}
+                rowRenderer={(params) =>
+                  rowRenderer({ ...params, items: filteredMyGroups })
+                }
+              />
+            )}
+          </AutoSizer>
+        )}
         {myGroups.filter((g) =>
           g.name.toLowerCase().includes(filter.toLowerCase())
         ).length === 0 &&
@@ -264,22 +267,26 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
         <h3 className={style.subTitle}>
           Other Groups{loadingGroups && " (Loading...)"}
         </h3>
-        <div>
+        <div className={style.clear}>
           {!loadingGroups && (
-            <List
-              className={style.groupsList}
-              width={listWidth}
-              height={
-                filteredOtherGroups.length > 10
-                  ? 450
-                  : filteredOtherGroups.length * 45
-              }
-              rowCount={filteredOtherGroups.length}
-              rowHeight={45}
-              rowRenderer={(params) =>
-                rowRenderer({ ...params, items: filteredOtherGroups })
-              }
-            />
+            <AutoSizer disableHeight>
+              {() => (
+                <List
+                  className={style.groupsList}
+                  width={listWidth + 20}
+                  height={
+                    filteredOtherGroups.length > 10
+                      ? 250
+                      : filteredOtherGroups.length * 45
+                  }
+                  rowCount={filteredOtherGroups.length}
+                  rowHeight={45}
+                  rowRenderer={(params) =>
+                    rowRenderer({ ...params, items: filteredOtherGroups })
+                  }
+                />
+              )}
+            </AutoSizer>
           )}
         </div>
         {otherGroups.filter((g) =>
