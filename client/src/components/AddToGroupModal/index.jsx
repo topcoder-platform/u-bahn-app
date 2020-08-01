@@ -246,7 +246,7 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
                 width={listWidth + 20}
                 height={
                   filteredMyGroups.length > 10
-                    ? 450
+                    ? 250
                     : filteredMyGroups.length * 45
                 }
                 rowCount={filteredMyGroups.length}
