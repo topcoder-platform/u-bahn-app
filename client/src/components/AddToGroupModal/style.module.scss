@@ -78,7 +78,7 @@
 .searchRow {
   display: flex;
   position: relative;
-  margin: 0 30px;
+  margin: 0 10px;
 }
 
 .subTitle {
@@ -122,4 +122,9 @@
   &.resetKeywordHidden {
     visibility: hidden;
   }
+}
+
+.clear {
+  padding-right: 15px;
+  overflow: auto;
 }
