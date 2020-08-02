@@ -5,6 +5,7 @@ import api from "../../services/api";
 import style from "./style.module.scss";
 import _ from "lodash";
 import { useSearch, FILTERS } from "../../lib/search";
+import { getAchievements } from "../../lib/achievements";
 
 const NO_RESULTS_FOUND = "no results found";
 const DELAY_SEARCH = 300;
@@ -67,6 +68,22 @@ const getSkillsSuggestions = async (apiClient, inputValue) => {
 };
 
 /**
+ * Returns the suggestions for achievements
+ * @param {Object} apiClient The api client to make the query
+ * @param {String} inputValue The search query
+ */
+const getAchievementSuggestions = async (apiClient, inputValue) => {
+  let term = inputValue.trim();
+  if (term.length < 1) {
+    return [];
+  }
+
+  term = encodeURIComponent(term);
+  const suggestions = await getAchievements(apiClient, term);
+  return suggestions;
+};
+
+/**
  * Returns the suggestions for company attributes
  * @param {Object} apiClient The api client to make the query
  * @param {String} inputValue The search query
@@ -114,6 +131,11 @@ export default function SuggestionBox({
 
       if (data.length < 1) data = [{ name: NO_RESULTS_FOUND }];
       setSuggestions(data);
+    } else if (purpose === "achievements") {
+      let data = await getAchievementSuggestions(apiClient, value);
+
+      if (data.length < 1) data = [{ name: NO_RESULTS_FOUND }];
+      setSuggestions(data);
     } else {
       let data = await getCompanyAttributesSuggestions(
         apiClient,
@@ -136,6 +158,8 @@ export default function SuggestionBox({
     if (purpose === "skills") {
       if (suggestion.name !== NO_RESULTS_FOUND) onSelect(suggestion);
     } else if (purpose === "locations") {
+      if (suggestion.name !== NO_RESULTS_FOUND) onSelect(suggestion);
+    } else if (purpose === "achievements") {
       if (suggestion.name !== NO_RESULTS_FOUND) onSelect(suggestion);
     } else {
       if (suggestion.name !== NO_RESULTS_FOUND)

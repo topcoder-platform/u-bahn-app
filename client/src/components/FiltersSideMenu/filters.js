@@ -3,9 +3,7 @@ import PT from "prop-types";
 import Button from "../Button";
 import WideButton from "../wideButton";
 import Collapsible from "../collapsible";
-import SearchBox from "../searchBox";
 import Availability from "../availability";
-import TagList from "../tagList";
 import EditFiltersPopup from "../editFiltersPopup";
 import SuggestionBox from "../SuggestionBox";
 import Pill from "../Pill";
@@ -20,9 +18,8 @@ import utilityStyles from "../../styles/utility.module.css";
  * SearchTabFilters - component containing all the filters on the search tab page
  * achievements: the values for the achievements filter options
  */
-export default function SearchTabFilters({ achievements }) {
+export default function SearchTabFilters() {
   const search = useSearch();
-  const [achievementsData, setAchievementsData] = useState(achievements);
 
   /**
    * Component unmount trigger
@@ -44,21 +41,6 @@ export default function SearchTabFilters({ achievements }) {
     });
     search.selectCompanyAttributes({});
     search.changePageNumber(1);
-  };
-
-  useEffect(() => {
-    setAchievementsData(achievements);
-  }, [achievements]);
-
-  const filterData = (query, initialValues, property, setState) => {
-    const q = query.toLowerCase();
-    if (q.length >= 3) {
-      setState(
-        initialValues.filter((g) => g[property].toLowerCase().includes(q))
-      );
-    } else if (query.length === 0) {
-      setState(initialValues);
-    }
   };
 
   const [numberOfFiltersApplied, setNumberOfFiltersApplied] = useState();
@@ -178,6 +160,32 @@ export default function SearchTabFilters({ achievements }) {
 
     skillFilters.splice(index, 1);
     search["selectSkills"](skillFilters);
+  };
+
+  const addAchievementToFilter = (achievement) => {
+    const achievementFilters = JSON.parse(
+      JSON.stringify(search.selectedAchievements)
+    );
+
+    if (achievementFilters.findIndex((s) => s.id === achievement.id) !== -1) {
+      return;
+    }
+    achievementFilters.push(achievement);
+    search["selectAchievements"](achievementFilters);
+  };
+
+  const removeAchievementFromFilter = (achievement) => {
+    const achievementFilters = JSON.parse(
+      JSON.stringify(search.selectedAchievements)
+    );
+    const index = achievementFilters.findIndex((s) => s.id === achievement.id);
+
+    if (index === -1) {
+      return;
+    }
+
+    achievementFilters.splice(index, 1);
+    search["selectAchievements"](achievementFilters);
   };
 
   const addCompanyAttributeToFilter = (attrId, data) => {
@@ -319,25 +327,26 @@ export default function SearchTabFilters({ achievements }) {
       )}
       {search.isFilterActive(FILTERS.ACHIEVEMENTS) && (
         <div className={utilityStyles.mt32}>
-          <Collapsible
-            title="Achievements"
-            onCollapsed={(isCollapsed) =>
-              filterData("", achievements, "name", setAchievementsData)
-            }
-          >
-            <SearchBox
+          <Collapsible title="Achievements">
+            <SuggestionBox
               placeholder="Search for an achievement"
-              name={"achievements search"}
-              onChange={(q) =>
-                filterData(q.trim(), achievements, "name", setAchievementsData)
-              }
+              purpose="achievements"
+              onSelect={addAchievementToFilter}
             />
-            <TagList
-              tags={achievementsData}
-              selected={search.selectedAchievements}
-              selector={"selectAchievements"}
-              noResultsText={"No achievement found"}
-            />
+            {search.selectedAchievements.length > 0 && (
+              <div className={utilityStyles.mt16}>
+                {search.selectedAchievements.map((achievement) => {
+                  return (
+                    <Pill
+                      key={achievement.id}
+                      name={achievement.name}
+                      removable={true}
+                      onRemove={() => removeAchievementFromFilter(achievement)}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </Collapsible>
         </div>
       )}
