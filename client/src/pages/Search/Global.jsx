@@ -14,7 +14,6 @@ import { useSearch, FILTERS } from "../../lib/search";
 import { makeColorIterator, avatarColors } from "../../lib/colors";
 import config from "../../config";
 import api from "../../services/api";
-import staticData from "../../services/static-data";
 
 import style from "./style.module.scss";
 import _ from "lodash";
@@ -50,7 +49,6 @@ export default function SearchGlobal({ keyword }) {
   const apiClient = api();
   const searchContext = useSearch();
   const [isSearching, setIsSearching] = React.useState(false);
-  const [achievements, setAchievements] = React.useState([]);
   const [users, setUsers] = React.useState([]);
   const [page, setPage] = React.useState(1);
   const [totalResults, setTotalResults] = React.useState(0);
@@ -74,26 +72,6 @@ export default function SearchGlobal({ keyword }) {
       window.removeEventListener("click", onWholeContentClick);
     };
   });
-
-  // Static data only
-  React.useEffect(() => {
-    if (isLoading || !isAuthenticated) {
-      return;
-    }
-
-    let isSubscribed = true;
-
-    (async () => {
-      const achievements = await staticData.getAchievements();
-
-      if (isSubscribed) {
-        setAchievements(achievements);
-      }
-    })();
-
-    return () => (isSubscribed = false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, isAuthenticated]);
 
   // Non-static data and Non-user related data
   React.useEffect(() => {
@@ -165,7 +143,9 @@ export default function SearchGlobal({ keyword }) {
       searchContext.filters[FILTERS.ACHIEVEMENTS].active &&
       searchContext.selectedAchievements.length > 0
     ) {
-      criteria.achievements = searchContext.selectedAchievements;
+      criteria.achievements = searchContext.selectedAchievements.map(
+        (a) => a.name
+      );
     }
     if (searchContext.filters[FILTERS.AVAILABILITY].active) {
       if (
@@ -312,7 +292,7 @@ export default function SearchGlobal({ keyword }) {
   return (
     <>
       <div className={style.sideMenu}>
-        <FiltersSideMenu achievements={achievements} />
+        <FiltersSideMenu />
       </div>
       {!isSearching && users.length > 0 && (
         <div className={style.rightSide}>
