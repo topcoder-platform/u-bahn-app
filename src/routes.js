@@ -66,15 +66,6 @@ module.exports = {
       scopes: [constants.Scopes.GetTemplate, constants.Scopes.AllTemplate]
     }
   },
-  '/skills': {
-    get: {
-      controller: 'SkillController',
-      method: 'getEntity',
-      auth: 'jwt',
-      access: constants.AllAuthenticatedUsers,
-      scopes: [constants.Scopes.GetSkill, constants.Scopes.AllSkill]
-    }
-  },
   '/health': {
     get: {
       controller: 'HealthCheckController',

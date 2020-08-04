@@ -10,7 +10,6 @@ import ProfileCard from "../ProfileCard";
 import SuggestionBox from "../SuggestionBox";
 
 import style from "./style.module.scss";
-import config from "../../config";
 
 export default function EditProfileModal({
   onCancel,
@@ -64,7 +63,9 @@ export default function EditProfileModal({
   const addSkill = (skill) => {
     // Verify that the skill does not already exist on the user
     const index = localUser.skills.findIndex(
-      (existingSkill) => existingSkill.externalId === skill.id
+      (existingSkill) =>
+        existingSkill.skillProviderId === skill.skillProviderId &&
+        existingSkill.externalId === skill.skillId
     );
     const exists = localUser.skills[index];
 
@@ -78,10 +79,10 @@ export default function EditProfileModal({
       delete skills[index].isDeleted;
     } else {
       skills.push({
-        externalId: skill.id, // The skill id returned from EMSI becomes externalId in our db
+        externalId: skill.skillId, // The skill id returned from API becomes externalId in our db
         isNew: true,
         name: skill.name,
-        skillProviderId: config.EMSI_SKILLPROVIDER_ID,
+        skillProviderId: skill.skillProviderId,
       });
     }
 

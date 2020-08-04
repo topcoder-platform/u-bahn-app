@@ -11,8 +11,6 @@ REACT_APP_API_URL => The endpoint from which the application retrieves the users
 
 REACT_BULK_UPLOAD_TEMPLATE_ID => The id of the database record which is associated with the bulk upload template file. You would need to query the backend to get the id and then set it against this variable
 
-REACT_APP_EMSI_SKILLPROVIDER_ID => The skill provider id with name 'EMSI'. Denotes that the skills with an externalId are using EMSI as the skill provider.
-
 REACT_APP_ATTRIBUTE_ID_LOCATION
 REACT_APP_ATTRIBUTE_ID_COMPANY
 REACT_APP_ATTRIBUTE_ID_TITLE

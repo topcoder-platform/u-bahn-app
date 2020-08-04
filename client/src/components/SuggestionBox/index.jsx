@@ -2,6 +2,7 @@ import React from "react";
 import Autosuggest from "react-autosuggest";
 import config from "../../config";
 import api from "../../services/api";
+import { getSingleOrg } from "../../services/user-org";
 import style from "./style.module.scss";
 import _ from "lodash";
 import { useSearch, FILTERS } from "../../lib/search";
@@ -59,12 +60,13 @@ const getSkillsSuggestions = async (apiClient, inputValue) => {
   }
 
   term = encodeURIComponent(term);
+  const organizationId = getSingleOrg();
 
-  const url = `${config.API_PREFIX}/skills?q=${term}`;
+  const url = `${config.API_URL}/search/skills?organizationId=${organizationId}&keyword=${term}`;
 
   const { data } = await apiClient.get(url);
 
-  return data.skills;
+  return data;
 };
 
 /**
