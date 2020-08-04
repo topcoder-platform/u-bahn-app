@@ -25,7 +25,7 @@ async function checkIfSkillExists(apiClient, skillProviderId, skillExternalId) {
   }
 
   // The external id of the skill could also be its id field - try querying for it instead
-  url = `${config.API_URL}/skills?skillProviderId=${skillProviderId}&skillId=${skillExternalId}`;
+  url = `${config.API_URL}/skills/${skillExternalId}`;
 
   try {
     response = await apiClient.get(url);
@@ -34,7 +34,7 @@ async function checkIfSkillExists(apiClient, skillProviderId, skillExternalId) {
     // TODO - handle error
   }
 
-  if (response.data) {
+  if (response.data && response.data.skillProviderId === skillProviderId) {
     return response.data;
   }
 
