@@ -120,7 +120,7 @@ export default function SuggestionBox({
   const [suggestions, setSuggestions] = React.useState([]);
   const [value, setValue] = React.useState("");
 
-  const onChange = (event, { newValue }) => setValue(newValue.trim());
+  const onChange = (event, { newValue }) => setValue(newValue);
 
   const onSuggestionsFetchRequested = async ({ value }) => {
     if (purpose === "locations") {
