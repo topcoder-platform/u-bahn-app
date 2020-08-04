@@ -10,8 +10,22 @@ import { getSingleOrg } from "../../services/user-org";
  * @param {String} skillExternalId The skill external id
  */
 async function checkIfSkillExists(apiClient, skillProviderId, skillExternalId) {
-  const url = `${config.API_URL}/skills?skillProviderId=${skillProviderId}&externalId=${skillExternalId}`;
+  let url = `${config.API_URL}/skills?skillProviderId=${skillProviderId}&externalId=${skillExternalId}`;
   let response = {};
+
+  try {
+    response = await apiClient.get(url);
+  } catch (error) {
+    console.log(error);
+    // TODO - handle error
+  }
+
+  if (response.data) {
+    return response.data;
+  }
+
+  // The external id of the skill could also be its id field - try querying for it instead
+  url = `${config.API_URL}/skills?skillProviderId=${skillProviderId}&skillId=${skillExternalId}`;
 
   try {
     response = await apiClient.get(url);
