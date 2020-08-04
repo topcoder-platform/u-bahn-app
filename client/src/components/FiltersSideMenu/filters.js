@@ -142,7 +142,13 @@ export default function SearchTabFilters() {
   const addSkillToFilter = (skill) => {
     const skillFilters = JSON.parse(JSON.stringify(search.selectedSkills));
 
-    if (skillFilters.findIndex((s) => s.id === skill.id) !== -1) {
+    if (
+      skillFilters.findIndex(
+        (s) =>
+          s.skillProviderId === skill.skillProviderId &&
+          s.skillId === skill.skillId
+      ) !== -1
+    ) {
       return;
     }
 
@@ -152,7 +158,11 @@ export default function SearchTabFilters() {
 
   const removeSkillFromFilter = (skill) => {
     const skillFilters = JSON.parse(JSON.stringify(search.selectedSkills));
-    const index = skillFilters.findIndex((s) => s.id === skill.id);
+    const index = skillFilters.findIndex(
+      (s) =>
+        s.skillProviderId === skill.skillProviderId &&
+        s.skillId === skill.skillId
+    );
 
     if (index === -1) {
       return;

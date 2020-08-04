@@ -43,14 +43,5 @@ module.exports = {
   TEMPLATE_FILE_MIMETYPE: process.env.TEMPLATE_FILE_MIMETYPE || 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   TEMPLATE_S3_BUCKET: process.env.TEMPLATE_S3_BUCKET || 'ubahn',
   UPLOAD_S3_BUCKET: process.env.UPLOAD_S3_BUCKET || 'ubahn',
-  S3_OBJECT_URL_EXPIRY_TIME: process.env.S3_OBJECT_URL_EXPIRY_TIME || 60 * 60,
-
-  EMSI: {
-    CLIENT_ID: process.env.EMSI_CLIENT_ID,
-    CLIENT_SECRET: process.env.EMSI_CLIENT_SECRET,
-    GRANT_TYPE: process.env.EMSI_GRANT_TYPE || 'client_credentials',
-    SCOPE: process.env.EMSI_SCOPE || 'emsi_open',
-    AUTH_URL: process.env.EMSI_AUTH_URL || 'https://auth.emsicloud.com/connect/token',
-    BASE_URL: process.env.EMSI_BASE_URL || 'https://skills.emsicloud.com/versions/latest'
-  }
+  S3_OBJECT_URL_EXPIRY_TIME: process.env.S3_OBJECT_URL_EXPIRY_TIME || 60 * 60
 }
