@@ -20,7 +20,7 @@ async function checkIfSkillExists(apiClient, skillProviderId, skillExternalId) {
     // TODO - handle error
   }
 
-  if (response.data) {
+  if (response.data && response.data.length > 0) {
     return response.data;
   }
 
@@ -35,7 +35,7 @@ async function checkIfSkillExists(apiClient, skillProviderId, skillExternalId) {
   }
 
   if (response.data && response.data.skillProviderId === skillProviderId) {
-    return response.data;
+    return [response.data];
   }
 
   return null;
