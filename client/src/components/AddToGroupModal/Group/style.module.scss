@@ -1,0 +1,25 @@
+@import "../../../styles/mixins";
+
+.container {
+  align-items: center;
+  background: $white;
+  border-top: 1px solid $lightGray2;
+  color: $black;
+  display: flex;
+  font: 400 12pt/1.25 Inter;
+  height: 45px;
+  padding: 0 30px;
+  position: relative;
+  justify-content: space-between;
+
+  &:last-child {
+    border-bottom: 1px solid $lightGray2;
+  }
+}
+
+.groupName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 400px;
+  white-space: nowrap;
+}

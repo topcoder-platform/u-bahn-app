@@ -1,0 +1,130 @@
+@import "../../styles/mixins";
+
+.container {
+  z-index: 1100;
+}
+
+.overlay {
+  z-index: 1010;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 -30px -30px;
+  padding: 20px;
+}
+
+.createButton {
+  background: $green2;
+  border: none;
+  color: $white;
+  margin-left: 15px;
+
+  &:hover {
+    background: $green;
+  }
+}
+
+.doneButton {
+  background: $textColor;
+  color: $white;
+  margin-left: 15px;
+
+  &:hover {
+    background: $textColor4;
+  }
+}
+
+.doneDisabledButton {
+  background: $textColor4 !important;
+  color: $white;
+  margin-left: 15px;
+}
+
+.groups {
+  margin: 0 -30px;
+  max-height: calc(95vh - 157px);
+  overflow-y: auto;
+}
+
+.groupsList {
+  outline: 0;
+}
+
+.search {
+  background: $lightGray2;
+  border: none;
+  border-radius: 4px;
+  color: $textColor;
+  flex: 1;
+  font: 400 12pt/1.25 Inter;
+  height: 40px;
+  opacity: 1;
+  outline: none;
+  padding-left: 40px;
+
+  &::placeholder {
+    opacity: 0.5;
+  }
+
+  &::-ms-clear {
+    display: none;
+    height: 0;
+    width: 0;
+  }
+}
+
+.searchRow {
+  display: flex;
+  position: relative;
+  margin: 0 30px;
+}
+
+.subTitle {
+  @include h3;
+  margin-left: 30px;
+}
+
+.title {
+  @include h1;
+  margin-bottom: 20px;
+}
+
+.zoomIcon {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+
+.message {
+  color: $textColor2;
+  font: 400 12pt/1.25 Inter;
+  margin-left: 30px;
+}
+
+.resetKeyword {
+  position: absolute;
+  left: 67.5%;
+  top: 10px;
+  appearance: none;
+  border: none;
+  color: $textColor;
+  cursor: pointer;
+  font-size: 24px;
+  font-family: Arial;
+  outline: none;
+
+  &:hover {
+    color: $red;
+  }
+
+  &.resetKeywordHidden {
+    visibility: hidden;
+  }
+}
+
+.clear {
+  padding-right: 15px;
+  overflow: auto;
+}

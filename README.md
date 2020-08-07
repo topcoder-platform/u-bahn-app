@@ -1,68 +1,66 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# UBahn App
 
-## Available Scripts
+## Install software
 
-In the project directory, you can run:
+- node 12.x
+- npm 6.x
+- docker
+- S3
 
-### `npm start`
+## Deployment
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+There are two apps involved - a front end build using create react app and a backend which is a nodejs api
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+When working locally, you will run the following commands (after setting the necessary environment variables):
 
-### `npm test`
+- npm install
+- cd client && npm install
+- cd .. && npm run dev
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The front end proxies request (some of them) to localhost:3001, which is the backend api code base. This configuration is located in `client/package.json` file itself
 
-### `npm run build`
+Note that the environment variables for the React App start with REACT_APP_
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Local database deployment
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+1. Navigate to docker-db run `docker-compose up -d`
+2. Follow *Configuration* section to update config values
+3. Run `npm i` and `npm run lint`
+4. Create table, `npm run create-tables`, this will create tables (if you need this)
+5. Startup server `npm run start`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Configuration
 
-### `npm run eject`
+Configuration for the application is at `config/default.js` and `config/production.js`. The following parameters can be set in config files or in env variables:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- LOG_LEVEL: the log level
+- PORT: the server port
+- API_VERSION: the API version
+- AUTH_SECRET: TC Authentication secret
+- VALID_ISSUERS: valid issuers for TC authentication
+- AMAZON.AWS_ACCESS_KEY_ID: The AWS access key
+- AMAZON.AWS_SECRET_ACCESS_KEY: The AWS secret key
+- AMAZON.AWS_REGION: The Amazon region to use when connecting. For local dynamodb you can set fake value.
+- AMAZON.IS_LOCAL_DB: Use local or AWS Amazon DynamoDB
+- AMAZON.DYNAMODB_URL: The local url, if using local Amazon DynamoDB
+- AMAZON.DYNAMODB_READ_CAPACITY_UNITS: the AWS DynamoDB read capacity units, if using local Amazon DynamoDB
+- AMAZON.DYNAMODB_WRITE_CAPACITY_UNITS: the AWS DynamoDB write capacity units, if using local Amazon DynamoDB
+- AMAZON.DYNAMODB_UPLOAD_TABLE: DynamoDB table name for upload
+- AMAZON.DYNAMODB_TEMPLATE_TABLE: DynamoDB table name for template
+- AUTH0_URL: Auth0 URL, used to get TC M2M token
+- AUTH0_AUDIENCE: Auth0 audience, used to get TC M2M token
+- TOKEN_CACHE_TIME: Auth0 token cache time, used to get TC M2M token
+- AUTH0_CLIENT_ID: Auth0 client id, used to get TC M2M token
+- AUTH0_CLIENT_SECRET: Auth0 client secret, used to get TC M2M token
+- AUTH0_PROXY_SERVER_URL: Proxy Auth0 URL, used to get TC M2M token
+- BUSAPI_URL: the bus api, default value is `https://api.topcoder-dev.com/v5`
+- KAFKA_ERROR_TOPIC: Kafka error topic, default value is 'common.error.reporting'
+- KAFKA_MESSAGE_ORIGINATOR: the Kafka message originator, default value is 'ubahn-search-ui-api'
+- UPLOAD_CREATE_TOPIC: the upload create Kafka topic, default value is 'ubahn.action.create'
+- TEMPLATE_FILE_MAX_SIZE: the template file restrict size, default value is '2MB'
+- TEMPLATE_FILE_MIMETYPE: the template file accept type, default value is 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+- TEMPLATE_S3_BUCKET: the template s3 bucket name, default value is 'ubahn'
+- UPLOAD_S3_BUCKET: the upload s3 bucket name, default value is 'ubahn'
+- S3_OBJECT_URL_EXPIRY_TIME: the s3 url expiry time, default value is '1 hour'
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Also check out the client folder's README file for additional configurations to set for the front end. You can find the required configurations under client/src/config.js

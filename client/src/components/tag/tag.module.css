@@ -1,0 +1,67 @@
+/* importing colors */
+@value colors: "../../styles/colors.module.css";
+@value gray1, mywhite, lightGray, blue from colors;
+
+/* Tag */
+.tag {
+  border-radius: 5px;
+  border: 2px solid lightGray;
+  background-color: white;
+
+  font-family: Helvetica;
+  font-size: 16px;
+  color: gray1;
+
+  min-width: 50px;
+  max-width: 150px;
+  width: fit-content;
+  height: 34px;
+  padding-left: 11px;
+  padding-right: 11px;
+
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+
+  outline: none;
+  cursor: pointer;
+}
+
+.tagContent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.tagContent span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tagHighlighted {
+  composes: tag;
+  border: 2px solid blue;
+  background-color: white;
+  color: blue;
+}
+
+.tagSelected {
+  composes: tag;
+  border: 2px solid blue;
+  background-color: blue;
+  color: white;
+}
+
+.buttonIcon {
+  width: 32px;
+  height: 18px;
+  align-self: flex-end;
+  margin-right: -11px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}

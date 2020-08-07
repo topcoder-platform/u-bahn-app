@@ -1,0 +1,30 @@
+@import "../../styles/mixins";
+
+.button {
+  background: $white;
+  border: 1px solid $lightGray2;
+  border-radius: 2px;
+  color: $textColor;
+  cursor: pointer;
+  font: 500 9.75pt/1.25 Inter;
+  height: 30px;
+  margin: 5px;
+  outline: none;
+  width: 30px;
+
+  &.disabled {
+    background: $lightGray2;
+    color: $textColor2;
+    cursor: default;
+  }
+
+  &.current {
+    background: $linkColor;
+    border-color: $linkColor;
+    color: $white;
+  }
+}
+
+.container {
+  margin: 10px 5px;
+}

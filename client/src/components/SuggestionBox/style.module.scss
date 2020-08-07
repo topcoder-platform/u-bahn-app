@@ -1,0 +1,124 @@
+@import "../../styles/mixins";
+
+/**
+ * Reference: https://codepen.io/moroshko/pen/LGNJMy
+ */
+
+.container {
+  position: relative;
+}
+
+.input {
+  order: 2;
+  flex: 1;
+  background-color: $lightGray2;
+  border: none;
+  border-radius: 5px;
+  font-family: Helvetica;
+  font-size: 16px;
+  margin-left: 12px;
+  margin-top: 1px;
+  width: 100%;
+  &::-ms-clear {
+    display: none;
+    height: 0;
+    width: 0;
+  }
+}
+
+.inputOpen {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.inputFocused {
+  outline: none;
+}
+
+.suggestionsContainer {
+  display: none;
+}
+
+.suggestionsContainerOpen {
+  display: block;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: auto;
+  border: 2px solid $lightGray5;
+  background-color: $white;
+  font-family: Helvetica, sans-serif;
+  font-size: 16px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  z-index: 2;
+  max-height: 115px;
+  overflow-y: auto;
+}
+
+.suggestionsList {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.suggestion {
+  cursor: pointer;
+  padding: 10px;
+  color: $textColor;
+}
+
+.suggestionHighlighted {
+  background-color: $lightGray2;
+}
+
+/* Searchbox */
+.searchbox {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  overflow: hidden;
+
+  background-color: $lightGray2;
+  border: 0;
+  border-radius: 5px;
+
+  height: 20px;
+  padding-left: 12px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 12px;
+}
+
+.searchboxIcon {
+  order: 1;
+  background: url("/sprites.png") no-repeat -1px -1px;
+  width: 20px;
+  height: 20px;
+}
+
+// firefox solution to vertically align .resetKeyword
+@supports (-moz-appearance: none) {
+  .resetKeyword {
+    align-self: center;
+  }
+}
+
+.resetKeyword {
+  order: 2;
+  appearance: none;
+  border: none;
+  color: $textColor;
+  cursor: pointer;
+  font-size: 24px;
+  font-family: Arial;
+  outline: none;
+
+  &:hover {
+    color: $red;
+  }
+
+  &.resetKeywordHidden {
+    visibility: hidden;
+  }
+}

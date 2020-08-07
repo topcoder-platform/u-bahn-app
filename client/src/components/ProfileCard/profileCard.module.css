@@ -1,0 +1,207 @@
+/* importing colors */
+
+@value colors: "../../styles/colors.module.css";
+@value gray1, gray1_025, gray2, lightGray, white, blue from colors;
+
+/* Profile Card */
+.profileCard {
+  width: 370px;
+  min-height: 326px;
+  margin: 10px;
+
+  border: 1px solid gray1_025;
+  border-radius: 9.5px;
+
+  display: inline-flex;
+  flex-direction: column;
+
+  position: relative;
+}
+
+.profileCard.stripped {
+  border: none;
+  border-radius: 8px 0 0 8px;
+  border-right: 1px solid #eee;
+  box-shadow: none;
+  max-height: calc(95vh - 20px);
+  margin: -30px;
+  margin-right: 0;
+  padding-left: 10px;
+  width: 280px;
+}
+
+.profileCard.stripped .profileCardFooterContainer {
+  border-top: none;
+}
+
+.profileCard.stripped .editButton {
+  display: none;
+}
+
+.deactivatedCard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: inherit;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.deactivatedCard span {
+  display: table-cell;
+  vertical-align: middle;
+  font-family: Helvetica;
+  font-size: 16px;
+  color: white;
+}
+
+.profileCardHeaderContainer {
+  margin-bottom: 0;
+  align-self: flex-start;
+  width: 100%;
+}
+
+.profileCardHeader {
+  margin: 20px;
+  margin-bottom: 0px;
+
+  display: flex;
+  flex-direction: row;
+}
+
+.profileCardMainContainer {
+  width: 100%;
+  margin-bottom: 44px;
+  flex: 0 0 auto;
+}
+
+.profileCardMain {
+  margin: 20px;
+  margin-top: 15px;
+}
+
+.mainNameRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.mainNameText {
+  font-family: Helvetica;
+  font-size: 20px;
+  color: gray2;
+  word-break: break-all;
+  padding-bottom: 10px;
+}
+
+.mainNameBagde {
+  margin-left: 19px;
+  padding-left: 6px;
+  padding-right: 6px;
+  min-width: 12px;
+  height: 24px;
+  border: 2px solid lightGray;
+  border-radius: 5px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  font-family: Helvetica;
+  font-size: 18px;
+  color: gray1;
+}
+
+.mainHandleRow {
+  margin-top: 2px;
+
+  font-family: Helvetica;
+  font-size: 14px;
+  color: gray1;
+}
+
+.mainTitleRow {
+  margin-top: 19px;
+
+  font-family: Helvetica;
+  font-size: 16px;
+  color: gray1;
+}
+
+.mainCompanyRow {
+  margin-top: 5px;
+
+  font-family: Helvetica;
+  font-size: 16px;
+  color: gray1;
+}
+
+.profileCardFooterContainer {
+  align-self: flex-end;
+  border-top: 1px solid gray1_025;
+  min-height: 97px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.profileCardFooter {
+  margin: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarText {
+  font-family: Helvetica;
+  font-size: 20px;
+  color: white;
+}
+
+.headerControls {
+  align-self: flex-start;
+  margin-left: auto;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.headerControlsText {
+  font-family: Helvetica;
+  font-size: 14px;
+  color: gray1;
+  margin-right: 13px;
+}
+
+.headerControlsUpdateText {
+  font-family: Helvetica;
+  font-size: 14px;
+  color: gray1;
+  margin-right: 13px;
+  opacity: 0.25;
+}
+
+.editButton {
+  cursor: pointer;
+  margin-left: 12px;
+}

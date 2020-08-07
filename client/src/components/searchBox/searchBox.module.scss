@@ -1,0 +1,88 @@
+/* importing colors */
+@import "../../styles/mixins";
+@value colors: "../../styles/colors.module.css";
+@value lightGray from colors;
+
+/* Searchbox */
+.searchbox {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  overflow: hidden;
+
+  background-color: lightGray;
+  border: 0;
+  border-radius: 5px;
+
+  height: 20px;
+  padding-left: 12px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 12px;
+}
+
+.searchboxItems {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  font-family: Helvetica;
+  font-size: 18px;
+  height: 20px;
+}
+
+.searchboxIcon {
+  order: 1;
+  background: url("/sprites.png") no-repeat -1px -1px;
+  width: 20px;
+  height: 20px;
+}
+
+.searchboxInput {
+  order: 2;
+  flex: 1;
+  border: 0;
+  margin-left: 12px;
+  margin-top: 1px;
+
+  background-color: lightGray;
+
+  font-family: Helvetica;
+  font-size: 16px;
+  &::-ms-clear {
+    display: none;
+    height: 0;
+    width: 0;
+  }
+}
+
+.searchboxInput:focus,
+.searchboxInput:focus,
+.searchboxInput:focus {
+  outline: none;
+}
+
+// firefox solution to vertically align .resetKeyword
+@supports (-moz-appearance: none) {
+  .resetKeyword {
+    align-self: center;
+  }
+}
+
+.resetKeyword {
+  order: 2;
+  appearance: none;
+  border: none;
+  color: $textColor;
+  cursor: pointer;
+  font-size: 24px;
+  font-family: Arial;
+  outline: none;
+
+  &:hover {
+    color: $red;
+  }
+
+  &.resetKeywordHidden {
+    visibility: hidden;
+  }
+}

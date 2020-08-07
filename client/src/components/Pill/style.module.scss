@@ -1,0 +1,42 @@
+@import "../../styles/mixins";
+
+.close {
+  appearance: none;
+  background: $white;
+  border: none;
+  color: $textColor;
+  cursor: pointer;
+  font-size: 24px;
+  outline: none;
+  margin-right: -6px;
+
+  &:hover {
+    color: $red;
+  }
+}
+
+@-moz-document url-prefix() {
+  .close {
+    margin-bottom: 2px;
+  }
+}
+
+.container {
+  align-items: center;
+  background: $white;
+  border: 2px solid $lightGray2;
+  border-radius: 4px;
+  color: $textColor;
+  display: inline-flex;
+  font: 400 12pt/1 Inter;
+  height: 30px;
+  margin: 4px;
+  padding: 0 10px;
+}
+
+.pillName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 270px;
+  white-space: nowrap;
+}
