@@ -27,7 +27,7 @@ module.exports = {
       method: 'uploadEntity',
       upload: fileUpload.single('upload'),
       auth: 'jwt',
-      access: constants.AllAuthenticatedUsers,
+      access: constants.AdminUser,
       scopes: [constants.Scopes.CreateUpload, constants.Scopes.AllUpload]
     }
   },
@@ -36,14 +36,14 @@ module.exports = {
       controller: 'UploadController',
       method: 'getEntity',
       auth: 'jwt',
-      access: constants.AllAuthenticatedUsers,
+      access: constants.AdminUser,
       scopes: [constants.Scopes.GetUpload, constants.Scopes.AllUpload]
     },
     patch: {
       controller: 'UploadController',
       method: 'partiallyUpdate',
       auth: 'jwt',
-      access: constants.AllAuthenticatedUsers,
+      access: constants.AdminUser,
       scopes: [constants.Scopes.UpdateUpload, constants.Scopes.AllUpload]
     }
   },
@@ -62,7 +62,7 @@ module.exports = {
       controller: 'TemplateController',
       method: 'getEntity',
       auth: 'jwt',
-      access: constants.AllAuthenticatedUsers,
+      access: constants.AdminUser,
       scopes: [constants.Scopes.GetTemplate, constants.Scopes.AllTemplate]
     }
   },
