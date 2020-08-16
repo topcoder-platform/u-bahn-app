@@ -27,7 +27,7 @@ module.exports = {
       method: 'uploadEntity',
       upload: fileUpload.single('upload'),
       auth: 'jwt',
-      access: constants.AdminUser,
+      access: constants.AllAuthenticatedUsers,
       scopes: [constants.Scopes.CreateUpload, constants.Scopes.AllUpload]
     }
   },
@@ -53,7 +53,7 @@ module.exports = {
       method: 'uploadEntity',
       upload: templateUpload.single('template'),
       auth: 'jwt',
-      access: constants.AllAuthenticatedUsers,
+      access: constants.AdminUser,
       scopes: [constants.Scopes.CreateTemplate, constants.Scopes.AllTemplate]
     }
   },
