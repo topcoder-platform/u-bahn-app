@@ -14,12 +14,12 @@ const logger = require('../common/logger')
  * Checks the type of uploaded file and ensures it's allowed.
  * @param {Object} upload The uploaded file
  */
-async function ensureFileTypeIsValid(upload) {
+async function ensureFileTypeIsValid (upload) {
   const allowedExtensions = ['xls', 'xlsx', 'csv']
   const allowedMimeTypes = [
     'application/vnd.ms-excel',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'text/csv',
+    'text/csv'
   ]
   const fileType = await FileType.fromBuffer(upload.buffer)
   const fileExt = upload.originalname.split('.').pop().toLowerCase()
@@ -30,7 +30,7 @@ async function ensureFileTypeIsValid(upload) {
   if (isAllowed === false) {
     throw new errors.ForbiddenError(`You are allowed to upload only ${_.join(allowedExtensions, ',')} types.`)
   }
-} 
+}
 
 /**
  * Get upload entity by id.
@@ -117,7 +117,7 @@ partiallyUpdate.schema = {
   id: Joi.id(),
   authUser: Joi.object().required(),
   data: Joi.object().keys({
-    status: Joi.string().valid(['pending', 'completed', 'failed']).required(),
+    status: Joi.string().valid('pending', 'completed', 'failed').required(),
     info: Joi.string()
   }).required()
 }

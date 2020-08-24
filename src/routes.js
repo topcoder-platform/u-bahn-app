@@ -4,7 +4,7 @@
 const multer = require('multer')
 const config = require('config')
 const _ = require('lodash')
-const constants = require('../app-constants')
+const constants = require('./constants')
 const fileUpload = multer({ storage: multer.memoryStorage() })
 
 // config template upload properties
