@@ -4,7 +4,6 @@
 
 require('./app-bootstrap')
 
-const path = require('path')
 const config = require('config')
 const express = require('express')
 const interceptor = require('express-interceptor')

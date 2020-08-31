@@ -26,8 +26,20 @@ const AllAuthenticatedUsers = [
  */
 const AdminUser = [UserRoles.admin, UserRoles.administrator]
 
+const Scopes = {
+  CreateUpload: 'create:upload',
+  GetUpload: 'read:upload',
+  UpdateUpload: 'update:upload',
+  AllUpload: 'all:upload',
+  CreateTemplate: 'create:template',
+  GetTemplate: 'read:template',
+  AllTemplate: 'all:template',
+  GetSkill: 'read:skill',
+  AllSkill: 'all:skill'
+}
+
 module.exports = {
-  UserRoles,
   AllAuthenticatedUsers,
-  AdminUser
+  AdminUser,
+  Scopes
 }
