@@ -18,10 +18,16 @@ import * as OrgService from "../../services/user-org";
 import api from "../../services/api";
 
 import Cookies from "js-cookie";
+import { getNickname } from "../../lib/common";
 
 export default function SearchPage() {
   const apiClient = api();
-  const { isLoading, isAuthenticated, user: auth0User, loginWithRedirect } = useAuth0();
+  const {
+    isLoading,
+    isAuthenticated,
+    user: auth0User,
+    loginWithRedirect,
+  } = useAuth0();
   const [tab, setTab] = React.useState(TABS.SEARCH);
   const [keyword, setKeyword] = React.useState(null);
   const [selectedOrg, setSelectedOrg] = React.useState(null);
@@ -37,7 +43,7 @@ export default function SearchPage() {
     (async () => {
       const organizations = await OrgService.getOrg(
         apiClient,
-        auth0User.nickname
+        getNickname(auth0User)
       );
 
       setLoadingOrgs(false);
@@ -64,8 +70,8 @@ export default function SearchPage() {
   }, [keyword]);
 
   const onSelectOrg = (org) => {
-    const cookie = Cookies.get('auth0.is.authenticated');
-    if (cookie && cookie === 'true') {
+    const cookie = Cookies.get("auth0.is.authenticated");
+    if (cookie && cookie === "true") {
       OrgService.setSingleOrg(org);
       setSelectedOrg(org);
       setShouldSelectOrg(false);

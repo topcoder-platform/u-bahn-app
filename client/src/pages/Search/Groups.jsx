@@ -11,6 +11,7 @@ import api from "../../services/api";
 import * as groupLib from "../../lib/groups";
 
 import style from "./style.module.scss";
+import { getNickname } from "../../lib/common";
 
 const colorIterator = makeColorIterator(avatarColors);
 
@@ -37,7 +38,7 @@ export default function SearchGroups() {
     (async () => {
       const groups = await groupLib.getGroups(
         apiClient,
-        auth0User.nickname,
+        getNickname(auth0User),
         cancelTokenSource.token
       );
 

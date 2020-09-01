@@ -2,6 +2,7 @@ import React from "react";
 import PT from "prop-types";
 
 import { useSearch } from "../../lib/search";
+import { getNickname } from "../../lib/common";
 import { ReactComponent as SearchTabIcon } from "../../assets/images/search-tab-icon.svg";
 import { ReactComponent as GroupsTabIcon } from "../../assets/images/groups-tab-icon.svg";
 import { ReactComponent as UploadsTabIcon } from "../../assets/images/uploads-tab-icon.svg";
@@ -102,7 +103,7 @@ export default function Header({
           className={style.accountMenu}
           onMouseDown={() => setShowAccountDropdown(!showAccountDropdown)}
         >
-          {user.nickname}
+          {getNickname(user)}
           {organization ? <>&nbsp;({organization.name})</> : ""}
           {showAccountDropdown ? (
             <div className={`${iconStyles.chevronUpG} ${style.arrow}`}></div>
