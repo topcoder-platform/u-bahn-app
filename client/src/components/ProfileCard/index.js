@@ -28,6 +28,53 @@ function ProfileCard({
   const apiClient = api();
 
   if (formatData) {
+    let title;
+    let isAvailable;
+    let company;
+    let location;
+    let isMissingAPrimaryAttribute = false;
+    let missingPrimaryAttributes = [];
+
+    try {
+      title = cardHelper.getUserPrimaryAttributeDetails(
+        profile,
+        config.PRIMARY_ATTRIBUTES.title
+      );
+    } catch (error) {
+      missingPrimaryAttributes.push("Title");
+      isMissingAPrimaryAttribute = true;
+    }
+
+    try {
+      isAvailable = cardHelper.getUserPrimaryAttributeDetails(
+        profile,
+        config.PRIMARY_ATTRIBUTES.availability
+      );
+    } catch (error) {
+      missingPrimaryAttributes.push("Availability");
+      isMissingAPrimaryAttribute = true;
+    }
+
+    try {
+      company = cardHelper.getUserPrimaryAttributeDetails(
+        profile,
+        config.PRIMARY_ATTRIBUTES.company
+      );
+    } catch (error) {
+      missingPrimaryAttributes.push("Company");
+      isMissingAPrimaryAttribute = true;
+    }
+
+    try {
+      location = cardHelper.getUserPrimaryAttributeDetails(
+        profile,
+        config.PRIMARY_ATTRIBUTES.location
+      );
+    } catch (error) {
+      missingPrimaryAttributes.push("Location");
+      isMissingAPrimaryAttribute = true;
+    }
+
     // The profile data structure received from api is converted to a format
     // that is easy to use for rendering the UI as well as updating the fields
     tempUser = {
@@ -38,27 +85,17 @@ function ProfileCard({
       groups: cardHelper.getUserGroups(profile),
       skills: cardHelper.getUserSkills(profile),
       achievements: cardHelper.getUserAchievements(profile),
-      title: cardHelper.getUserPrimaryAttributeDetails(
-        profile,
-        config.PRIMARY_ATTRIBUTES.title
-      ),
-      isAvailable: cardHelper.getUserPrimaryAttributeDetails(
-        profile,
-        config.PRIMARY_ATTRIBUTES.availability
-      ),
-      company: cardHelper.getUserPrimaryAttributeDetails(
-        profile,
-        config.PRIMARY_ATTRIBUTES.company
-      ),
-      location: cardHelper.getUserPrimaryAttributeDetails(
-        profile,
-        config.PRIMARY_ATTRIBUTES.location
-      ),
+      title,
+      isAvailable,
+      company,
+      location,
       companyAttributes: cardHelper.getUserCompanyAttributeDetails(profile),
       avatarColor,
       // Indicates if the user has been deactivated. The user is still shown in this case, but with a
       // clear indicator about its deactivated status.
       isDeactivated: cardHelper.isUserDeactivated(profile),
+      isMissingAPrimaryAttribute,
+      missingPrimaryAttributes,
     };
   } else {
     // Data is already in the format seen above. No further processing needed
@@ -262,6 +299,23 @@ function ProfileCard({
 
   if (stripped) {
     containerStyle += ` ${styles.stripped}`;
+  }
+
+  if (user.isMissingAPrimaryAttribute) {
+    return (
+      <div className={containerStyle}>
+        <div className={styles.profileCardHeaderContainer}></div>
+        <div className={styles.profileCardMainContainer}></div>
+        <div className={styles.profileCardFooterContainer}></div>
+        <div className={styles.deactivatedCard}>
+          <span>
+            User with handle {user.handle} is missing values for the following
+            primary attribute(s):
+            <br /> {user.missingPrimaryAttributes.join(", ")}{" "}
+          </span>
+        </div>
+      </div>
+    );
   }
 
   return (

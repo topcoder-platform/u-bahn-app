@@ -12,6 +12,7 @@ import * as groupLib from "../../lib/groups";
 
 import style from "./style.module.scss";
 import Axios from "axios";
+import { getNickname } from "../../lib/common";
 
 export default function AddToGroupModal({ onCancel, updateUser, user }) {
   const apiClient = api();
@@ -42,7 +43,7 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
     (async () => {
       const groups = await groupLib.getGroups(
         apiClient,
-        auth0User.nickname,
+        getNickname(auth0User),
         cancelTokenSource.token
       );
 
