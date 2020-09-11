@@ -12,7 +12,7 @@ export function getSearchUsersRequestDetails({
   criteria,
   orderBy,
 } = {}) {
-  const url = `${config.API_URL}/search/users`;
+  const url = `${config.API_URL}/skill-search/users`;
   const params = new URLSearchParams();
   const searchPayload = {};
 
