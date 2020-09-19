@@ -9,6 +9,13 @@ export default function UserGroup({
   removeGroup,
   showManageGroupsModal,
 }) {
+  const confirmRemoveGroup = (group) => {
+    if (
+      window.confirm(`Are you sure you want to remove the user from the group?`)
+    ) {
+      removeGroup(group);
+    }
+  };
   return (
     <>
       <div className={styles.groupHeading}>
@@ -25,7 +32,7 @@ export default function UserGroup({
                 key={group.id}
                 name={group.name}
                 removable={true}
-                onRemove={() => removeGroup(group)}
+                onRemove={() => confirmRemoveGroup(group)}
               />
             );
           })}
