@@ -130,6 +130,23 @@ async function getById (modelName, id) {
 }
 
 /**
+ * Get all Data by model
+ * @param {String} modelName The dynamoose model name
+ * @returns found record(s)
+ */
+async function getAll (modelName, query) {
+  return new Promise((resolve, reject) => {
+    models[modelName].scan(query).exec((err, result) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
+    })
+  })
+}
+
+/**
  * Create item in database
  * @param {Object} modelName The dynamoose model name
  * @param {Object} data The create data object
@@ -201,11 +218,16 @@ async function uploadToS3 (bucket, file, fileName) {
  * @returns {string} signed url
  */
 function generateS3Url (objectKey) {
-  const url = s3.getSignedUrl('getObject', {
-    Bucket: config.UPLOAD_S3_BUCKET,
-    Key: objectKey,
-    Expires: parseInt(config.S3_OBJECT_URL_EXPIRY_TIME)
-  })
+  let url
+
+  if (objectKey) {
+    url = s3.getSignedUrl('getObject', {
+      Bucket: config.UPLOAD_S3_BUCKET,
+      Key: objectKey,
+      Expires: parseInt(config.S3_OBJECT_URL_EXPIRY_TIME)
+    })
+  }
+
   return url
 }
 
@@ -291,6 +313,7 @@ module.exports = {
   createTable,
   deleteTable,
   getById,
+  getAll,
   create,
   update,
   uploadToS3,

@@ -29,6 +29,13 @@ module.exports = {
       auth: 'jwt',
       access: constants.AllAuthenticatedUsers,
       scopes: [constants.Scopes.CreateUpload, constants.Scopes.AllUpload]
+    },
+    get: {
+      controller: 'UploadController',
+      method: 'getEntities',
+      auth: 'jwt',
+      access: constants.AllAuthenticatedUsers,
+      scopes: [constants.Scopes.GetUpload, constants.Scopes.AllUpload]
     }
   },
   '/uploads/:id': {

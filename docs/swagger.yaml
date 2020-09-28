@@ -90,6 +90,65 @@ paths:
       - api_key: []
       x-swagger-router-controller: "Templates"
   /uploads:
+    get:
+      summary: "Get all uploads"
+      description: |
+        "Return all uploads. You can specify the date from when you would like the records.""
+      tags:
+        - "uploads"
+      operationId: "getUploads"
+      parameters:
+      - name: "from"
+        in: "query"
+        description: "The date from when you would like the uploads (inclusive)"
+        required: false
+        type: "string"
+        default: "today's value"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Upload'
+        "400":
+          $ref: "#/definitions/BadRequest"
+        "401":
+          $ref: "#/definitions/Unauthorized"
+        "403":
+          $ref: "#/definitions/Forbidden"
+        "404":
+          $ref: "#/definitions/NotFound"
+        "500":
+          $ref: "#/definitions/ServerError"
+
+    head:
+      summary: "Get only status code for fetching all uploads"
+      description: "Equivalent to GET /uploads, but returns only status codes"
+      tags:
+        - "uploads"
+      operationId: "headUploads"
+      parameters:
+      - name: "from"
+        in: "query"
+        description: "The date from when you would like the uploads (inclusive)"
+        required: false
+        type: "string"
+        default: "today's value"
+      responses:
+        "200":
+          description: "Success"
+        "400":
+          $ref: "#/definitions/BadRequest"
+        "401":
+          $ref: "#/definitions/Unauthorized"
+        "403":
+          $ref: "#/definitions/Forbidden"
+        "404":
+          $ref: "#/definitions/NotFound"
+        "500":
+          $ref: "#/definitions/ServerError"
+
     post:
       tags:
       - "uploads"
@@ -176,7 +235,7 @@ paths:
         description: "The request body"
         required: true
         schema:
-          $ref: "#/definitions/body"
+          $ref: "#/definitions/PartiallyUpdateUpload"
       responses:
         "200":
           description: "Success"
@@ -255,6 +314,10 @@ definitions:
           type: "string"
           format: "uuid"
         url:
+          type: "string"
+          format: "uri"
+          description: "S3 signed url"
+        failedRecordsUrl:
           type: "string"
           format: "uri"
           description: "S3 signed url"
@@ -368,7 +431,7 @@ definitions:
         example: "Creating a resource with a name already exists."
         description: "The conflict error message."
     description: "The conflict error entity."
-  body:
+  PartiallyUpdateUpload:
     type: "object"
     required:
     - "status"
@@ -376,4 +439,6 @@ definitions:
       status:
         type: "string"
       info:
+        type: "string"
+      failedRecordsObjectKey:
         type: "string"
