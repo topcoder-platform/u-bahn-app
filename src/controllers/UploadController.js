@@ -18,6 +18,16 @@ async function uploadEntity (req, res) {
  * @param {Object} req the request
  * @param {Object} res the response
  */
+async function getEntities (req, res) {
+  const result = await service.getEntities(req.query)
+  res.send(result)
+}
+
+/**
+ * Get upload
+ * @param {Object} req the request
+ * @param {Object} res the response
+ */
 async function getEntity (req, res) {
   const result = await service.getEntity(req.params.id)
   res.send(result)
@@ -34,6 +44,7 @@ async function partiallyUpdate (req, res) {
 }
 
 module.exports = {
+  getEntities,
   getEntity,
   uploadEntity,
   partiallyUpdate

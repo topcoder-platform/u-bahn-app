@@ -33,6 +33,39 @@ async function ensureFileTypeIsValid (upload) {
 }
 
 /**
+ * Returns all uploads (filtered by created date)
+ * @param {Object} query the filter query
+ * @returns {Object} the upload of given id
+ */
+async function getEntities (query) {
+  if (!query.from) {
+    query.from = (new Date((new Date()).setDate((new Date()).getDate() - 1)).toISOString()) // 24 hours ago
+  }
+  const uploads = await helper.getAll(config.AMAZON.DYNAMODB_UPLOAD_TABLE, { created: { ge: query.from } })
+  const res = _.map(uploads, (upload) => {
+    upload = _.extend(
+      _.omit(
+        _.pickBy(upload, _.isString),
+        ['objectKey', 'failedRecordsObjectKey']
+      ),
+      {
+        url: helper.generateS3Url(upload.objectKey),
+        failedRecordsUrl: helper.generateS3Url(upload.failedRecordsObjectKey)
+      }
+    )
+
+    return upload
+  })
+  return res
+}
+
+getEntity.schema = {
+  query: Joi.object().keys({
+    from: Joi.date().iso()
+  })
+}
+
+/**
  * Get upload entity by id.
  * @param {String} id the upload id
  * @returns {Object} the upload of given id
@@ -40,7 +73,15 @@ async function ensureFileTypeIsValid (upload) {
 async function getEntity (id) {
   // get from DB
   const upload = await helper.getById(config.AMAZON.DYNAMODB_UPLOAD_TABLE, id)
-  const res = _.extend(_.omit(_.pickBy(upload, _.isString), 'objectKey'), { url: helper.generateS3Url(upload.objectKey) })
+  const res = _.extend(
+    _.omit(
+      _.pickBy(upload, _.isString),
+      ['objectKey', 'failedRecordsObjectKey']),
+    {
+      url: helper.generateS3Url(upload.objectKey),
+      failedRecordsUrl: helper.generateS3Url(upload.failedRecordsObjectKey)
+    }
+  )
   return res
 }
 
@@ -109,7 +150,15 @@ async function partiallyUpdate (authUser, id, data) {
   }
   // then update data in DB
   await helper.update(upload, data)
-  const res = _.extend(_.omit(_.pickBy(upload, _.isString), 'objectKey'), { url: helper.generateS3Url(upload.objectKey) })
+  const res = _.extend(
+    _.omit(
+      _.pickBy(upload, _.isString),
+      ['objectKey', 'failedRecordsObjectKey']),
+    {
+      url: helper.generateS3Url(upload.objectKey),
+      failedRecordsUrl: helper.generateS3Url(upload.failedRecordsObjectKey)
+    }
+  )
   return res
 }
 
@@ -118,11 +167,13 @@ partiallyUpdate.schema = {
   authUser: Joi.object().required(),
   data: Joi.object().keys({
     status: Joi.string().valid('pending', 'completed', 'failed').required(),
-    info: Joi.string()
+    info: Joi.string(),
+    failedRecordsObjectKey: Joi.string()
   }).required()
 }
 
 module.exports = {
+  getEntities,
   getEntity,
   create,
   partiallyUpdate
