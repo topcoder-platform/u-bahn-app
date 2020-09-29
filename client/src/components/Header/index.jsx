@@ -8,7 +8,7 @@ import { ReactComponent as GroupsTabIcon } from "../../assets/images/groups-tab-
 import { ReactComponent as UploadsTabIcon } from "../../assets/images/uploads-tab-icon.svg";
 import { ReactComponent as ZoomIcon } from "../../assets/images/zoom-icon.svg";
 
-import { useAuth0 } from "../../react-auth0-spa";
+import config from "../../config";
 import { clearOrg } from "../../services/user-org";
 
 import style from "./style.module.scss";
@@ -30,8 +30,17 @@ export default function Header({
   const searchContext = useSearch();
   const [searchText, setSearchText] = React.useState("");
   const [showAccountDropdown, setShowAccountDropdown] = React.useState(false);
+  const [nickname, setNickname] = React.useState("");
 
   const profileDropdownEl = React.useRef(null);
+  React.useEffect(() => {
+    (async () => {
+      const n = await getNickname();
+
+      setNickname(n);
+    })();
+  });
+
   React.useEffect(() => {
     if (showAccountDropdown) {
       profileDropdownEl.current.focus();
@@ -49,20 +58,13 @@ export default function Header({
     onSearch && onSearch(value.trim());
   };
 
-  const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
-
   const logoutWithRedirect = () => {
     clearOrg();
-    logout({
-      returnTo: window.location.origin,
-    });
+    const url = `${
+      config.AUTH.TC_AUTH_URL
+    }?logout=true&retUrl=${encodeURIComponent(config.AUTH.APP_URL)}`;
+    window.location.href = url;
   };
-
-  if (!isAuthenticated) {
-    loginWithRedirect({});
-
-    return null;
-  }
 
   const reset = () => {
     setSearchText("");
@@ -103,7 +105,7 @@ export default function Header({
           className={style.accountMenu}
           onMouseDown={() => setShowAccountDropdown(!showAccountDropdown)}
         >
-          {getNickname(user)}
+          {nickname}
           {organization ? <>&nbsp;({organization.name})</> : ""}
           {showAccountDropdown ? (
             <div className={`${iconStyles.chevronUpG} ${style.arrow}`}></div>

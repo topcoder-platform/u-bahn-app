@@ -32,10 +32,17 @@ export default {
     isAvailable: process.env.REACT_APP_ATTRIBUTE_ID_ISAVAILABLE,
   },
 
-  AUTH0: {
-    domain: process.env.REACT_APP_AUTH0_DOMAIN,
-    clientId: process.env.REACT_APP_AUTH0_CLIENTID,
-    audience: process.env.REACT_APP_AUTH0_AUDIENCE,
+  // TODO - Search and remove references before deleting below code
+  // AUTH0: {
+  //   domain: process.env.REACT_APP_AUTH0_DOMAIN,
+  //   clientId: process.env.REACT_APP_AUTH0_CLIENTID,
+  //   audience: process.env.REACT_APP_AUTH0_AUDIENCE,
+  //   handleClaims: process.env.REACT_APP_AUTH0_CLAIMS_HANDLE,
+  // },
+  AUTH: {
+    ACCOUNTS_APP_CONNECTOR: process.env.REACT_APP_ACCOUNTS_APP_CONNECTOR,
+    TC_AUTH_URL: process.env.REACT_APP_TC_AUTH_URL,
+    APP_URL: process.env.REACT_APP_APP_URL,
     handleClaims: process.env.REACT_APP_AUTH0_CLAIMS_HANDLE,
   },
 };

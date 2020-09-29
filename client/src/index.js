@@ -15,33 +15,13 @@ import * as serviceWorker from "./serviceWorker";
 import { SearchContextProvider } from "./lib/search";
 import { ModalContextProvider } from "./lib/modal";
 
-import { Auth0Provider } from "./react-auth0-spa";
-import history from "./lib/history";
-import config from "./config";
-
-const onRedirectCallback = (appState) => {
-  history.push(
-    appState && appState.targetUrl
-      ? appState.targetUrl
-      : window.location.pathname
-  );
-};
-
 ReactDOM.render(
   <React.StrictMode>
-    <Auth0Provider
-      domain={config.AUTH0.domain}
-      client_id={config.AUTH0.clientId}
-      audience={config.AUTH0.audience}
-      redirect_uri={window.location.origin}
-      onRedirectCallback={onRedirectCallback}
-    >
-      <ModalContextProvider>
-        <SearchContextProvider>
-          <Router />
-        </SearchContextProvider>
-      </ModalContextProvider>
-    </Auth0Provider>
+    <ModalContextProvider>
+      <SearchContextProvider>
+        <Router />
+      </SearchContextProvider>
+    </ModalContextProvider>
     ,
   </React.StrictMode>,
   document.getElementById("root")

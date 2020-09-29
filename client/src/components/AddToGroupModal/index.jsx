@@ -7,7 +7,6 @@ import Group from "./Group";
 import Modal from "../Modal";
 import { ReactComponent as ZoomIcon } from "../../assets/images/zoom-icon.svg";
 import api from "../../services/api";
-import { useAuth0 } from "../../react-auth0-spa";
 import * as groupLib from "../../lib/groups";
 
 import style from "./style.module.scss";
@@ -17,7 +16,6 @@ import { getNickname } from "../../lib/common";
 export default function AddToGroupModal({ onCancel, updateUser, user }) {
   const apiClient = api();
   const [loadingGroups, setIsLoadingGroups] = React.useState(true);
-  const { isLoading, isAuthenticated, user: auth0User } = useAuth0();
   const [myGroups, setMyGroups] = React.useState([]);
   const [otherGroups, setOtherGroups] = React.useState([]);
   const [filter, setFilter] = React.useState("");
@@ -36,14 +34,11 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
   });
 
   React.useEffect(() => {
-    if (isLoading || !isAuthenticated) {
-      return;
-    }
-
     (async () => {
+      const nickname = await getNickname();
       const groups = await groupLib.getGroups(
         apiClient,
-        getNickname(auth0User),
+        nickname,
         cancelTokenSource.token
       );
 
@@ -70,7 +65,7 @@ export default function AddToGroupModal({ onCancel, updateUser, user }) {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, isAuthenticated, auth0User]);
+  }, []);
 
   const switchSelected = async (toggledGroup) => {
     let updatedGroup;
