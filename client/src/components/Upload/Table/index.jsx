@@ -22,6 +22,8 @@ export default function Table({ state, data }) {
           year: "numeric",
           month: "short",
           day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
         }).format(new Date(date)),
     },
     status: { name: "Status" },
@@ -34,39 +36,59 @@ export default function Table({ state, data }) {
             Download
           </a>
         ) : (
-          "N/A"
+          "-"
         ),
     },
   };
 
   return state === TABLE_STATES.LOADING_LAST_UPLOADS ? (
     <div className={style.content}>
-      <h1 className={style.title}>Loading last uploads...</h1>
+      <h1 className={style.title}>Gathering status of older uploads...</h1>
     </div>
-  ) : (
-    data.length > 0 && (
-      <div className={style.content}>
-        <h1 className={style.title}>Past 24 Hours Upload Status</h1>
-        <table className={style.tableContent}>
+  ) : data.length > 0 ? (
+    <div className={style.content}>
+      <h1 className={style.title}>Past 24 Hours Upload Status</h1>
+      <table className={style.tableContent}>
+        <thead>
           <tr>
-            {_.map(_.values(columns), ({ name }) => (
-              <th>{name}</th>
+            {_.map(_.values(columns), ({ name }, i) => (
+              <th key={i}>{name}</th>
             ))}
           </tr>
-          {_.map(data, (item) => (
-            <tr>
-              {_.map(_.keys(columns), (colKey) => (
-                <td>
+        </thead>
+        <tbody>
+          {_.map(data, (item, i) => (
+            <tr key={i}>
+              {_.map(_.keys(columns), (colKey, j) => (
+                <td key={j}>
                   {columns[colKey].formatter
                     ? columns[colKey].formatter(item[colKey])
-                    : item[colKey] || "N/A"}
+                    : item[colKey] || "-"}
                 </td>
               ))}
             </tr>
           ))}
-        </table>
-      </div>
-    )
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    <div className={style.content}>
+      <h1 className={style.title}>Past 24 Hours Upload Status</h1>
+      <table className={style.tableContent}>
+        <thead>
+          <tr>
+            {_.map(_.values(columns), ({ name }, i) => (
+              <th key={i}>{name}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colSpan="4">No records uploaded in the past 24 hours</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   );
 }
 

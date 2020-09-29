@@ -94,7 +94,6 @@ export default function Upload({ templateId }) {
         const { data } = await apiClient.get(url);
 
         setTableState(TABLE_STATES.RESULT);
-        console.log("response", data);
         setLastUploads(data);
       } catch (error) {
         setTableState(TABLE_STATES.RESULT);
