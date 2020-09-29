@@ -4,15 +4,18 @@ import FormData from "form-data";
 import PT from "prop-types";
 
 import Container from "./Container";
+import Table, { TABLE_STATES } from "./Table";
 import Initial from "./Initial";
 import Message from "./Message";
 import Progress from "./Progress";
+
+import style from "./style.module.scss";
 
 import config from "../../config";
 import api from "../../services/api";
 import { getSingleOrg } from "../../services/user-org";
 
-const STATES = {
+const UPLOAD_STATES = {
   INITIAL: "INITIAL",
   MESSAGE: "MESSAGE",
   RESULT: "RESULT",
@@ -21,15 +24,19 @@ const STATES = {
 
 export default function Upload({ templateId }) {
   const apiClient = api();
-  const [state, setState] = React.useState({
-    type: STATES.INITIAL,
+  const [uploadState, setUploadState] = React.useState({
+    type: UPLOAD_STATES.INITIAL,
     data: null,
   });
+  const [tableState, setTableState] = React.useState(
+    TABLE_STATES.LOADING_LAST_UPLOADS
+  );
+  const [lastUploads, setLastUploads] = React.useState([]);
 
   const showError = (error) => {
     const { message } = error.toJSON ? error.toJSON() : error;
-    setState({
-      type: STATES.MESSAGE,
+    setUploadState({
+      type: UPLOAD_STATES.MESSAGE,
       data: {
         title: "Error Occured",
         message,
@@ -44,8 +51,8 @@ export default function Upload({ templateId }) {
     data.append("upload", file);
     data.append("organizationId", getSingleOrg());
 
-    setState({
-      type: STATES.UPLOADING,
+    setUploadState({
+      type: UPLOAD_STATES.UPLOADING,
       data: { progress: 0 },
     });
 
@@ -55,8 +62,8 @@ export default function Upload({ templateId }) {
           "Content-Type": "multipart/form-data",
         },
         onUploadProgress: ({ loaded, total }) => {
-          setState({
-            type: STATES.UPLOADING,
+          setUploadState({
+            type: UPLOAD_STATES.UPLOADING,
             data: {
               progress: loaded / total,
             },
@@ -64,8 +71,8 @@ export default function Upload({ templateId }) {
         },
       });
 
-      setState({
-        type: STATES.MESSAGE,
+      setUploadState({
+        type: UPLOAD_STATES.MESSAGE,
         data: {
           title: "Profiles uploaded successfully",
           message:
@@ -77,19 +84,39 @@ export default function Upload({ templateId }) {
     }
   };
 
-  let content;
-  switch (state.type) {
-    case STATES.MESSAGE:
-      content = (
+  React.useEffect(() => {
+    async function fetchUploads() {
+      const url = `${config.API_PREFIX}/uploads`;
+
+      setTableState({ type: TABLE_STATES.LOADING_LAST_UPLOADS });
+
+      try {
+        const { data } = await apiClient.get(url);
+
+        setTableState(TABLE_STATES.RESULT);
+        console.log("response", data);
+        setLastUploads(data);
+      } catch (error) {
+        setTableState(TABLE_STATES.RESULT);
+        setLastUploads([]);
+      }
+    }
+    fetchUploads();
+  }, [apiClient]);
+
+  let uploadSectionContent;
+  switch (uploadState.type) {
+    case UPLOAD_STATES.MESSAGE:
+      uploadSectionContent = (
         <Message
-          message={state.data.message}
-          onClose={() => setState({ type: STATES.INITIAL })}
-          title={state.data.title}
+          message={uploadState.data.message}
+          onClose={() => setUploadState({ type: UPLOAD_STATES.INITIAL })}
+          title={uploadState.data.title}
         />
       );
       break;
-    case STATES.INITIAL:
-      content = (
+    case UPLOAD_STATES.INITIAL:
+      uploadSectionContent = (
         <Initial
           onError={showError}
           onUpload={upload}
@@ -97,13 +124,18 @@ export default function Upload({ templateId }) {
         />
       );
       break;
-    case STATES.UPLOADING:
-      content = <Progress progress={state.data.progress} />;
+    case UPLOAD_STATES.UPLOADING:
+      uploadSectionContent = <Progress progress={uploadState.data.progress} />;
       break;
     default:
       throw Error("Invalid state");
   }
-  return <Container>{content}</Container>;
+  return (
+    <div className={style.content}>
+      <Table state={tableState} data={lastUploads} />
+      <Container>{uploadSectionContent}</Container>
+    </div>
+  );
 }
 
 Upload.propTypes = {
