@@ -88,7 +88,7 @@ export default function Upload({ templateId }) {
     async function fetchUploads() {
       const url = `${config.API_PREFIX}/uploads`;
 
-      setTableState({ type: TABLE_STATES.LOADING_LAST_UPLOADS });
+      setTableState(TABLE_STATES.LOADING_LAST_UPLOADS);
 
       try {
         const { data } = await apiClient.get(url);

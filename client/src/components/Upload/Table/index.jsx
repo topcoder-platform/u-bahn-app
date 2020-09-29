@@ -40,7 +40,9 @@ export default function Table({ state, data }) {
   };
 
   return state === TABLE_STATES.LOADING_LAST_UPLOADS ? (
-    <p>Loading last uploads...</p>
+    <div className={style.content}>
+      <h1 className={style.title}>Loading last uploads...</h1>
+    </div>
   ) : (
     data.length > 0 && (
       <div className={style.content}>
