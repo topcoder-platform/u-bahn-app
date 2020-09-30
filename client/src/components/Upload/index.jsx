@@ -14,6 +14,7 @@ import style from "./style.module.scss";
 import config from "../../config";
 import api from "../../services/api";
 import { getSingleOrg } from "../../services/user-org";
+import { ConsoleTransportOptions } from "winston/lib/winston/transports";
 
 const UPLOAD_STATES = {
   INITIAL: "INITIAL",
@@ -76,7 +77,7 @@ export default function Upload({ templateId }) {
         data: {
           title: "Profiles uploaded successfully",
           message:
-            "The uploaded profiles are now being processed. This may take some time, depending on the number of profiles. Once processed, you will be able to see the profiles in the search page.",
+            "The uploaded profiles are now being processed. This may take some time, depending on the number of profiles. Once processed, you will be able to see the profiles in the search page. Refresh this tab to view the status of the upload.",
         },
       });
     } catch (error) {
@@ -91,11 +92,20 @@ export default function Upload({ templateId }) {
       setTableState(TABLE_STATES.LOADING_LAST_UPLOADS);
 
       try {
-        const { data } = await apiClient.get(url);
+        const { data } = await apiClient.get(url, {
+          params: {
+            organizationId: getSingleOrg(),
+          },
+        });
 
         setTableState(TABLE_STATES.RESULT);
         setLastUploads(data);
       } catch (error) {
+        console.log("An error occurred when fetching uploads");
+        console.log(error);
+        alert(
+          "An error occurred when fetching details about uploads carried out in the past 24 hours"
+        );
         setTableState(TABLE_STATES.RESULT);
         setLastUploads([]);
       }

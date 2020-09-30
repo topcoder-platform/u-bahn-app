@@ -26,6 +26,7 @@ export default function Table({ state, data }) {
           minute: "2-digit",
         }).format(new Date(date)),
     },
+    createdBy: { name: "Uploader" },
     status: { name: "Status" },
     info: { name: "Info" },
     failedRecordsUrl: {
@@ -84,7 +85,7 @@ export default function Table({ state, data }) {
         </thead>
         <tbody>
           <tr>
-            <td colSpan="4">No records uploaded in the past 24 hours</td>
+            <td colSpan="5">No records uploaded in the past 24 hours</td>
           </tr>
         </tbody>
       </table>
