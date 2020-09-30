@@ -41,7 +41,17 @@ async function getEntities (query) {
   if (!query.from) {
     query.from = (new Date((new Date()).setDate((new Date()).getDate() - 1)).toISOString()) // 24 hours ago
   }
-  const uploads = await helper.getAll(config.AMAZON.DYNAMODB_UPLOAD_TABLE, { created: { ge: query.from } })
+  const uploads = await helper.getAll(
+    config.AMAZON.DYNAMODB_UPLOAD_TABLE,
+    {
+      created: {
+        ge: query.from
+      },
+      organizationId: {
+        eq: query.organizationId
+      }
+    }
+  )
   const res = _.map(uploads, (upload) => {
     upload = _.extend(
       _.omit(
@@ -59,9 +69,10 @@ async function getEntities (query) {
   return res
 }
 
-getEntity.schema = {
+getEntities.schema = {
   query: Joi.object().keys({
-    from: Joi.date().iso()
+    from: Joi.string(),
+    organizationId: Joi.string().required()
   })
 }
 
