@@ -43,6 +43,10 @@ const schema = new Schema({
   updatedBy: {
     type: String,
     required: true
+  },
+  failedRecordsObjectKey: {
+    type: String,
+    required: false
   }
 },
 {

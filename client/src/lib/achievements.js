@@ -9,7 +9,7 @@ import * as OrgService from "../services/user-org";
 export async function getAchievements(apiClient, query) {
   let response;
   const organizationId = OrgService.getSingleOrg();
-  let url = `${config.API_URL}/search/userAchievements?organizationId=${organizationId}&keyword=${query}`;
+  let url = `${config.API_URL}/skill-search/userAchievements?organizationId=${organizationId}&keyword=${query}`;
 
   try {
     response = await apiClient.get(url);

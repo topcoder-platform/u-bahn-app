@@ -62,7 +62,7 @@ const getSkillsSuggestions = async (apiClient, inputValue) => {
   term = encodeURIComponent(term);
   const organizationId = getSingleOrg();
 
-  const url = `${config.API_URL}/search/skills?organizationId=${organizationId}&keyword=${term}`;
+  const url = `${config.API_URL}/skill-search/skills?organizationId=${organizationId}&keyword=${term}`;
 
   const { data } = await apiClient.get(url);
 
@@ -102,7 +102,7 @@ const getCompanyAttributesSuggestions = async (
 
   term = encodeURIComponent(term);
 
-  const url = `${config.API_URL}/search/userAttributes?attributeId=${attrId}&attributeValue=${term}`;
+  const url = `${config.API_URL}/skill-search/userAttributes?attributeId=${attrId}&attributeValue=${term}`;
 
   const { data } = await apiClient.get(url);
 
