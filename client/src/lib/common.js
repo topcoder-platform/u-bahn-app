@@ -15,6 +15,6 @@ export async function getNickname() {
       "An error occurred trying to retrieve the nickname of the logged in user"
     );
     console.log(error);
-    alert("You are not logged in");
+    alert("An error occurred. Try logging out and then log back in");
   }
 }

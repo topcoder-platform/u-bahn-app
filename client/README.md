@@ -16,8 +16,15 @@ REACT_APP_ATTRIBUTE_ID_COMPANY
 REACT_APP_ATTRIBUTE_ID_TITLE
 REACT_APP_ATTRIBUTE_ID_ISAVAILABLE
   => All 4 of the above are the ids of the attributes with name "location", "company", "title" and "isAvailable" respectively. These are used to filter attributes for display under a dedicated section named company attributes. Since these already have UI elements of their own, they are filtered from the list of company attributes
-REACT_APP_AUTH0_DOMAIN => The Auth0 login domain
-REACT_APP_AUTH0_CLIENTID => The Auth0 clientId
+REACT_APP_ACCOUNTS_APP_CONNECTOR
+REACT_APP_TC_AUTH_URL
+  => The connection parameters to authenticate with Topcoder
+REACT_APP_APP_URL
+  => The app's url. ex. http://localhost:3000. This is used to redirect the user after they have logged in
+REACT_APP_AUTH0_CLAIMS_HANDLE
+  => The property name in decoded token object to read the nickname from
+REACT_APP_TC_COOKIE_NAME
+  => The topcoder cookie name. App uses this to detect if the user has token or not
 ```
 
 You can create a `.env.local` file and provide the above configuration. Note that there's more configuration that you can change and you can find this under `src/config.js`. The above configurations are the minimum ones, that you need to launch the app successfully.

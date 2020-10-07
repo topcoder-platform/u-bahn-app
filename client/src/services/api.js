@@ -4,8 +4,7 @@
 
 import { useRef, useEffect } from "react";
 import axios from "axios";
-import { getFreshToken, isTokenExpired } from "@topcoder-platform/tc-auth-lib";
-import Cookies from "js-cookie";
+import { getFreshToken } from "@topcoder-platform/tc-auth-lib";
 
 import config from "../config";
 
@@ -24,23 +23,13 @@ export default () => {
     })
   );
   useEffect(() => {
-    const cookie = Cookies.get("v3jwt");
-    if (cookie) {
-      // Do nothing
-    } else {
-      console.log("Inside api, cookie not found. Forcing login");
-      forceLogin();
-      return;
-    }
     const currentAPI = api.current;
     currentAPI.interceptors.request.use(async (config) => {
       let token;
       if (process.env.REACT_APP_DEV_TOKEN) {
         token = process.env.REACT_APP_DEV_TOKEN;
       } else {
-        console.log("Inside api. Request intercepted. Attaching token");
         token = await getFreshToken();
-        console.log("Is token expired:", isTokenExpired(token));
       }
       config.headers.authorization = `Bearer ${token}`;
       return config;

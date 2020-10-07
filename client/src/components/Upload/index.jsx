@@ -14,7 +14,6 @@ import style from "./style.module.scss";
 import config from "../../config";
 import api from "../../services/api";
 import { getSingleOrg } from "../../services/user-org";
-import { ConsoleTransportOptions } from "winston/lib/winston/transports";
 
 const UPLOAD_STATES = {
   INITIAL: "INITIAL",

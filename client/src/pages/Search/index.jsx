@@ -57,7 +57,7 @@ export default function SearchPage() {
   }, [keyword]);
 
   const onSelectOrg = (org) => {
-    const cookie = Cookies.get("v3jwt");
+    const cookie = Cookies.get(config.AUTH.cookieName);
     if (cookie) {
       OrgService.setSingleOrg(org);
       setSelectedOrg(org);

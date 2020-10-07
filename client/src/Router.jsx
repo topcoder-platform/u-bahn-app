@@ -24,16 +24,19 @@ configureConnector({
 export default function AppRouter() {
   const [loading, setLoading] = React.useState(true);
 
+  /**
+   * The auth checks would ideally be under Private Routes
+   * However, our app does not have any routes (only / route)
+   * and thus adding the code on the ROOT route itself...
+   */
   React.useEffect(() => {
     if (!loading) {
       return;
     }
 
     (async () => {
-      console.log("Getting token in router");
       try {
         await getFreshToken();
-        console.log("Received token in router");
 
         setLoading(false);
       } catch (error) {
