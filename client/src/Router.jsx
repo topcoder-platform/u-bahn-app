@@ -4,16 +4,47 @@
 
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
+import {
+  configureConnector,
+  getFreshToken,
+} from "@topcoder-platform/tc-auth-lib";
 
 import Error404 from "./pages/Error404";
 import SearchPage from "./pages/Search";
 
-import { useAuth0 } from "./react-auth0-spa";
 import history from "./lib/history";
 import loader from "./assets/images/loading.svg";
+import config from "./config";
+
+configureConnector({
+  connectorUrl: config.AUTH.ACCOUNTS_APP_CONNECTOR,
+  frameId: "tc-accounts-iframe",
+});
 
 export default function AppRouter() {
-  const { loading } = useAuth0();
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    if (!loading) {
+      return;
+    }
+
+    (async () => {
+      console.log("Getting token in router");
+      try {
+        await getFreshToken();
+        console.log("Received token in router");
+
+        setLoading(false);
+      } catch (error) {
+        console.log("Error in router");
+        console.log(error);
+        let url = `retUrl=${encodeURIComponent(config.AUTH.APP_URL)}`;
+        url = `${config.AUTH.TC_AUTH_URL}?${url}`;
+        window.location.href = url;
+      }
+    })();
+  }, [loading]);
 
   if (loading) {
     return (

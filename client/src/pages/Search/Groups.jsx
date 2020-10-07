@@ -5,7 +5,6 @@ import ProfileCardGroupWrapper from "../../components/ProfileCardGroupWrapper";
 import Pagination from "../../components/Pagination";
 
 import { makeColorIterator, avatarColors } from "../../lib/colors";
-import { useAuth0 } from "../../react-auth0-spa";
 import config from "../../config";
 import api from "../../services/api";
 import * as groupLib from "../../lib/groups";
@@ -17,7 +16,6 @@ const colorIterator = makeColorIterator(avatarColors);
 
 export default function SearchGroups() {
   const apiClient = api();
-  const { user: auth0User } = useAuth0();
   const [myGroups, setMyGroups] = React.useState([]);
   const [otherGroups, setOtherGroups] = React.useState([]);
   const [loadingGroups, setLoadingGroups] = React.useState(false);
@@ -36,9 +34,10 @@ export default function SearchGroups() {
     setLoadingGroups(true);
 
     (async () => {
+      const nickname = await getNickname();
       const groups = await groupLib.getGroups(
         apiClient,
-        getNickname(auth0User),
+        nickname,
         cancelTokenSource.token
       );
 
