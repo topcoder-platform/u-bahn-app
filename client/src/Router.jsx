@@ -30,8 +30,10 @@ export default function AppRouter() {
     }
 
     (async () => {
+      console.log("Getting token in router");
       try {
         await getFreshToken();
+        console.log("Received token in router");
 
         setLoading(false);
       } catch (error) {
