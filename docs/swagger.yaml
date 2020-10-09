@@ -20,17 +20,11 @@ paths:
     get:
       summary: "Get all templates"
       description: |
-        "Return all templates. You can specify the date from and name when you would like the records.""
+        "Return all templates. You can filter by the name"
       tags:
         - "templates"
       operationId: "getTemplates"
       parameters:
-      - name: "from"
-        in: "query"
-        description: "The date from when you would like the uploads (inclusive)"
-        required: false
-        type: "string"
-        default: "today's value"
       - name: "name"
         in: "query"
         description: "The name of templates"
@@ -64,13 +58,7 @@ paths:
         - "templates"
       operationId: "headTemplates"
       parameters:
-      - name: "from"
-        in: "query"
-        description: "The date from when you would like the uploads (inclusive)"
-        required: false
-        type: "string"
-        default: "today's value"
-      - name: "organizationId"
+      - name: "name"
         in: "query"
         description: "The name of templates"
         required: false

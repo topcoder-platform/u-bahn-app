@@ -64,10 +64,6 @@ uploadEntity.schema = {
  */
 async function getEntities (query) {
   const filter = {}
-  if (!query.from) {
-    query.from = (new Date((new Date()).setDate((new Date()).getDate() - 1)).toISOString()) // 24 hours ago
-  }
-  filter.created = { ge: query.from }
   if (query.name) {
     filter.name = { contains: query.name }
   }
