@@ -62,6 +62,13 @@ module.exports = {
       auth: 'jwt',
       access: constants.AdminUser,
       scopes: [constants.Scopes.CreateTemplate, constants.Scopes.AllTemplate]
+    },
+    get: {
+      controller: 'TemplateController',
+      method: 'getEntities',
+      auth: 'jwt',
+      access: constants.AdminUser,
+      scopes: [constants.Scopes.GetTemplate, constants.Scopes.AllTemplate]
     }
   },
   '/templates/:id': {
