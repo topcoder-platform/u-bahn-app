@@ -57,9 +57,37 @@ uploadEntity.schema = {
   }).required()
 }
 
+/**
+ * Returns all templates (filtered by created date)
+ * @param {Object} query the filter query
+ * @returns {Object} the list of templates
+ */
+async function getEntities (query) {
+  const filter = {}
+  if (query.name) {
+    filter.name = { contains: query.name }
+  }
+  const templates = await helper.getAll(config.AMAZON.DYNAMODB_TEMPLATE_TABLE, filter)
+  const res = _.map(templates, (template) => {
+    template = _.extend(
+      _.omit(_.pickBy(template, _.isString), 'objectKey'), { url: helper.generateS3Url(template.objectKey) }
+    )
+    return template
+  })
+  return res
+}
+
+getEntities.schema = {
+  query: Joi.object().keys({
+    from: Joi.string(),
+    name: Joi.string()
+  })
+}
+
 module.exports = {
   getEntity,
-  uploadEntity
+  uploadEntity,
+  getEntities
 }
 
 logger.buildService(module.exports)

@@ -23,7 +23,18 @@ async function getEntity (req, res) {
   res.send(result)
 }
 
+/**
+ * Get template
+ * @param {Object} req the request
+ * @param {Object} res the response
+ */
+async function getEntities (req, res) {
+  const result = await service.getEntities(req.query)
+  res.send(result)
+}
+
 module.exports = {
   uploadEntity,
-  getEntity
+  getEntity,
+  getEntities
 }

@@ -13,7 +13,6 @@ import OrgSelector from "./OrgSelector";
 import style from "./style.module.scss";
 
 import config from "../../config";
-import { useAuth0 } from "../../react-auth0-spa";
 import * as OrgService from "../../services/user-org";
 import api from "../../services/api";
 
@@ -22,12 +21,6 @@ import { getNickname } from "../../lib/common";
 
 export default function SearchPage() {
   const apiClient = api();
-  const {
-    isLoading,
-    isAuthenticated,
-    user: auth0User,
-    loginWithRedirect,
-  } = useAuth0();
   const [tab, setTab] = React.useState(TABS.SEARCH);
   const [keyword, setKeyword] = React.useState(null);
   const [selectedOrg, setSelectedOrg] = React.useState(null);
@@ -36,15 +29,9 @@ export default function SearchPage() {
   const [loadingOrgs, setLoadingOrgs] = React.useState(true);
 
   React.useEffect(() => {
-    if (isLoading || !isAuthenticated) {
-      return;
-    }
-
     (async () => {
-      const organizations = await OrgService.getOrg(
-        apiClient,
-        getNickname(auth0User)
-      );
+      const nickname = await getNickname();
+      const organizations = await OrgService.getOrg(apiClient, nickname);
 
       setLoadingOrgs(false);
 
@@ -62,7 +49,7 @@ export default function SearchPage() {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, isAuthenticated]);
+  }, []);
 
   React.useEffect(() => {
     // Ensure that we are in the Global Search tab
@@ -70,23 +57,21 @@ export default function SearchPage() {
   }, [keyword]);
 
   const onSelectOrg = (org) => {
-    const cookie = Cookies.get("auth0.is.authenticated");
-    if (cookie && cookie === "true") {
+    const cookie = Cookies.get(config.AUTH.cookieName);
+    if (cookie) {
       OrgService.setSingleOrg(org);
       setSelectedOrg(org);
       setShouldSelectOrg(false);
     } else {
-      loginWithRedirect({
-        redirect_uri: window.location.origin,
-      });
+      let url = `retUrl=${encodeURIComponent(config.AUTH.APP_URL)}`;
+      url = `${config.AUTH.TC_AUTH_URL}?${url}`;
+      window.location.href = url;
     }
   };
 
   let mainContent;
 
-  if (isLoading || !isAuthenticated) {
-    mainContent = null;
-  } else if (shouldSelectOrg) {
+  if (shouldSelectOrg) {
     mainContent = (
       <OrgSelector
         userOrgs={userOrgs}

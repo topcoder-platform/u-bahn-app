@@ -8,7 +8,6 @@ import ProfileCard from "../../components/ProfileCard";
 import Pagination from "../../components/Pagination";
 
 import * as helper from "./helper";
-import { useAuth0 } from "../../react-auth0-spa";
 import { getAttributes } from "../../lib/company-attributes";
 import { useSearch, FILTERS } from "../../lib/search";
 import { makeColorIterator, avatarColors } from "../../lib/colors";
@@ -45,7 +44,6 @@ function usePrevious(value) {
 }
 
 export default function SearchGlobal({ keyword }) {
-  const { isLoading, isAuthenticated, user: auth0User } = useAuth0();
   const apiClient = api();
   const searchContext = useSearch();
   const [isSearching, setIsSearching] = React.useState(false);
@@ -75,10 +73,6 @@ export default function SearchGlobal({ keyword }) {
 
   // Non-static data and Non-user related data
   React.useEffect(() => {
-    if (isLoading || !isAuthenticated) {
-      return;
-    }
-
     let isSubscribed = true;
 
     (async () => {
@@ -118,14 +112,10 @@ export default function SearchGlobal({ keyword }) {
       cancelTokenSource.cancel();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, isAuthenticated, auth0User]);
+  }, []);
 
   // For the Search tab only (non static data)
   React.useEffect(() => {
-    if (isLoading || !isAuthenticated) {
-      return;
-    }
-
     const criteria = {};
     if (
       searchContext.filters[FILTERS.LOCATIONS].active &&
@@ -261,7 +251,7 @@ export default function SearchGlobal({ keyword }) {
     })();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, isAuthenticated, keyword, orderBy, searchContext]);
+  }, [keyword, orderBy, searchContext]);
 
   /**
    * Update's the style for the sort order element, based on the current width of the page

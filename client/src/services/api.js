@@ -4,13 +4,17 @@
 
 import { useRef, useEffect } from "react";
 import axios from "axios";
+import { getFreshToken } from "@topcoder-platform/tc-auth-lib";
 
-import { useAuth0 } from "../react-auth0-spa";
+import config from "../config";
 
-import Cookies from "js-cookie";
+function forceLogin() {
+  let url = `retUrl=${encodeURIComponent(config.AUTH.APP_URL)}`;
+  url = `${config.AUTH.TC_AUTH_URL}?${url}`;
+  window.location.href = url;
+}
 
 export default () => {
-  const { getTokenSilently, loginWithRedirect } = useAuth0();
   const api = useRef(
     axios.create({
       headers: {
@@ -19,31 +23,21 @@ export default () => {
     })
   );
   useEffect(() => {
-    const cookie = Cookies.get('auth0.is.authenticated');
-    if (cookie && cookie === 'true') {
-      // Do nothing
-    } else {
-      loginWithRedirect({
-        redirect_uri: window.location.origin,
-      });
-      return;
-    }
     const currentAPI = api.current;
     currentAPI.interceptors.request.use(async (config) => {
       let token;
       if (process.env.REACT_APP_DEV_TOKEN) {
         token = process.env.REACT_APP_DEV_TOKEN;
       } else {
-        token = await getTokenSilently();
+        token = await getFreshToken();
       }
       config.headers.authorization = `Bearer ${token}`;
       return config;
     });
     currentAPI.interceptors.response.use(null, async (error) => {
       if (error.config && error.response && error.response.status === 403) {
-        await loginWithRedirect({
-          redirect_uri: window.location.origin,
-        });
+        console.log("Inside api. Request failed with 403. Forcing login");
+        forceLogin();
       } else if (
         error.response &&
         error.response.data &&

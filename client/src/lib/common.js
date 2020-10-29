@@ -1,9 +1,20 @@
+import { getFreshToken, decodeToken } from "@topcoder-platform/tc-auth-lib";
 import config from "../config";
 
 /**
  * Returns the nickname of the logged in user
- * @param {Object} auth0User The auth0 user object
  */
-export function getNickname(auth0User) {
-  return auth0User[config.AUTH0.handleClaims];
+export async function getNickname() {
+  try {
+    const token = await getFreshToken();
+
+    const user = decodeToken(token);
+    return user[config.AUTH.handleClaims];
+  } catch (error) {
+    console.log(
+      "An error occurred trying to retrieve the nickname of the logged in user"
+    );
+    console.log(error);
+    alert("An error occurred. Try logging out and then log back in");
+  }
 }
