@@ -10,7 +10,6 @@ const ORGANIZATIONID_KEY = "organizationId";
  */
 export async function getOrg(apiClient, handle) {
   let response;
-  let organizationIds = [];
   let organizations = [];
   let errorMessage =
     "An error occurred when getting the organization associated with your user";
@@ -56,22 +55,9 @@ export async function getOrg(apiClient, handle) {
     return;
   }
 
-  organizationIds = response.data.map((o) => o.organizationId);
-
+  organizations = response.data.map((o) => o.organization);
   // Get the org names
-  for (let i = 0; i < organizationIds.length; i++) {
-    url = `${config.API_URL}/organizations/${organizationIds[i]}`;
-
-    try {
-      response = await apiClient.get(url);
-    } catch (error) {
-      console.log(error);
-      alert(errorMessage);
-      return;
-    }
-
-    organizations.push(_.pick(response.data, ["id", "name"]));
-  }
+  organizations = organizations.map((o) => _.pick(o, ["id", "name"]));
 
   return organizations;
 }
